@@ -1,0 +1,36 @@
+.modal-main{
+
+   z-index: 1;
+  position: fixed;
+  display: grid;
+  background-color: rgba(0,0,0,0.8); /* Black w/ opacity */
+    width: 100%; /* Full width */
+  height: 100%; /* Full height */
+  overflow: auto; /* Enable scroll if needed */
+    align-items: center;
+  justify-content: center;
+
+}
+.modal-content{
+  display: grid;
+  align-items: center;
+  justify-content: center;
+  background-color: #f1f1f1;
+  width: 400px;
+  padding: 20px;
+  max-width: 400px;
+
+}
+
+.w100{
+  width:100%
+}
+.grid-row{
+  display: grid;
+  grid-template-rows: repeat(50px,auto);
+  row-gap: 10px;
+}
+textarea{
+  max-width: 350px;
+  min-width: 200px;
+}

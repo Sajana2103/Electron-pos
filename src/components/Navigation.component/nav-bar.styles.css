@@ -1,0 +1,28 @@
+.nav-bar{
+  display: grid;
+  height: 40px;
+  background-color: #ef6369;
+  
+}
+.nav-btn{
+  padding: 5px;
+  font-weight: 600;
+  border-radius: 5px;
+  margin-right: 10px;
+  color: rgb(39, 33, 33);
+}
+.nav-btn:hover{
+  transition-duration: 0.1s;
+  color:whitesmoke;
+  cursor: pointer;
+}
+.logo{
+  padding: 5px;
+ 
+  border-radius: 5px;
+  margin-right: 10px;
+  color: whitesmoke;
+}
+.nav-btns{
+  display: flex;
+}

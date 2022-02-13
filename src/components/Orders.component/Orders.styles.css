@@ -1,0 +1,24 @@
+.order-main{
+  background-color: #222627;
+}
+.create-order-btn{
+  display: grid;
+
+height: 50px;
+align-items: center;
+background-color: #1a1c1d;
+}
+.create-order-btn:hover{
+  color:#ef6369;
+  cursor: pointer;
+}
+.order-card{
+  display: grid;
+  grid-template-columns: 60px 60px 40px;
+  column-gap: 3px;
+  border: 1px solid #222627 ;
+  padding:10px;
+}
+.order-card:hover{
+    background-color: #1a1c1d;
+}
