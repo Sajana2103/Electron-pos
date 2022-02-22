@@ -1,6 +1,13 @@
 const MenuItemsDAO = require('../model/MenuItemsDAO')
+const { ipcRenderer } = require('electron')
 
 
+const printBill = async (data) => {
+    await ipcRenderer.send('print-bill',data)
+    ipcRenderer.on('bill',(event,arg) => {
+        console.log('ipcRenderer bill',arg)
+    })
+}
 
 const {
     contextBridge,
@@ -11,11 +18,15 @@ const {
 // the ipcRenderer without exposing the entire object
 contextBridge.exposeInMainWorld(
     "api", {
-        addMenuItems:MenuItemsDAO.addItem,
-        getMenuItems:MenuItemsDAO.getItems,
+        addMenuItem:MenuItemsDAO.addItem,
+        getMenuItems:MenuItemsDAO.getMenuItems,
         replicateDB:MenuItemsDAO.replicateDB,
         removeItem:MenuItemsDAO.removeItem,
         updateItem:MenuItemsDAO.updateItem,
-        findItems:MenuItemsDAO.findItems
+        findItems:MenuItemsDAO.findItems,
+        createItemCategory:MenuItemsDAO.createMenuItemCategory,
+        getItemCategories:MenuItemsDAO.getMenuItemCategories,
+        printBill:printBill,      
+      
     }
 );

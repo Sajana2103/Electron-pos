@@ -12,6 +12,7 @@
 
 }
 .modal-content{
+  z-index: 1;
   display: grid;
   align-items: center;
   justify-content: center;
@@ -28,9 +29,47 @@
 .grid-row{
   display: grid;
   grid-template-rows: repeat(50px,auto);
-  row-gap: 10px;
+ 
+}
+.grid-column{
+  display: grid;
+  grid-template-columns: repeat(8,auto);
+
+  align-items: center;
+  
+}
+.dish-type:hover{
+  cursor: pointer;
+ 
 }
 textarea{
   max-width: 350px;
   min-width: 200px;
+}
+
+.quantity{
+  display: grid;
+  font-weight: 700;
+
+  align-items: center;
+  justify-content: center;
+  width: 20px;
+  height: 20px;
+ 
+}
+.quantity:hover{
+  transition-duration: 0.2s;
+  color: #ef6369;
+  cursor: pointer;
+
+}
+.border-black-red{
+    border: 3px solid #313638;
+     
+}
+.border-black-red:hover{
+   border:3px solid #ef6369;
+}
+.bill-close-modal{
+  width: 300px;
 }

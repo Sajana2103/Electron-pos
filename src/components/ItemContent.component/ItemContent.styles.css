@@ -5,11 +5,11 @@
 .item-card{
   background-color: #363d3f;
   display: grid;
-  grid-template-rows: 1fr 20px 50px;
+  grid-template-rows: 1fr 3em 50px;
   padding: 10px;
   box-shadow: #252a2c 5px 5px 10px ;
   width: 100px;
-  height:180px;
+  height:auto;
   }
 .item-card:hover{
   background-color: #434c4e;
@@ -27,4 +27,5 @@
   width: 100px;
   height: 100px;
   border-radius: 50px;
+  pointer-events: none;
 }

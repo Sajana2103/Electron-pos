@@ -1,8 +1,13 @@
 .sub-header{
   color:#d9f1fa ;
+  pointer-events: none;
+}
+.sub-header-btn{
+  color:#d9f1fa ;
 }
 .price-tags{
   color: #ef6369;
+  pointer-events: none;
 }
 .font-small{
   font-size: small;
@@ -15,4 +20,15 @@
 }
 .btn-color{
   background-color: #1a1c1d;
+}
+.sub-header-black{
+ color: #313638;
+}
+.error{
+  display: grid;
+  align-items: center;
+  background-color: #f5ac72;
+  color: #ffffff ;
+  padding: 10px;
+  font-size: 12px;
 }

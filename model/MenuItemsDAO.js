@@ -1,5 +1,6 @@
 const PouchDB = require('pouchdb')
 PouchDB.plugin(require('pouchdb-find'))
+const {useDispatch} = require('react-redux')
 
 let db = new PouchDB('pos-database') 
 let remoteDB ='http://localhost:4000/db/database-server'
@@ -14,7 +15,7 @@ class MenuItemsDAO{
     try{
       database.allDocs({include_docs:true, descending:true})
   .then(result =>{ docs = result})
-
+  console.log(useDispatch)
   
     } catch(error){
       console.log('Connection error', error)
@@ -22,33 +23,30 @@ class MenuItemsDAO{
 
   }
   static async addItem(data){
-  console.log('adding items')
-  let item = {
-    // _id: new Date().toISOString(),
-    title:data.title,
-    completed:data.completed
-  }
-  await db.post(item,(err, result) =>{
+  
+  // let item = {
+  //   // _id: new Date().toISOString(),
+  //   title:data.title,
+  //   completed:data.completed
+  // }
     try{
-    if(result){
-      console.log('done', result)
-      return {item,result}
-       }
+ let res = await db.post(data)
+  return {result:res,data:data}
     }catch(error){
       console.log('Add Item Error',error)
     }
-   
-  })
 }
-static async getItems(){
-  let docs
+static async getMenuItems(){
+ 
   try{
-   await db.allDocs({include_docs:true, descending:true})
-  .then(result =>{ docs = result})
-  console.log(docs)
-  if(docs){
-    return docs
-  }
+   let docs= await db.find({
+      selector :{title: 'menuItem',clientId:'client123'},
+      fields: ['_id','name','category','dishType','price','preparation',],
+     
+    })
+    console.log('find menu Items',docs)
+  return docs
+  
   } catch(error){
     console.log('error getItems',error)
   }
@@ -93,6 +91,40 @@ static async replicateDB(){
 let result = await PouchDB.replicate(db,remoteDB)
 console.log(result)
 }
+
+static async createMenuItemCategory(category,clientId){
+  try{
+    let res = await db.find({
+      selector : {title : 'itemCategory',clientId: clientId,category:category},
+      fields: ['_id','title','itemCategories','category']
+    })
+    if(res.docs.length < 1 && category !== undefined && clientId !== undefined){
+      res = await db.post({
+        title : 'itemCategory',
+        clientId: clientId,
+        category: category
+      })
+      return {result : res, category: category }
+    } else {
+     return {response : res}
+     
+    }
+  } catch(error){
+    return {error: error}
+  }
+}
+static async getMenuItemCategories(clientId){
+  try{
+    let res = await db.find({
+      selector: {title : 'itemCategory', clientId: clientId},
+      fields : ['_id','title','category']
+    })
+    return res
+  } catch(error){
+    return {error : error}
+  }
+}
+
 }
 
 module.exports = MenuItemsDAO

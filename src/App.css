@@ -18,15 +18,17 @@ body{
   color: white;
 }
 
-.App-link {
-  color: #61dafb;
+.highlight-color{
+  background-color: #ef6369;
+}
+input:disabled{
+  background-color: #313638;
+}
+h3{
+  margin-top: 0px;
+  margin-bottom: 0px;
 }
 
-@keyframes App-logo-spin {
-  from {
-    transform: rotate(0deg);
-  }
-  to {
-    transform: rotate(360deg);
-  }
+.bg-white{
+  background-color: white;
 }
