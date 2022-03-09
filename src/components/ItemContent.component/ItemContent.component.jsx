@@ -9,7 +9,7 @@ import ItemCard from './ItemCard.component'
 const ItemContent = ({ props }) => {
 
 
-  const menuItems = useSelector(state => state.menuItems)
+  const menuItems = useSelector(state => state.menuItems.items)
   
   const [search,setSearch] = useState([])
   useEffect(() => {
@@ -34,7 +34,7 @@ const ItemContent = ({ props }) => {
 
   useEffect(() => {
     async function fetchData() {
-
+      console.log('useEffect runs')
       window.api.getMenuItems().then(data => { dispatch(loadMenuItems(data.docs)) })
       window.api.replicateDB().then(data => console.log(data))
       window.api.getItemCategories('client123').then(data => {dispatch(getCategories(data.docs))})

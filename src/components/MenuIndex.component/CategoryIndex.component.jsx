@@ -5,7 +5,7 @@ import './CategoryIndex.styles.css'
 
 
 const CategoryIndex = ({props}) =>{
-const categories = useSelector(state => state.itemCategories)
+const categories = useSelector(state => state.itemCategories.categories)
 // console.log(categories)
   const dispatch = useDispatch()
 let {height,width} = props

@@ -1,4 +1,5 @@
 import { createSlice } from "@reduxjs/toolkit";
+import OrderedItem from "../components/Orders.component/OrderedItem";
 
 const initialState = {
   orderNumber : 1,
@@ -18,7 +19,18 @@ const createOrderSlice = createSlice({
  name: 'orders',
  initialState,
  reducers : {
+    loadOngoingOrders(state,action){
+      console.log('loadONgoing orders',action.payload)
+      if(!state.currentOrders.length && !state.kitchenOrders.length){
 
+      action.payload.map((order) => {
+        if(order.status ==='ongoing'  ){
+            state.currentOrders.push(order)
+            state.kitchenOrders.push(order)
+         
+        }})
+      }
+    },
     openNewOrder(state,action){
       console.log(action.payload)
      state.newOrder.push(action.payload)
@@ -29,15 +41,15 @@ const createOrderSlice = createSlice({
       state.currentOrders.push(action.payload)
       state.kitchenOrders.push(action.payload)
       state.newOrder = []
-      state.orderNumber++
+      state.orderNumber.orderNumber++
     },
     clearNewOrder(state,action){
       state.newOrder= []
     },
     addOrRemoveItems(state,action){
-      const {item,task} = action.payload
-      const findItem = state.newOrder.find((orderItem) => item === orderItem.item)
-      console.log('addOrRemoveItems',action.payload,findItem.price)
+      const {item,task,portion,appendedOrder} = action.payload
+      const findItem = state.newOrder.find((orderItem) => (item === orderItem.item && portion===orderItem.portion && orderItem.appendedOrder ===appendedOrder))
+      console.log('addOrRemoveItems',action.payload,findItem)
       if(task === 'add'){
         findItem.quantity++
       } else if(task === 'remove'){
@@ -45,7 +57,8 @@ const createOrderSlice = createSlice({
       } else{
        state.newOrder = state.newOrder.filter((item) => {
           console.log(item.item)
-          return item.item !== findItem.item})
+          return (item.item !== findItem.item || item.portion !== findItem.portion)
+          })
       }
     },
     appendOrder(state,action){
@@ -56,12 +69,14 @@ const createOrderSlice = createSlice({
     },
     addItemsToOngoingOrder(state,action){
       console.log('addItemsToOngoingOrder',action.payload)
-      const {data,orderNumber,appendedOrder} = action.payload 
+      const {data,orderNumber,appendedOrder,dateAndTime} = action.payload 
       let ongoingOrder = state.currentOrders.find((item) => 
         item.orderNumber === orderNumber
       )
+      console.log('ongoingOrder',ongoingOrder,'data',data)
       data.map((item) => ongoingOrder.data.push(item))
       ongoingOrder.appendedOrder = appendedOrder
+      ongoingOrder.dateAndTime.push(dateAndTime)
       state.kitchenOrders.push(action.payload)
       state.newOrder = []
     },
@@ -71,6 +86,17 @@ const createOrderSlice = createSlice({
     },
     closeBill(state,action){
       state.currentBill = action.payload
+    },
+    updateOrderNumber(state,action){
+      console.log('updateOrderNumber',action.payload)
+      state.orderNumber = action.payload
+    },
+    completeCloseBill(state,action){
+      console.log(action.payload)
+      state.currentOrders = state.currentOrders.filter((order) => {
+        console.log(order.orderNumber)
+        return (order.orderNumber !== action.payload.orderNumber)
+      })
     }
   }
 })
@@ -84,6 +110,9 @@ export const {
   addItemsToExistingOrder,
   addItemsToOngoingOrder,
   addItemsToKitchOrders,
-  closeBill
+  closeBill,
+  loadOngoingOrders,
+  updateOrderNumber,
+  completeCloseBill
   } = createOrderSlice.actions
 export default createOrderSlice.reducer

@@ -1,6 +1,8 @@
 import { createSlice } from "@reduxjs/toolkit";
 
-const initialState = []
+const initialState = {
+  categories: []
+}
 
 const itemCategoriesSlice = createSlice({
  name: 'itemCategories',
@@ -8,10 +10,13 @@ const itemCategoriesSlice = createSlice({
  reducers : {
 
     getCategories(state,action){
+      if(!state.categories.length && action.payload){
+
       console.log('getCategories',action.payload)
       action.payload.map((category) => {
-        state.push(category)
+        state.categories.push(category)
       })
+      }
     }
   }
 })

@@ -2,7 +2,7 @@ const path = require("path");
 const cp = require('child_process')
 const fs = require('fs')
 require('@electron/remote/main').initialize()
-const { app, BrowserWindow, ipcMain } = require("electron")
+const { app, BrowserWindow, ipcMain, dialog } = require("electron")
 // const fs = require("@electron/get/node_modules/fs-extra/lib/fs/index")
 async function startServer(){
   cp.execFile('node', [`${path.join(__dirname,'../server/index.js')}`])
@@ -54,8 +54,8 @@ async function createWindow() {
 async function createChildWindow(){
   childWindow = new BrowserWindow({
 		width: 200,
-		height: 600,
-		modal: true,
+		height: 1200,
+		modal: false,
 		show: false,
 		parent: win,
 		webPreferences: {
@@ -86,13 +86,15 @@ app.whenReady().then(() => {
   }
 });
 
-app.on("window-all-closed", () => {
+app.on("window-all-closed", (e) => {
+  e.preventDefault()
+  createWindow()
   if (process.platform !== "darwin") {
     app.quit();
   }
 });
 
-  console.log('path',path.join(__dirname))
+
 ipcMain.on('print-bill',(e,arg) =>{
   console.log('print-bill',arg)
   e.sender.send('bill',{not_right:false})
@@ -114,23 +116,23 @@ ipcMain.on('print-bill',(e,arg) =>{
 	childWindow.webContents.once('did-finish-load', async() => {
 		// console.log('webContents',win2.webContents)
   await childWindow.webContents.send('bill-window',arg)
+try{
 
- 		console.log('printerName')
-		// await childWindow.webContents.print({
-		// 	device:printerName,
-		// 	silent: true,
-		// 	printBackground: true,
-		// 	color: false,
-	
-    //   pageRanges:[{
-    //     from:0,
-    //     to:1
-    //   }],
-		// 	landscape: false,
-		// 	scaleFactor: 400,
-	
-
-		// })
+ 		console.log('createChildWindow',printerName)
+		await childWindow.webContents.print({
+			deviceName:printerName,
+  
+			color: false,
+      pagesPerSheet:20,
+			landscape: false,
+			scaleFactor: 400,
+      collate:true,
+  
+		})
+                
+}catch(error){
+  console.log(error)
+}
 })
 })
 

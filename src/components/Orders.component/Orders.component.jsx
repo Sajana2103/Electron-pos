@@ -7,7 +7,8 @@ import KitchenOrders from "./KitchenOrders";
 import './Orders.styles.css'
 
 const Orders = ({props}) => {
-  let {height,width} = props
+ 
+  let {height} = props
 const onGoingOrders = useSelector(state => state.orders.currentOrders)
 const ongoingOrder = useSelector(state => state.orders.newOrder)
 const {canAddNewItems} = useSelector(state => state.orders.appendOrder)
@@ -15,7 +16,9 @@ const ongoingKitchenOrders = useSelector(state => state.orders.kitchenOrders)
  
 const [openNewOrder, setOpenNewOrder] = React.useState(false)
 const [confirmCancelOrder, setConfirmCancelOrder] = React.useState(false)
+const [billsOrKitchen,setBillsOrKitchen] = React.useState(true)
 
+window.orders.getLastOrder().then(data => console.log(data))
 const dispatch = useDispatch()
 useEffect(() => {
    if(ongoingOrder.length > 0){
@@ -23,11 +26,19 @@ useEffect(() => {
   } else {
     setOpenNewOrder(false)
   }
+    
+  
 },[ongoingOrder])
-console.log(window.api)
+
   return(
     <div className="order-main" style={{height:`${height -40}px`}}>
       <div onClick={() => setOpenNewOrder(true)} className="create-order-btn sub-header-btn">Create Order +</div>
+     <div style={{display:'grid',gridTemplateColumns:'repeat(2,50%)',margin:'5px',justifyItems:'center'}}>
+      <button className="billsAndKitchen sub-header-btn" style={billsOrKitchen? {color:'#ef6963',fontWeight:'bold',border:'#ef6963 3px solid',boxShadow: '#1a1c1d 2px 5px 5px'}:{}} 
+      onClick={()=>setBillsOrKitchen(true)}>BILLS</button>
+      <button className="billsAndKitchen sub-header-btn" style={!billsOrKitchen? {color:'#ef6963',fontWeight:'bold',border:'#ef6963 3px solid',boxShadow: '#1a1c1d 2px 5px 5px'}:{}} 
+       onClick={()=>setBillsOrKitchen(false)}>KITCHEN</button>
+     </div>
       <div className="order-cards">
         
         {
@@ -41,19 +52,21 @@ console.log(window.api)
         }
         {
           confirmCancelOrder? 
-          <div className="sub-header-btn">Are you sure?  
-          <button  onClick={() =>{
+          <div className="sub-header-btn do-actio">Are you sure?  
+          <button className="do-action" style={{width:'40px',marginLeft:'3px',marginRight:'3px'}} onClick={() =>{
             setOpenNewOrder(false)
             setConfirmCancelOrder(false)
             dispatch(clearNewOrder())
           }}>Yes</button>
-          <button onClick={() => setConfirmCancelOrder(false)}>No</button></div>
+          <button className="cancel-action"  
+          style={{width:'40px',marginLeft:'5px',marginRight:'5px'}} 
+          onClick={() => setConfirmCancelOrder(false)}>No</button></div>
           :
           <></>
         }
         <div className="ongoing-orders">
         {
-          onGoingOrders.length > 0 ?
+          onGoingOrders.length > 0 && billsOrKitchen?
           onGoingOrders.map((order,idx) => {
             return(
               
@@ -65,9 +78,9 @@ console.log(window.api)
         }
         
         {
-          ongoingKitchenOrders.length > 0 ?
+          ongoingKitchenOrders.length > 0 && !billsOrKitchen?
           ongoingKitchenOrders.map((order) => {
-            console.log(order)
+            // console.log(order)
             return(
 
             <KitchenOrders order={order}/>

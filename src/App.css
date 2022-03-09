@@ -1,13 +1,16 @@
 body{
+ font-family:Inconsolata;
    background-color: #313638;
     overflow-x:hidden;
-}
+    letter-spacing: 1px;
+} 
 .App {
   text-align: center;
  
 }
 
 .App-header {
+  font-family: 'Gill Sans', 'Gill Sans MT', Calibri, 'Trebuchet MS', sans-serif;
   background-color: #282c34;
   min-height: 100vh;
   display: flex;
@@ -16,6 +19,10 @@ body{
   justify-content: center;
   font-size: calc(10px + 2vmin);
   color: white;
+  font-smooth: auto;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  
 }
 
 .highlight-color{

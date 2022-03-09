@@ -9,15 +9,19 @@ const modalSlice = createSlice({
         setModalDisplay(state,action) {
 
             let modal = document.getElementById("modal-main")
-        
+            console.log(action.payload)
+            if(action.payload) {
+                modal.style.display = action.payload
+                return
+                }
             console.log('modalCreateThread', modal.style.display)
            
             if(modal.style.display === 'grid')   {
-                console.log('if grid')
+                console.log('turning off modal')
                 modal.style.display = 'none'
 
             } else {
-                   console.log('if none')
+                   console.log('turning off modal')
                  modal.style.display = 'grid'
             }
                

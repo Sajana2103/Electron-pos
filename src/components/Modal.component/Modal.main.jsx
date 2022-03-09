@@ -1,4 +1,4 @@
-import React from "react";
+import React,{memo} from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { loadModalDisplay, setModalDisplay,loadModalForm } from "../../redux/modalSlice";
 import ModalFormMenuItem from "./modalForm.menuItem";
@@ -7,6 +7,7 @@ import BillModal from "./Bill.Modal";
 import './ModalMain.styles.css'
 
 const ModalMain = () => {
+const dispatch = useDispatch()
    let modal = document.getElementById("modal-main")
    let modalContent = document.getElementById("modal-content")
   window.onclick = function (e) {
@@ -14,14 +15,13 @@ const ModalMain = () => {
     if (e.target === modal && e.target !== modalContent) {
       // console.log(e.target)
       //     console.log(modal.style.display)
-      modal.style.display = "none"
+      dispatch(setModalDisplay('none'))
     }
   }
 const windowResize = useSelector(state => state.windowResize)
 console.log('windowResize',windowResize)
 const display = useSelector(loadModalDisplay)
 const form = useSelector(loadModalForm)
-const dispatch = useDispatch()
 
 let modalForm
 
@@ -38,11 +38,12 @@ switch (form) {
   default:
     break;
 }
-
+console.log(display)
   return(
     <div className="modal-main" id="modal-main" 
-    style={{display:display,width:`${windowResize.width-300}px`}}>
-      <div className="modal-content" id="modal-content">
+    style={{display:display,width:form==='loadCloseBill'? windowResize.width : windowResize.width-300
+    ,}}>
+      <div className="modal-content" id="modal-content" >
       {modalForm}
         </div>
       </div>

@@ -1,6 +1,5 @@
 const PouchDB = require('pouchdb')
 PouchDB.plugin(require('pouchdb-find'))
-const {useDispatch} = require('react-redux')
 
 let db = new PouchDB('pos-database') 
 let remoteDB ='http://localhost:4000/db/database-server'
@@ -13,7 +12,7 @@ class MenuItemsDAO{
       return
     }
     try{
-      database.allDocs({include_docs:true, descending:true})
+      database.allDocs({include_docs:true, descending:true,attachments:true})
   .then(result =>{ docs = result})
   console.log(useDispatch)
   
@@ -22,13 +21,15 @@ class MenuItemsDAO{
     }
 
   }
+  static async getAll(){
+    let alldocs = await db.allDocs({include_docs:true, descending:true,attachments:true})
+    if(alldocs) return alldocs
+  }
   static async addItem(data){
-  
-  // let item = {
-  //   // _id: new Date().toISOString(),
-  //   title:data.title,
-  //   completed:data.completed
-  // }
+  console.log(data)
+  // if(!data.name){
+  //   return {res:'Name is Required.'}
+  // } else if(!data.price && data.portionSizes.length<1) return {res:'Price or Portion is required.'}
     try{
  let res = await db.post(data)
   return {result:res,data:data}
@@ -41,8 +42,8 @@ static async getMenuItems(){
   try{
    let docs= await db.find({
       selector :{title: 'menuItem',clientId:'client123'},
-      fields: ['_id','name','category','dishType','price','preparation',],
-     
+      
+      attachments: true
     })
     console.log('find menu Items',docs)
   return docs
@@ -52,27 +53,65 @@ static async getMenuItems(){
   }
 }
 static async updateItem(item){
+  console.log('update item',item)
   try{
-    let response = await db.put({
-      _id:"a35f9913-c300-4f91-8997-12b3467b69c1",
-      title:'Beef Burger',
-      _rev: "1-95c9e2436f624543c27faf29c66c0215"
+    let doc = await db.get(item._id)
+    let res = await db.put({
+      title: 'menuItem',
+      clientId:'client123',
+      _rev:doc._rev,
+      _id:doc._id,
+      ...item
     })
-    console.log(response)
+    console.log(res)
+    return {res:res,data:item}
   } catch(error){
     console.log('error',error)
   }
 }
-static async removeItem(item){
+static async removeItem(_id){
+  console.log('removeItem',_id)
   try{
     
-    let doc = await db.get('2a1d9a57-f123-409b-8d8d-462b518f62a1')
+    let doc = await db.get(_id)
     console.log(doc)
     let response = await db.remove(doc)
     console.log(response)
+    return response
   } catch(error){
-
+    console.log('Remove',error)
   }
+}
+static async dishType(){
+  try{
+    let result = await db.find({
+      selector:{title:'dishType'},
+      fields:['dish']
+    })
+    console.log(result)
+    if(result.docs<0) return {error:'No dish types found. Please add.'}
+    return result
+  } catch(error){
+console.log('dishType',error)
+  }
+}
+static async createDishType(dish){
+  if(!dish){
+    return {res:'Dish Name is Required.'}
+  }
+    try{
+ let res = await db.post({
+   title:'dishType',
+   dish:dish
+ })
+ if(res.ok){
+  return {result:res,dish:dish}
+ } else {
+   return {error:'adding dish error'}
+ }
+    }catch(error){
+      console.log('Add Item Error',error)
+    }
 }
 static async findItems(items){
   try{

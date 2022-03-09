@@ -7,7 +7,8 @@ import CategoryIndex from './components/MenuIndex.component/CategoryIndex.compon
 import ItemContent from './components/ItemContent.component/ItemContent.component';
 import Orders from './components/Orders.component/Orders.component';
 import { calculateWindowHeight,calculateWindowWidth } from './redux/windowResize';
-
+import { addDishTypes } from './redux/menuItemSlice';
+import { loadOngoingOrders,updateOrderNumber } from './redux/orderSlice';
 
 import './App.css';
 import { useEffect, useState } from 'react';
@@ -19,8 +20,14 @@ const Container = () => {
   const [resizeWindowHeight, setResizeWindowHeight] = useState(window.innerHeight)
   const [resizeWindowWidth, setResizeWindowWidth] = useState(window.innerWidth)
 
-  useEffect(() => {
+  useEffect(() =>{
 
+    window.orders.timeAndOrderReset(new Date().toLocaleString(),'6:00:00 AM').then(number => dispatch(updateOrderNumber(number)))
+    window.orders.getOngoingOrders().then(data => dispatch(loadOngoingOrders(data)))
+    // window.api.allDocs().then(data => console.log(data))
+  },[])
+
+  useEffect(() => {
     window.addEventListener('resize', handleWindowResize)
     window.addEventListener('resize', handleWindowResizeWidth)
       dispatch(calculateWindowHeight({height:resizeWindowHeight}))
@@ -36,9 +43,9 @@ const Container = () => {
     }
 
   }, [resizeWindowHeight, resizeWindowWidth])
-  console.log(resizeWindowWidth - 500)
-console.log(window.api)
-
+//   console.log(resizeWindowWidth - 500)
+// console.log(window.api)
+console.log(resizeWindowHeight)
   return (
     <div className="App">
       <NavigationBar width={resizeWindowWidth} />

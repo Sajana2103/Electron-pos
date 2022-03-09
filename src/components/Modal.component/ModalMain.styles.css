@@ -17,9 +17,10 @@
   align-items: center;
   justify-content: center;
   background-color: #f1f1f1;
-  width: 400px;
+  width: auto;
+  max-width:100%;
   padding: 20px;
-  max-width: 400px;
+  height: auto;
 
 }
 
@@ -43,8 +44,14 @@
  
 }
 textarea{
-  max-width: 350px;
-  min-width: 200px;
+  max-width:  300px;
+  min-width: 1rem;
+  height: 4rem;
+  min-height: 50px;
+  max-height: 10rem ;
+  margin: none;
+  padding: none;
+
 }
 
 .quantity{
@@ -55,6 +62,7 @@ textarea{
   justify-content: center;
   width: 20px;
   height: 20px;
+  color: #313638;
  
 }
 .quantity:hover{
@@ -70,6 +78,74 @@ textarea{
 .border-black-red:hover{
    border:3px solid #ef6369;
 }
-.bill-close-modal{
-  width: 300px;
+.extra-items{
+  margin-top: 3px;
+  display: grid;
+  grid-template-rows: repeat(auto,minmax(2rem,auto)) ;
+ 
+  padding:2px;
+  
+  justify-content: center;
+ border: #ef6369 1px solid;
+ border-radius: 3px;
+}
+.extra-item{
+  text-align: center;
+  font-size: 14px;
+  color: #ef6369;
+}
+.menuitem-modal{
+  width: 200px;
+  height: 200px;
+  object-fit: cover;
+}
+.modifications{
+  border: #313638 1px solid;
+  background-color: #313638;
+  opacity: 0.7;
+    color:white;
+  font-size: 11px;
+  font-family: monospace;
+  width: 290px;
+
+  
+}
+.modifications::placeholder{
+  color:white
+}
+
+.modal-form-label{
+  
+  background-color: #313638;
+  color: #f1f1f1;
+  
+}
+.modal-form-input{
+  margin-top: 1ch;
+  margin-bottom: 1ch;
+ border: none;
+
+}
+.input-section-box{
+  border: white 1px solid;
+  margin-bottom: 1ch;
+  padding: 1ch;
+}
+.input-section-box:hover{
+  transition-duration: 0.2s;
+  border: 1px #313638 solid;
+}
+.submit-btn{
+  padding: 1ch;
+  border: none;
+  background-color: #313638;
+  color: #f1f1f1;
+  width: 100%;
+  font-size: 1rem;
+}
+.submit-btn:hover{
+  background-color: #ef6369;
+ 
+  transition-duration: 0.2s;
+  cursor: pointer;
 }

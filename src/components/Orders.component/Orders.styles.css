@@ -15,7 +15,7 @@ background-color: #1a1c1d;
   color:#ef6369;
   cursor: pointer;
 }
-.order-card{
+.order-card-side{
   display: grid;
   grid-template-rows: repeat(auto,30px);
   row-gap: 10px;
@@ -25,8 +25,20 @@ background-color: #1a1c1d;
   background-color: white;
   
 }
+.order-card-billModal{
+  
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  column-gap: 10px;
+  border: 1px solid white;
+  padding:10px;
+  transition-duration: 0.3s;
+  background-color: white;
+  
+
+}
 .order-card:hover{
-    border: 1px solid #e9464e;
+ 
     cursor: pointer;
 }
 
@@ -58,7 +70,7 @@ background-color: #1a1c1d;
   column-gap : 5px;
   background-color: #313638;
  height: 40px;
- border-radius: 15px;
+ border-top-left-radius: 15px;
  font-size: 14px;
 }
 .ongoing-order-card:hover{
@@ -69,22 +81,25 @@ background-color: #1a1c1d;
   display: grid;
   align-items: center;
   grid-template-columns: 40px 150px 50px;
-  background-color: white;
+  background-color: #313638;
   padding : 10px;
   font-size: 14px;
+  column-gap: 5px;
+  grid-row-start: 1;
+  
 
 }
 .order-headers{
   display: grid;
-  grid-template-columns: repeat(3,auto);
+  grid-template-columns: 100px 100px 70px;
   align-items: center;
-  padding: 10px;
+
 }
 .grid-ordered-items{
   display: grid;
   grid-template-columns: 40px 150px 50px;
   align-items: center;
-  column-gap: 10px;
+  column-gap: 15px;
 }
 .grid-bill{
   display: grid;
@@ -95,7 +110,7 @@ background-color: #1a1c1d;
   width: 50px;
 }
 .discount-input{
-  width: 50px;
+  width: 30px;
 }
 .ongoing-order-kitchen{
   display: grid;
@@ -104,4 +119,74 @@ background-color: #1a1c1d;
   background-color: white;
   padding : 10px;
 
+}
+.bill-icons-main{
+  margin-top: 2px;
+  display: grid;
+  grid-template-columns: repeat(2,1fr);
+  column-gap: 3px;
+  
+
+}
+.bill-icons-bg{
+
+  display: grid;
+  padding: 5px;
+ background-color: #d3d3d3;
+
+ justify-items: center;
+      align-items: center;
+      justify-content: center;
+      opacity: 0.9;
+}
+.bill-icons{
+  width: 25px;
+  
+  justify-items: center;
+      align-items: center;
+}
+.bill-icons-bg:hover{
+  transition-duration: 0.3;
+ background-color: #ef6369;
+   opacity: 1;
+}
+.billsAndKitchen{
+  background-color: #1a1c1d;
+  color: #f1f1f1;
+  border: 3px solid #1a1c1d;
+  height: 2rem;
+  border-radius: 50px;
+  width: 90%;
+  height: 2.3rem;
+  display: grid;
+  align-items: center;
+  justify-items: center;
+ 
+}
+.billsAndKitchen:hover{
+  
+   transition-duration: 0.2s;
+   color: #ef6369;
+}
+::-webkit-scrollbar {
+    height: 8px;
+    width: 8px;
+    color: rgb(255, 246, 246);
+    background-color: transparent;
+}
+.minimize{
+  width: 100%;
+ 
+  border: #313638 1px solid;
+  height: 3ch;
+  font-size: 1.5ch;
+  color: #f1f1f1;
+  background-color: #313638;
+}
+.minimize:hover{
+  border: #ef6369 1px solid;
+  color: #ef6369;
+  transition-duration: 0.2s;
+   cursor: pointer;
+   
 }
