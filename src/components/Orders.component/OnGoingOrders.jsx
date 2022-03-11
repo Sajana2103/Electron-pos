@@ -55,7 +55,8 @@ const OnGoingOrders = ({ order }) => {
                 )
               }
               // console.log(appendedOrder)
-              return (<div className="bg-dark-white " style={{ padding: '5px 0px 5px 0px' }}>
+              return (
+              <div className="bg-dark-white " style={{ padding: '5px 0px 5px 0px' }}>
                 <div className=" w100 font-small" style={{ paddingTop: '5px', color: "#313638" }}>ORDERED : {order.dateAndTime[0]}</div>
 
                 <div className="ongoing-order-extended bg-dark-white " key={id}>

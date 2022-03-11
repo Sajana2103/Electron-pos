@@ -18,12 +18,24 @@ function create_id(orderDate,orderNumber) {
   return _id
 }
 async function removeItem(_id){
+  try{
+
     let doc =await db.get(_id)
     let removeItem = await db.remove(doc)
     console.log('item removed',removeItem)
     return removeItem
+  } catch(error){
+    return error
   }
-  // removeItem('3/4/2022')
+  }
+  // async function removeItemWithFind(){
+  //   let doc =await db.find({selector:{title:"time&orderReset"}})
+  //   let removeItem = await db.remove(doc)
+  //   console.log('item removed',removeItem)
+  //   return removeItem
+  // }
+  // removeItemWithFind()
+  // removeItem('11/03/2022')
 class OrdersDAO {
   static async createOrder(data) {
     console.log(data)
@@ -120,20 +132,32 @@ class OrdersDAO {
   static async timeAndOrderReset(date,resetTime){
     let splitDate = date.split(',').shift()
     let newDate = `${splitDate},${resetTime}`
-    let isToday
+    // await removeItem(splitDate)
+    
     console.log(newDate)
-    isToday = await db.find({
-      selector:{startDateTime: newDate}
+    let isToday = await db.find({
+      selector:{title: "time&orderReset",_id:splitDate}
     })
+    if(isToday.docs.length>1){
+      for(let i=0;i<isToday.docs.length;i++){
+        if(isToday.docs[i]._id !== newDate){
+          removeItem(isToday.docs[i]._id)
+          console.log(isToday.docs[i]._id,'removed')
+        }
+      }
+    }
+    console.log('isToday',isToday)
+    let isEndDate = newDate>= isToday.endDateTime
+    console.log('time doc:',isToday,isEndDate)
     console.log(isToday.docs.length)
-    if(isToday.docs.length ===0){
+    if(isEndDate || isToday.docs.length===0){
       let getDate = new Date(newDate).getDate()
       console.log('getDate',getDate)
-      let endDateTime = new Date(newDate).setDate(getDate+1).toLocaleString()
+      let endDateTime = new Date(newDate).setDate(getDate+1)
         console.log('endDateTime',endDateTime)
       let newDateDoc = await db.put({
         startDateTime : newDate,
-        endDateTime :endDateTime,
+        endDateTime : new Date(endDateTime).toLocaleString(),
         _id:splitDate,
         orderNumber:1,
         title:'time&orderReset'

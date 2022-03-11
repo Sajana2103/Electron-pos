@@ -34,3 +34,30 @@
 ::-webkit-scrollbar-corner {
     background: rgb(39, 33, 33);
 }
+/* .createMenuItemImg{
+  width: 17px;
+ 
+  background-color: #a5a3a3;
+  padding: 15px 3px 10px 3px;
+  border: white 3px solid;
+}
+.createMenuItemImg:hover{
+  background-color: #f1f1f1;
+  transition-duration: 0.2s;
+  border: #ef6369 3px solid;
+} */
+.back-btn{
+  background-color:#313638 ;
+  width:30px;
+  height: 30px;
+  border:#596266 2px solid;
+  margin-top: 5px;
+  border-radius: 20px;
+  
+ 
+  transition-duration: 0.2s;
+}
+.back-btn:hover{
+  background-color: #596266;
+  transition-duration: 0.2s;
+}

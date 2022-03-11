@@ -10,7 +10,7 @@ const ItemContent = ({ props }) => {
 
 
   const menuItems = useSelector(state => state.menuItems.items)
-  
+  const shrinkWidth = useSelector(state => state.windowResize.shrink.width)
   const [search,setSearch] = useState([])
   useEffect(() => {
     setSearch(menuItems)
@@ -40,9 +40,10 @@ const ItemContent = ({ props }) => {
       window.api.getItemCategories('client123').then(data => {dispatch(getCategories(data.docs))})
     }
     fetchData()
-
+    
   }, [item])
-  let maxCards = Math.floor((width - 400) / 150)
+  console.log(shrinkWidth)
+  let maxCards = shrinkWidth===200?Math.floor((width - (400)) / 150):Math.floor(((width+shrinkWidth) - (400)) / 120)
   // console.log(maxCards)
   return (
     <div>

@@ -80,13 +80,15 @@ let modal = document.getElementById("modal-main")
               <span className="ordered-quantity">{item.quantity}</span>
               <div>
               <span className='strong '>{item.item} ({item.portion?item.portion:''})</span>
+                <br/>
               {
                 item.extras && item.extras.length?
                 item.extras.map((extras,id) =>{
+                  let count 
                 return (
-                  <span className='strong '>{extras.name} {extras.price}</span>
+                  <span style={{color:'gray'}} >[{extras.name} <span className='bold ' style={{color:'#ef6369',opacity:0.7}}>{extras.price}</span>]</span>
                 )}) : <></>
-              } 
+              }  
               </div>
               <span className="price-tags strong" style={{textAlign:'right',display:'grid',justifyContent:'end'}}>Rs.{item.price*item.quantity}</span>
             </div>

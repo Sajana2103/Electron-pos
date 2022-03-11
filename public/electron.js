@@ -28,8 +28,8 @@ async function createWindow() {
   // Create the browser window.
 
   win = new BrowserWindow({
-    width: 800,
-    height: 600,
+    width: 1024,
+    height: 1024,
     autoHideMenuBar:true,
     webPreferences: {
          enableRemoteModule: false,
@@ -51,11 +51,11 @@ async function createWindow() {
   }
 }
 
-async function createChildWindow(){
+async function createChildWindow (printItem){
   childWindow = new BrowserWindow({
-		width: 200,
-		height: 1200,
-		modal: false,
+		width: 300,
+		height: 800,
+		modal: true,
 		show: false,
 		parent: win,
 		webPreferences: {
@@ -66,12 +66,12 @@ async function createChildWindow(){
 		}
 	})
 
-	childWindow.loadFile(path.join(__dirname,'print.html'))
+	childWindow.loadFile(path.join(__dirname,`${printItem}.html`))
 
-	childWindow.webContents.getPrintersAsync().then(data => data.map((device) => printerName = device.name))
+	childWindow.webContents.getPrintersAsync().then(data => data.map((device) => console.log(device.name)))
 	childWindow.once('ready-to-show', () => {
 		childWindow.show()
-		console.log('printerName', printerName)
+		console.log('printerName')
 	})
 }
 
@@ -88,7 +88,7 @@ app.whenReady().then(() => {
 
 app.on("window-all-closed", (e) => {
   e.preventDefault()
-  createWindow()
+
   if (process.platform !== "darwin") {
     app.quit();
   }
@@ -98,18 +98,9 @@ app.on("window-all-closed", (e) => {
 ipcMain.on('print-bill',(e,arg) =>{
   console.log('print-bill',arg)
   e.sender.send('bill',{not_right:false})
-  // let files = fs.readFileSync(path.join(__dirname,'print.html'),{encoding:'utf8', flag:'r'})
-  //  let itemData=  arg.data.data.map((item) => {
-  //    return (
-  //      `<p>${item.quantity}  ${item.item}   ${item.price * item.quantity}</p>`
-  //    )
-  //  })
-  // //  let itemDataSliced = itemData.replace(',','')
-  //   let doc = `<!DOCTYPE html><head></head><body id="print-body">PRINT THIS!!!!<div><p>Qty&nbsp;&nbsp;Item&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Price</p>${itemData}</div></body></html>`
-    
-  // let newDoc =fs.writeFileSync(path.join(__dirname,'print.html'), doc,{encoding:'utf8'})
-  // console.log('newDoc',newDoc)
-  createChildWindow()
+  console.log(arg)
+  let {printItem,printer} = arg.printItem
+  createChildWindow(printItem)
 
   childWindow.webContents.send('bill-window',arg)
   
@@ -118,17 +109,17 @@ ipcMain.on('print-bill',(e,arg) =>{
   await childWindow.webContents.send('bill-window',arg)
 try{
 
- 		console.log('createChildWindow',printerName)
-		await childWindow.webContents.print({
-			deviceName:printerName,
+ 		console.log('createChildWindow')
+		// await childWindow.webContents.print({
+		// 	deviceName:printer,
+    //   silent:true,
+		// 	color: false,     
+
+		// 	landscape: false,
+		// 	scale:200,
+    //   collate:true,
   
-			color: false,
-      pagesPerSheet:20,
-			landscape: false,
-			scaleFactor: 400,
-      collate:true,
-  
-		})
+		// })
                 
 }catch(error){
   console.log(error)

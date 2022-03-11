@@ -50,7 +50,7 @@ const KitchenOrders = ({ order }) => {
                     item.extras.map((item, idx) => {
                       return (
                         <span style={{ display: 'flex', alignItems: 'center', marginTop: 2 }} className='font-small' key={idx}>
-                          {item.name}:<span style={{ fontWeight: 'bold', color: '#ef6369' }}>{item.price}</span></span>
+                          {item.name}</span>
                       )
                     }) : <></>
                   }

@@ -42,11 +42,12 @@ const OrderCard = () => {
           customerId:customerId,
           title:'order',
           client:'client123',
+          printItem:'kitchen'
     
         }
      console.log('newOrderNumber',newOrderNumber)
       window.orders.createOrder(addOrder).then(data => data._id? dispatch(addNewOrder(data)):[])
-
+        window.api.printBill(addOrder)
     }
   }
   const createNewOrderForExistingOrder = () => {
@@ -58,7 +59,8 @@ const OrderCard = () => {
                appendedOrder: appendedOrder,
                  _id:_id,
            _rev:_rev,
-           orderNumber:newOrderNumber.orderNumber
+           orderNumber:newOrderNumber.orderNumber,
+          
      }
       //  dispatch(addItemsToOngoingOrder({
       //     orderNumber: orderNumber,
@@ -68,10 +70,16 @@ const OrderCard = () => {
       //      status:'ongoing',
       //      dateAndTime: newDate
       //   }))
+      let extraProps ={
+        printItem:'kitchen',
+        table: tableNumber,
+        printer:'XP-58'
+      }
     window.orders.createOrder(addOrder).then(data => {
       if(data){
       console.log(data)
-    dispatch(addItemsToOngoingOrder(data))}})
+    dispatch(addItemsToOngoingOrder(data))
+    window.api.printBill({...addOrder,...extraProps})}})
     } else {
        setError({error:'Add item to order.'})
        return

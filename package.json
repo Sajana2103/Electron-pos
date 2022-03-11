@@ -12,6 +12,7 @@
     "@testing-library/jest-dom": "^5.16.2",
     "@testing-library/react": "^12.1.2",
     "@testing-library/user-event": "^13.5.0",
+    "cross-env": "^7.0.3",
     "dotenv": "^16.0.0",
     "electron-builder": "^22.14.5",
     "electron-is-dev": "^2.0.0",
@@ -31,7 +32,7 @@
     "build": "react-scripts build",
     "test": "react-scripts test",
     "eject": "react-scripts eject",
-    "dev": "concurrently -k \"BROWSER=none npm start\" \"npm:electron\"",
+    "dev": "concurrently -k \"cross-env BROWSER=none npm start\" \"npm:electron\"",
     "electron": "electron-forge start",
     "package": "react-scripts build && electron-forge package",
     "make": "react-scripts build && electron-forge make",
@@ -80,25 +81,8 @@
         {
           "name": "@electron-forge/maker-squirrel",
           "config": {
-            "name": "cra_electron_forge_demo"
-          }
-        },
-        {
-          "name": "@electron-forge/maker-zip",
-          "platforms": [
-            "darwin"
-          ]
-        },
-        {
-          "name": "@electron-forge/maker-deb",
-          "config": {
-            "description": "React + Electron app"
-          }
-        },
-        {
-          "name": "@electron-forge/maker-rpm",
-          "config": {
-            "description": "React + Electron app"
+            "certificateFile": "./cert.pfx",
+            "certificatePassword": "this-is-a-secret"
           }
         }
       ]

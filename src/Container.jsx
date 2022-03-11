@@ -1,26 +1,27 @@
 
 
 import logo from './logo.svg';
-import { useDispatch } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 import NavigationBar from './components/Navigation.component/NavigationBar.component';
 import CategoryIndex from './components/MenuIndex.component/CategoryIndex.component';
 import ItemContent from './components/ItemContent.component/ItemContent.component';
 import Orders from './components/Orders.component/Orders.component';
-import { calculateWindowHeight,calculateWindowWidth } from './redux/windowResize';
+import { calculateWindowHeight,calculateWindowWidth, shrinkColumn } from './redux/windowResize';
 import { addDishTypes } from './redux/menuItemSlice';
 import { loadOngoingOrders,updateOrderNumber } from './redux/orderSlice';
 
 import './App.css';
 import { useEffect, useState } from 'react';
 
-
 const Container = () => {
-
+  console.time()
   const dispatch = useDispatch()
   const [resizeWindowHeight, setResizeWindowHeight] = useState(window.innerHeight)
   const [resizeWindowWidth, setResizeWindowWidth] = useState(window.innerWidth)
+  const shrinkWidth = useSelector(state => state.windowResize.shrink.width)
+  console.log(shrinkWidth)
 
-  useEffect(() =>{
+  useEffect(() =>{                    
 
     window.orders.timeAndOrderReset(new Date().toLocaleString(),'6:00:00 AM').then(number => dispatch(updateOrderNumber(number)))
     window.orders.getOngoingOrders().then(data => dispatch(loadOngoingOrders(data)))
@@ -45,13 +46,14 @@ const Container = () => {
   }, [resizeWindowHeight, resizeWindowWidth])
 //   console.log(resizeWindowWidth - 500)
 // console.log(window.api)
-console.log(resizeWindowHeight)
+console.log(shrinkWidth)
+console.timeEnd()
   return (
     <div className="App">
       <NavigationBar width={resizeWindowWidth} />
       <div className='content' style={{
         display: 'grid',
-        gridTemplateColumns: `200px ${resizeWindowWidth - 500}px 300px`,
+        gridTemplateColumns: `${shrinkWidth}px ${resizeWindowWidth - (shrinkWidth===200?500:500-170)}px 300px`,
       
       }}>
         <CategoryIndex props={{ height: resizeWindowHeight, width: resizeWindowWidth }} />

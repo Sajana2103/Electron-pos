@@ -1,0 +1,81 @@
+<!DOCTYPE html>
+
+<head></head>
+<style>
+  p {
+    margin: 0px;
+  }
+hr{
+  margin: 2px;
+}
+  body {
+    font-weight: 600;
+    font-family: monospace;
+     overflow: visible !important;
+  }
+   .tiny-text{
+    font-size: 9px;
+  
+  }
+  .small-text{
+    font-size: 11px;
+ 
+  }
+  .bold{
+    font-weight: bold;
+  }
+  .med-text{
+    font-size: 14px;
+
+  }
+  .large-text{
+    font-size: 18px;
+  }
+  .heading{
+    text-align: center;
+  }
+  .print{
+    
+    page-break-before: avoid;
+    page-break-after: avoid;
+    page-break-inside: avoid;
+    font-family: monospace;
+     overflow: visible !important;
+  }
+</style>
+
+<body class="print" style="page-break-before: always;" id="print-body">
+  <div class="heading print" >
+
+
+    <p class="large-text bold" id="isDine">DINE IN</p>
+ </div>
+ <p class="med-text" id='start-date-and-time'>Ordered : 12:53 PM</p>
+ <span class="med-text bold" id="order">ORDER : 1/0</span> 
+  <span class="med-text bold" id="table">TABLE : 2</span>
+
+  <span class="small-text"  id="server">Server : user-1</span>
+  <hr/>
+  <br/>
+  <div class="small-text" style="display: grid;grid-template-columns:30px auto;margin-top: 2px;">
+     
+    <p>Qty</p>
+    <p>Modifications</p>
+
+
+  </div>
+  <div>- - - - - - - - - -</div>
+  <div id="print-items" style="display: grid;grid-template-rows: repeat(auto,20px);"></div>
+  <div>- - - - - - - - - -</div>
+ 
+    </div>
+    </div>
+  </div>
+
+  <script src='./kitchenRenderer.js'>
+
+
+  </script>
+</body>
+
+</html>

@@ -2,7 +2,8 @@ import { createSlice } from "@reduxjs/toolkit";
 
 const initialState = {
   height:window.innerHeight,
-  width:window.innerWidth
+  width:window.innerWidth,
+  shrink:{column:'',width:200}
 }
 
 const windowResizeSlice = createSlice({
@@ -17,9 +18,14 @@ const windowResizeSlice = createSlice({
       calculateWindowWidth(state,action){
       let {width} = action.payload
       state.width = width
+      },
+      shrinkColumn(state,action){
+        console.log(action.payload)
+        if(action.payload.column==='categories') {
+          state.shrink={...action.payload}}
       }
   }
 })
 
-export const {calculateWindowHeight,calculateWindowWidth} = windowResizeSlice.actions
+export const {shrinkColumn,calculateWindowHeight,calculateWindowWidth} = windowResizeSlice.actions
 export default windowResizeSlice.reducer

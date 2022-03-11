@@ -135,7 +135,8 @@ let modal = document.getElementById("modal-main")
     clientName:clientName,
     extras:extras,
     serviceCharge:serviceChargeAmount,
-    subTotal:amount
+    subTotal:amount,
+    printer:'XP-58'
     }
     window.orders.completeOrCancelOrder(finalBill)
     .then(data => {
@@ -173,7 +174,9 @@ finalBill = {...order,...paidAmountAndBalance,...discount,
     extras:extras,
      clientName:clientName,
     serviceCharge:serviceChargeAmount,
-    subTotal:amount
+    subTotal:amount,
+    printItem:'bill',
+    printer:'XP-58'
     }
 
     setPrint(true)
