@@ -1,3 +1,177 @@
+import React, { useEffect } from 'react'
+import { useSelector, useDispatch } from 'react-redux'
+import { setModalDisplay } from '../../redux/modalSlice'
+import { assignSettings,addUsers,removeUsers,addUser } from '../../redux/settingsSlice'
+
+const initialSettings = {serviceCharge:0,currentUsers:[],printers:{bill:'',kitchen:''},user:{}}
+const initialDisplayError = {display:'none',error:'',errorInput:'',opacity:0}
+const initialCss = {button:'',css:''}
+
+const SettingsModal = () => {
+
+  const dispatch = useDispatch()
+  let inputs = document.getElementsByTagName('input')
+  let modal = document.getElementById("modal-main")
+  let modalContent = document.getElementById("modal-content")
+  window.onclick = function (e) {
+    // console.log(e.target)
+    if (e.target === modal && e.target !== modalContent) {
+      // console.log(e.target)
+      //     console.log(modal.style.display)
+      dispatch(setModalDisplay())
+    }
+  }
+  const settingsState = useSelector(state => state.settings)
+  const {currentUsers} = useSelector(state => state.settings)
+
+  const regNumbers = /\D/
+  const [settings,setSettings] = React.useState(initialSettings)
+  const [displayError,setDisplayError] = React.useState(initialDisplayError)
+  const [css,setCss] = React.useState(initialCss)
+
+  console.log('settingsState',settingsState)
+  useEffect(() => {
+    if(settingsState.printer || settingsState.serviceCharge){
+      document.querySelector("input[name='serviceCharge']").value = settingsState.serviceCharge?settingsState.serviceCharge:0
+      document.querySelector("input[name='bill']").value = settingsState.printers.bill?settingsState.printers.bill:''
+      document.querySelector("input[name='kitchen']").value = settingsState.printers.kitchen?settingsState.printers.kitchen:''
+
+    }
+
+  },[settingsState])
+  const userCredentials = (e) => {
+    let user = initialSettings.user
+   
+    setSettings(prevState => {
+    console.log(user)
+    user[e.target.name] = e.target.value
+    return {...prevState,user:{...user}}
+    })}
+  const settingPrinters = (e) => {
+    setSettings(prevState => {
+    let {printers} = prevState
+    printers[e.target.name] = e.target.value
+    return {...prevState,printers:{...printers}}
+    })}
+  const setRole = (e) => {
+    setCss({button:e.target.id,css:{backgroundColor:'#313638',color:'#ef6369'}})
+    setSettings(prevState => {
+      let {user} = prevState
+      return {...prevState,user:{...user,role:e.target.id}}
+    })
+  }
+  const addNewUser = () => {
+    let {_id,password,role,userName} = settings.user
+    
+    
+    if(_id && password && role && userName) {
+      window.settings.createUser(settings.user)
+      .then(data => { if(data._id)dispatch(addUser(data))})
+      console.log(inputs[1].value)
+    inputs[1].value = ''
+    inputs[2].value = ''
+    inputs[3].value = ''
+    settings.user = initialSettings.user
+    setCss(initialCss)
+    return
+    }
+    else setDisplayError({error:'All the fields should be filled.',errorInput:'createUser',display:'block'});return    
+
+  }
+  console.log(settings)
+  const submitSettings = () => {
+    window.settings.createSettings({
+      printers:settings.printers,
+      serviceCharge:settings.serviceCharge,
+      ...settingsState._rev,
+      ...settingsState._id
+    })
+    .then(data => {if(data)dispatch(assignSettings(data))})
+    
+  }
+  const getUserDetails = (e) => {
+    let _id = e.target.id
+    let clickedUser = currentUsers.filter((user) => {
+      return user._id === _id
+    })
+    console.log(clickedUser)
+    inputs[1].value = clickedUser[0].userName
+    inputs[2].value = clickedUser[0]._id
+    inputs[3].value = clickedUser[0].password
+  }
+  const removeUser = (e) => {
+    let _id = inputs[2].value
+    console.log(window.settings)
+   if(_id){
+    window.settings.removeDoc(_id)
+    .then(res => {if(res.ok) dispatch(removeUsers(_id))})
+   }   
+}
+  return (
+    <div>
+      <h3 className="sub-header font-size-large bg-black-header" 
+    >SETTINGS</h3>
+      <div>
+        <div  className="input-section-box">
+          <label className="modal-form-label">Service Charge:</label><br/>
+          <input name="serviceCharge" className="modal-form-input"  placeholder='Service charge (%)'
+          onChange={(e) => {
+            let serviceChargeValue  = ( e.target.value)
+            if(regNumbers.exec(serviceChargeValue) || serviceChargeValue>100) setDisplayError({display:'block',errorInput:'serviceCharge',error:'Only numbers are accepted & value is higher than 100%',opacity:1})
+            else setDisplayError({display:'none',error:'',displayInput:'',opacity:0})
+            setSettings(preState => {return {...preState,serviceCharge:parseInt(serviceChargeValue)}})
+          }}/>
+          <span style={{display:displayError.errorInput==='serviceCharge'?displayError.display:'none'}} className='error'>{displayError.error}</span>
+        </div>
+        <div  className="input-section-box">
+          <label  className="modal-form-label">Current Users:</label><br/>
+          <span>
+            {
+              currentUsers? currentUsers.map((user,id) => {
+                return(
+                  <span onClick={getUserDetails} id={user._id} className='users font-small' style={user.role==='admin'?{color:'#ef6369',border:'#ef6369 solid 1px'}:{}} key={id}>{user._id} {user.name}</span>
+                )
+              }) : <span>No users</span>
+            }
+          </span>
+        </div>
+        <div  className="input-section-box ">
+          <label  className="modal-form-label">Create User:</label><br/>
+          <label className='font-small bold'>Full Name:</label><br/>
+          <input required className="modal-form-input" name="userName" placeholder='Full Name' onChange={userCredentials}/><br/>
+         
+          <label className='font-small bold'>User id:</label><br/>
+          <input required className="modal-form-input" name="_id" placeholder='User id: Login credential'onChange={userCredentials} /><br/>
+          
+          <label className='font-small bold'>Password:</label><br/>
+          <input required className="modal-form-input" name="password" placeholder='Password: Login credential' onChange={userCredentials} /><br/>
+          <span  className='font-small bold'>Role:</span><button className='settings-role-btn font-small' id="admin" onClick={setRole}  style={css.button==='admin'?{...css.css}:{}}>Admin</button>
+          <button onClick={setRole} id='cashier'  className='settings-role-btn font-small' style={css.button==='cashier'?{...css.css}:{}}>Cashier</button><br/>
+          <button onClick={addNewUser}>Add User</button>
+          <button onClick={removeUser}>Remove User</button>
+          <span style={{display:displayError.errorInput==='createUser'?displayError.display:'none'}} className='error'>{displayError.error}</span>
+
+        </div>
+        <div  className="input-section-box">
+          <label  className="modal-form-label">Printer</label><br/>
+          <span className='font-small'>Name of the printer as seen on your operating system's devices.</span><br/>
+          <div style={{width:'100px'}}>
+          <label>Bill:<input name="bill" className="modal-form-input" onChange={settingPrinters}/></label><br/>
+
+          <label >Kitchen:<input onChange={settingPrinters} name="kitchen" className="modal-form-input" /></label>
+          </div>
+        </div>
+        <button onClick={submitSettings} className="submit-btn">Submit</button>
+      </div>
+    </div>
+  )
+  
+
+ 
+}
+
+export default SettingsModal
+
   {/* <span>Service %:</span><br/> <input  onChange={(e) => {
             let priceRegex = regNumbers.exec(e.target.value)
             console.log('serviceCharge',e.target.name)
@@ -11,244 +185,3 @@
           }} className="modal-form-input " name='service' placeholder="ex:10" />
           {error.input === 'serviceCharge' ?
             <span className="error">{error.error}</span> : <></>} */}
-            import React, { useEffect,useState } from 'react'
-import { useSelector, useDispatch } from 'react-redux'
-import { openNewOrder, addItemsToExistingOrder } from '../../redux/orderSlice'
-import { removeItemFromState, currentItemModal, resetCurrentItemModal } from '../../redux/menuItemSlice'
-import { setModalDisplay } from '../../redux/modalSlice'
-
-
-
-const MenuItemModal = () => {
-
-  let modal = document.getElementById("modal-main")
-  let modalContent = document.getElementById("modal-content")
-  window.onclick = function (e) {
-    // console.log(e.target)
-    if (e.target === modal && e.target !== modalContent) {
-      // console.log(e.target)
-      //     console.log(modal.style.display)
-      
-      setModifications('')
-      setCount(1)
-      setError({ error: '' })
-      dispatch(resetCurrentItemModal())
-      dispatch(setModalDisplay('none'))
-      if (modificationsText.value) {
-        modificationsText.value = ''
-      } else { return }
-    }
-  }
-
-
-  let modificationsText = document.getElementById('modifications')
-  const dispatch = useDispatch()
-
-  const [deleteWarning, setDeleteWarning] = useState({ warning: '' })
-  const [count, setCount] = useState(1)
-  const [modifications, setModifications] = useState('')
-  const [error, setError] = useState({ error: '' })
-  const [portionSize,setPortionSize] = useState('')
-  const menuItemId = useSelector(state => state.modal._id)
-
-  dispatch(currentItemModal(useSelector(state => state.menuItems.items)
-    .find((item) => item._id === menuItemId)))
-
-  const menuItem = useSelector(state => state.menuItems.itemModal)
-  const ongoingOrders = useSelector(state => state.orders.newOrder)
-  const { canAddNewItems, orderNumber, appendedOrder } = useSelector(state => state.orders.appendOrder)
-  const ongoingCurrentOrders = useSelector(state => state.orders.currentOrders)
-  
-  
-  let currentOrderExists = ongoingCurrentOrders.find((item) => item.orderNumber === orderNumber)
-  let newOrder = {
-    item: menuItem.name,
-    quantity: count,
-    modifications: modifications,
-    price: menuItem.price,
-    appendedOrder: appendedOrder,
-
-  }
-  const [newOrderState,setNewOrderState] = useState({
-    item:menuItem.name,
-    appendedOrder:appendedOrder,
-    price:menuItem.price,
-    portion:'',
-    quantity:1,
-    modifications:'',
-  })
-
-  console.log('menuitemModal',menuItemId,menuItem)
-  console.log('newOrderState ', newOrderState,newOrder)
- 
-  const addItemToOrder = () => {
-    let itemExists = ongoingOrders.find((item) => (item.item === newOrder.item))
-    if (itemExists) {
-      setError({ error: 'Item is already added to the ongoing order. Cancel and add quantity on the Order Card.' })
-      return
-    }
-    dispatch(openNewOrder(newOrderState))
-    dispatch(setModalDisplay())
-    setCount(1)
-    setModifications('')
-    modificationsText.value = ''
-
-  }
-  const addItemsToOngoingOrder = () => {
-
-    console.log(currentOrderExists, canAddNewItems)
-    if (currentOrderExists && canAddNewItems) {
-      dispatch(addItemsToExistingOrder(newOrder))
-      dispatch(setModalDisplay())
-      setCount(1)
-      setModifications('')
-      modificationsText.value = ''
-    }
-  }
-  const onCancel = () => {
-    dispatch(setModalDisplay())
-    setCount(1)
-    setModifications('')
-    modificationsText.value = ''
-  }
-  const removeItemWithId = () => {
-    console.log(menuItemId)
-    window.api.removeItem(menuItemId).then(res => {
-      if (res.ok) {
-        dispatch(removeItemFromState(menuItemId))
-        dispatch(setModalDisplay())
-        setDeleteWarning({ warning: '' })
-        setCount(1)
-        setModifications('')
-        modificationsText.value = ''
-      }
-    })
-
-
-  }
-  return (
-    <div style={{ width: '200px' }}>
-
-      <div style={{ width: '100%', display: 'grid', justifyContent: 'end' }}>
-        <button className='close-btn' title="Cancel" onClick={() => {
-          onCancel()
-          setError({ error: '' })
-        }}>X</button>
-      </div>
-      
-      <div>
-        {
-          menuItem.image ?
-            <img className='menuitem-modal' src={menuItem.image} />
-            :
-            <img className='menuitem-modal' src="maxresdefault.jpg" />
-        }
-      </div>
-
-      <div style={{ paddingTop: '10px', paddingBottom: '10px', width: '200px' }}>
-        <span className='strong font-size-large' >{menuItem.name ? menuItem.name.toUpperCase() : 'Unnamed'} </span>
-        <br />
-        <span style={{ opacity: '0.5' }}> ({menuItem.category}) </span>
-
-      </div>
-
-      <div style={{ paddingTop: '5px', paddingBottom: '5px' }}>
-        <span style={{ opacity: '0.7' }}>{menuItem.ingredients ? menuItem.ingredients : 'No ingredient details.'}</span>
-        <br /><span style={{ opacity: '0.7' }}>{menuItem.dishType}</span>
-      </div>
-      {
-        menuItem.portionSizes && menuItem.portionSizes.length>0 ?
-        menuItem.portionSizes.map((portion) => {
-          if(portion.portionSize === portionSize.portionSize){
-          return(
-            <div onClick={() =>{setPortionSize(portion);}} className='strong font-size-large' style={{display:'grid',gridTemplateColumns:'50% 1rem',color:'#ef6369',cursor:'pointer'}}>
-            <span>{portion.portionSize}</span><span>Rs.{portion.portionPrice}</span>
-          </div>
-          )} 
-
-          return(
-            <div onClick={() =>{setPortionSize(portion);
-            
-            setNewOrderState(prevState => {
-            
-              return {...prevState,portion:portion.portionSize,price:portion.portionPrice}
-            })}} className='strong font-size-large' style={{display:'grid',gridTemplateColumns:'50% 1rem',cursor:'pointer'}}>
-            <span>{portion.portionSize}</span><span>Rs.{portion.portionPrice}</span>
-          </div>
-          )})
-        :
-      <div className='strong font-size-large' style={{ paddingTop: '5px', paddingBottom: '5px', opacity: '0.7' }}>
-        Rs.{menuItem.price}
-      </div>
-      }
-
-      <div className='grid-column' style={{ paddingTop: '5px', paddingBottom: '5px', }}>
-
-        <div>Quantity : </div>
-        <div style={{ marginLeft: '10px', display: 'grid', gridTemplateColumns: 'repeat(3,30px)', alignItems: 'center' }}>
-          <div onClick={() => {
-              setNewOrderState((prevState) => {
-                
-                if(newOrderState.quantity>1) { let {quantity} = prevState;console.log(quantity);
-                return {...prevState,quantity:quantity-1};
-                }
-                return {...prevState}
-              })
-          }} className='quantity black-red-bg'>-</div>
-          <div className='quantity'>{newOrderState.quantity}</div>
-          <div onClick={() => {
-              setNewOrderState((prevState) => { let {quantity} = prevState;
-                return {...prevState,quantity:quantity+1};
-              })
-          }}  className='quantity black-red-bg'>+</div>
-        </div>
-      </div>
-      
-      <div style={{ paddingTop: '10px', paddingBottom: '10px' }}>
-
-        <textarea id="modifications" onChange={(e) =>
-        setNewOrderState(prevState=>{return {...prevState,modifications:e.target.value}})
-        } name="modifications"
-          className="w100 modifications" placeholder="Modifications to the order" type="textarea" />
-      </div>
-      <div style={{ justifyContent: "center", display: 'grid' }}>
-        <button className='do-action strong font-size-med' style={{ border: '3px #313638 solid', width: '100px' }} onClick={() => {
-          if (canAddNewItems) {
-            addItemsToOngoingOrder()
-          } else {
-            addItemToOrder() 
-          }
-        }}>ADD TO ORDER</button>
-
-      </div>
-      {
-        error.error ?
-          <div className='error' style={{ marginTop: '10px' }}>{error.error}</div>
-          : <></>
-      }
-      {
-        deleteWarning.warning ?
-          <div >
-            <span className="error" style={{ marginTop: '10px' }}>{deleteWarning.warning}</span>
-            <div style={{ display: 'grid', columnGap: '3px', justifyContent: 'center', gridTemplateColumns: 'repeat(2,auto)', marginTop: '5px' }}>
-              <button onClick={removeItemWithId} className='cancel-action bg-red'>Yes</button>
-              <button onClick={() => {
-                setDeleteWarning({ warning: '' })
-              }} className='do-action bg-grey'>Cancel</button>
-            </div>
-          </div>
-          : <></>
-      }
-      <div style={{
-        paddingTop: '10px', paddingBottom: '10px', display: 'grid', justifyContent: 'end',
-        gridTemplateColumns: 'repeat(2,auto'
-      }}>
-        <img className='small-icon' src='edit.png' alt='edit' title='edit-item' />
-        <img onClick={() => setDeleteWarning({ warning: 'This action will permanently delete this item. Are you sure?' })} className='small-icon' src='delete.png' alt='delete' title='delete-item' />
-
-      </div>
-    </div>
-  )
-}
-
-export default MenuItemModal

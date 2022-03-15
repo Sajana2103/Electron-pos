@@ -3,7 +3,7 @@ import { setModalDisplay } from '../../redux/modalSlice'
 import { useDispatch } from 'react-redux'
 import { completeCloseBill } from '../../redux/orderSlice'
 
-const initialDiscount = { type: '', amount: 0 }
+const initialDiscount ={ type: '', discountedAmount: 0 }
 const  initialFinalAmount = 0
 const initialPaymentSplit = 0
 const initialErrorState = { error: '', discount: '', split: '', payByCash: '',unpaid:'',print:''}
@@ -127,7 +127,7 @@ let modal = document.getElementById("modal-main")
 
     finalBill = {...order,...paidAmountAndBalance,...discount,
     total:total,
-    discountedTotal:discountedTotal? discountedTotal :0,
+    discountedTotal:discountedTotal? Math.floor(discountedTotal) :0,
     balance : discountedBalance,
     vat:vat,
     status:'completed',
@@ -198,7 +198,7 @@ finalBill = {...order,...paidAmountAndBalance,...discount,
     setCss(initialCss)
     setPrint(initialPrint)
   }
-  // console.log(Boolean(discount.amount),discount.amount)
+  console.log(discount.amount)
 
   return (
     <div className="order-card-billModal ">
@@ -265,13 +265,13 @@ finalBill = {...order,...paidAmountAndBalance,...discount,
 
                     }} />
                   <button title="add amount" onClick={() => { 
-                    if (paidAmountAndBalance.cash !== 0 && (paidAmountAndBalance.paidAmount <= (amount + vat) || paidAmountAndBalance.paidAmount <= (finalAmount + vat))) {
+                    if (paidAmountAndBalance.cash !== 0 && (paidAmountAndBalance.paidAmount <= (amount + vat+extras) || paidAmountAndBalance.paidAmount <= (finalAmount + vat+extras))) {
                       setPaidAmountAndBalance(prevState => {
                         console.log('setPaiD runs')
                         let { payPortions } = prevState
                    
                         let paidAmount = paidAmountAndBalance.cash + paidAmountAndBalance.paidAmount
-                        let balance = paidAmount - (amount + vat)
+                        let balance = paidAmount - (amount + vat +extras)
                         if (paidAmountAndBalance.cash !== 0) {
                           return {
                             ...prevState,

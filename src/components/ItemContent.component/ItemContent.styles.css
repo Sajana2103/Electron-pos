@@ -4,17 +4,23 @@
 }
 .item-card{
   background-color: #363d3f;
-  
+  opacity: 0.8;
   display: grid;
-  grid-template-rows: 100px auto 30px;
+  grid-template-rows: 100px auto auto;
   padding: 10px;
   box-shadow: #282c2e 1px 1px 3px;
   width: 100px;
   height: auto;
+  transition-duration: 0.2s;
+  filter: grayscale(70%);
   
   }
 .item-card:hover{
   background-color: #434c4e;
+  opacity: 1;
+ 
+  filter: grayscale(0);
+
 }
 .item-cards{
   display: grid;
@@ -25,10 +31,12 @@
     padding: 20px;
 }
 .item-img{
+  
   background-color:#d9f1fa ;
   width: 100px;
   height: 100px;
   object-fit: cover;
  border-radius: 10px;
   pointer-events: none;
+
 }

@@ -4,6 +4,7 @@ import { loadModalDisplay, setModalDisplay,loadModalForm } from "../../redux/mod
 import ModalFormMenuItem from "./modalForm.menuItem";
 import MenuItemModal from "./modal.menuItem";
 import BillModal from "./Bill.Modal";
+import SettingsModal from "./Settings.Modal";
 import './ModalMain.styles.css'
 
 const ModalMain = () => {
@@ -35,13 +36,16 @@ switch (form) {
   case 'loadCloseBill':
     modalForm = <BillModal/>
     break;
+  case 'settings':
+    modalForm = <SettingsModal/>
+    break;
   default:
     break;
 }
 console.log(display)
   return(
     <div className="modal-main" id="modal-main" 
-    style={{display:display,width:form==='loadCloseBill'? windowResize.width : windowResize.width-300
+    style={{display:display,width:form==='loadCloseBill' || form==='settings'? windowResize.width : windowResize.width-300
     ,}}>
       <div className="modal-content" id="modal-content" >
       {modalForm}

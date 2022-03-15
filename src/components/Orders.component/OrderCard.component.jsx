@@ -20,7 +20,7 @@ const OrderCard = () => {
   const {canAddNewItems,orderNumber,table,appendedOrder,_id,_rev} = useSelector(state => state.orders.appendOrder)
   const [error,setError] = React.useState({error:''})
 
-  console.log('canAddNewItems',canAddNewItems)
+  console.log('canAddNewItems',newOrderNumber)
   const createNewOrder = () => {
     if(tableNumber === ''){
       setError({error:'Choose a table or takeout.'})
@@ -31,7 +31,7 @@ const OrderCard = () => {
     }else {
       let newDate = new Date().toLocaleString()
       let addOrder ={
-          orderNumber: newOrderNumber.orderNumber,
+          orderNumber: newOrderNumber,
           data: ongoingOrder,
           table: tableNumber,
           appendedOrder: 0,
@@ -59,7 +59,7 @@ const OrderCard = () => {
                appendedOrder: appendedOrder,
                  _id:_id,
            _rev:_rev,
-           orderNumber:newOrderNumber.orderNumber,
+           orderNumber:newOrderNumber,
           
      }
       //  dispatch(addItemsToOngoingOrder({
@@ -73,7 +73,8 @@ const OrderCard = () => {
       let extraProps ={
         printItem:'kitchen',
         table: tableNumber,
-        printer:'XP-58'
+        printer:'XP-80',
+        server:server
       }
     window.orders.createOrder(addOrder).then(data => {
       if(data){
@@ -109,7 +110,7 @@ const OrderCard = () => {
           {
             canAddNewItems?
             <span>{orderNumber}/{appendedOrder}</span>
-            : <span>{newOrderNumber.orderNumber}/{appendedOrder ? appendedOrder : 0}</span>
+            : <span>{newOrderNumber}/{appendedOrder ? appendedOrder : 0}</span>
           } 
           </span>
         <div>

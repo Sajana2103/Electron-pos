@@ -2,7 +2,7 @@
   display: grid;
   height: 40px;
   background-color: #ef6369;
-  
+
 }
 .nav-btn{
   padding: 5px;
@@ -25,4 +25,15 @@
 }
 .nav-btns{
   display: flex;
+}
+.settings-icon{
+  width: 20px;
+  height: 20px;
+  justify-self: center;
+  align-self: center;
+  opacity: 0.7;
+  
+}
+.settings-icon:hover{
+  opacity: 1;
 }

@@ -1,5 +1,6 @@
 const MenuItemsDAO = require('../model/MenuItemsDAO')
 const OrdersDAO = require('../model/OrdersDAO')
+const SettingsDAO = require('../model/SettingsDAO')
 const { ipcRenderer } = require('electron')
 
 
@@ -60,5 +61,14 @@ contextBridge.exposeInMainWorld(
         getLastOrder:OrdersDAO.getLastOrder,
         removeOrder:OrdersDAO.removeOrder,
         completeOrCancelOrder:OrdersDAO.completeOrCancelOrder
+    }
+)
+contextBridge.exposeInMainWorld(
+    "settings",{
+        createUser:SettingsDAO.createUser,
+        createSettings:SettingsDAO.createSettings,
+        getSettings:SettingsDAO.getSettings,
+        getUsers:SettingsDAO.getUsers,
+        removeDoc:SettingsDAO.removeDoc
     }
 )

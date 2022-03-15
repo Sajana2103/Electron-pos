@@ -9,9 +9,12 @@ hr{
   margin: 2px;
 }
   body {
-    font-weight: 600;
+    margin:0px;
+    font-weight: 500;
     font-family: monospace;
      overflow: visible !important;
+     max-width: 200px;
+
   }
    .tiny-text{
     font-size: 9px;
@@ -46,11 +49,14 @@ hr{
 
 <body class="print" style="page-break-before: always;" id="print-body">
   <div class="heading print" >
-  <img style="width: 50px;justify-content: center;display: grid;" src="lotus.png" alt="logo" />
+    <div style="justify-content: center;display: grid;align-items: center;">
+
+      <img style="width: 50px;"  src="lotus.png" alt="logo" />
+    </div>
   <p class="large-text bold" id='client-name'><p>
   <p class="small-text" id='address'>No.33/Dodamgahahena,Gothatuwa New Town</p>
   <div style="display: flex;">
-  <p class="small-text"  id='phone'>Tel:0770359321</p> <p class="small-text" id='open'>Open 10AM-12PM</p>
+  <p class="small-text"  id='phone'>Tel:0770359321</p><br /> <p class="small-text" id='open'>Open 10AM-12PM</p>
  </div>
  </div>
   <span class="small-text bold" id="order">ORDER:TAKEOUT</span>
@@ -69,7 +75,7 @@ hr{
   <div id="print-items" style="display: grid;grid-template-rows: repeat(auto,20px);"></div>
   <div>- - - - - - - - - -</div>
   
-  <div style="margin-top: 2px;">
+  <div  style="margin-top: 2px;max-width: 180px;">
   <div style="text-align: right;">
     <p class="tiny-text" id="sub-total"></p>
     <p class="tiny-text" id="discount"></p>

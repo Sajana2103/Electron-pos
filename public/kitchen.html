@@ -10,7 +10,7 @@ hr{
 }
   body {
     font-weight: 600;
-    font-family: monospace;
+    font-family: 'Segoe UI';
      overflow: visible !important;
   }
    .tiny-text{
@@ -28,18 +28,22 @@ hr{
     font-size: 14px;
 
   }
+  .big-text{
+    font-size: 16px;
+  }
   .large-text{
     font-size: 18px;
   }
   .heading{
     text-align: center;
   }
+
   .print{
     
     page-break-before: avoid;
     page-break-after: avoid;
     page-break-inside: avoid;
-    font-family: monospace;
+    font-family: monospace,consolas;
      overflow: visible !important;
   }
 </style>
@@ -50,24 +54,17 @@ hr{
 
     <p class="large-text bold" id="isDine">DINE IN</p>
  </div>
- <p class="med-text" id='start-date-and-time'>Ordered : 12:53 PM</p>
- <span class="med-text bold" id="order">ORDER : 1/0</span> 
-  <span class="med-text bold" id="table">TABLE : 2</span>
+ <p class="big-text bold" id='order-time'>12:53 PM</p>
+ <span class="big-text bold" id="order">ORDER : 1/0</span> 
+  <span class="med-text bold" id="table"></span>
 
-  <span class="small-text"  id="server">Server : user-1</span>
+  <span class="med-text"  id="server">Server : user-1</span>
   <hr/>
   <br/>
-  <div class="small-text" style="display: grid;grid-template-columns:30px auto;margin-top: 2px;">
-     
-    <p>Qty</p>
-    <p>Modifications</p>
 
-
-  </div>
-  <div>- - - - - - - - - -</div>
+  
   <div id="print-items" style="display: grid;grid-template-rows: repeat(auto,20px);"></div>
-  <div>- - - - - - - - - -</div>
- 
+  
     </div>
     </div>
   </div>

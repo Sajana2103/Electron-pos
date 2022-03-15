@@ -1,12 +1,17 @@
 .sub-header{
   color:#d9f1fa ;
-  font-size: 16px;
+  font-size: 14px;
   pointer-events: none;
 }
 .sub-header-btn{
   color:#d9f1fa ;
 }
+.light-font{
+  font-weight: 300;
+  
+}
 .price-tags{
+  font-size: 1.7ch;
   color: #ef6369;
   pointer-events: none;
 }
@@ -184,4 +189,32 @@
 }
 .noPointerEvents{
   pointer-events: none;
+}
+.settings-role-btn{
+  margin-right: 0.5ch;
+  background-color: #6f6f6f;
+  color: #f1f1f1;
+  border:none;
+  padding: 0.5ch;
+  border-radius: 5px;
+}
+.settings-role-btn:hover{
+  transition-duration: 0.3s;
+  background-color: #313638;
+  cursor: pointer;
+}
+.users{
+  border: #6f6f6f 1px solid;
+  border-radius: 5px;
+  padding: 2px;
+  margin:2px;
+  color: #6f6f6f;
+}
+.users:hover{
+  border: #313638 1px solid;
+  border-radius: 5px;
+  padding: 2px;
+  margin:2px;
+  color: #313638;
+  cursor: pointer;
 }

@@ -27,7 +27,7 @@ console.log(shrinkWidth)
        categories.map((category,idx) => {
         //  console.log('category index',category)
          return(
-     <div style={{display:shrinkWidth===200?'grid':'none'}} key={category._id} className="index-item">{category.category ? category.category : '(unnamed)'}</div>
+     <div style={{display:shrinkWidth===200?'grid':'none',transitionDelay:'0.3s'}} key={category._id} className="index-item">{category.category ? category.category : '(unnamed)'}</div>
 
          )
        })
@@ -41,7 +41,7 @@ console.log(shrinkWidth)
       dispatch(changeModalForm('createMenuItem'))
       }}
     >{shrinkWidth===200?
-      <p style={{margin:0,display:shrinkWidth===200?'':'none',}}>Create Menu item +</p>
+      <p style={{margin:0,display:shrinkWidth===200?'':'none',transitionDelay:'0.6s'}}>Create Menu item +</p>
    : '+' }</div>
     </div>
  )

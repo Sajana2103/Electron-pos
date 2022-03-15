@@ -46,8 +46,6 @@ async function createWindow() {
   );
     if (isDev) {
     win.webContents.openDevTools({ mode: "detach" });
-
-
   }
 }
 
@@ -95,31 +93,42 @@ app.on("window-all-closed", (e) => {
 });
 
 
+
 ipcMain.on('print-bill',(e,arg) =>{
   console.log('print-bill',arg)
   e.sender.send('bill',{not_right:false})
   console.log(arg)
-  let {printItem,printer} = arg.printItem
+  let {printItem,printer} = arg
   createChildWindow(printItem)
 
   childWindow.webContents.send('bill-window',arg)
   
 	childWindow.webContents.once('did-finish-load', async() => {
+    const devTools = require("electron-devtools-installer");
+  installExtension = devTools.default;
+  REACT_DEVELOPER_TOOLS = devTools.REACT_DEVELOPER_TOOLS;
+  if (isDev) {
+    win.webContents.openDevTools({ mode: "detach" });
+
+
+  }
 		// console.log('webContents',win2.webContents)
   await childWindow.webContents.send('bill-window',arg)
 try{
 
  		console.log('createChildWindow')
-		// await childWindow.webContents.print({
-		// 	deviceName:printer,
-    //   silent:true,
-		// 	color: false,     
+		await childWindow.webContents.print({
+			deviceName:printer,
+      silent:true,
+			color: false,     
 
-		// 	landscape: false,
-		// 	scale:200,
-    //   collate:true,
-  
-		// })
+			landscape: false,
+			
+      collate:true,
+      margins:{
+        marginType:'none'
+      }
+		})
                 
 }catch(error){
   console.log(error)

@@ -41,7 +41,7 @@ const createOrderSlice = createSlice({
       state.currentOrders.push(action.payload)
       state.kitchenOrders.push(action.payload)
       state.newOrder = []
-      state.orderNumber.orderNumber++
+      state.orderNumber++
     },
     clearNewOrder(state,action){
       state.newOrder= []
