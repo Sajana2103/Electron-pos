@@ -13,10 +13,10 @@ const isDev = require("electron-is-dev");
 
 let installExtension, REACT_DEVELOPER_TOOLS; 
 
-if(!isDev){
+
   const server = 'https://electron-pos-3dupl8c9x-sajana2103.vercel.app/' 
 const url = `${server}/update/${process.platform}/${app.getVersion()}`  
-autoUpdater.setFeedURL({ url:url })
+autoUpdater.setFeedURL({ url:url})
 
 setInterval(() => {
   autoUpdater.checkForUpdates()
@@ -39,7 +39,7 @@ autoUpdater.on('error', message => {
   console.error('There was a problem updating the application')
   console.error(message)
 })
-}
+
 
 if (isDev) {
   const devTools = require("electron-devtools-installer");

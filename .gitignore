@@ -9,6 +9,7 @@
 /database
 /Settings
 /pos-orders
+/server
 
 # testing
 /coverage
