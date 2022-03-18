@@ -23,7 +23,7 @@ const addImage =  (data) => {
 //         getImage(path)
 //     })
 }
-console.log('path',path)
+
 const getImage = async ( path) => {
 
     return path
@@ -69,6 +69,9 @@ contextBridge.exposeInMainWorld(
         createSettings:SettingsDAO.createSettings,
         getSettings:SettingsDAO.getSettings,
         getUsers:SettingsDAO.getUsers,
-        removeDoc:SettingsDAO.removeDoc
+        removeDoc:SettingsDAO.removeDoc,
+        login:SettingsDAO.login,
+        getCurrentUser:SettingsDAO.getCurrentUser,
+        logout:SettingsDAO.logout
     }
 )

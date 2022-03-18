@@ -45,7 +45,7 @@ static async getMenuItems(){
       
       attachments: true
     })
-    console.log('find menu Items',docs)
+    // console.log('find menu Items',docs)
   return docs
   
   } catch(error){

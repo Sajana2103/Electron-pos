@@ -29,9 +29,10 @@ const SettingsModal = () => {
   const [displayError,setDisplayError] = React.useState(initialDisplayError)
   const [css,setCss] = React.useState(initialCss)
 
-  console.log('settingsState',settingsState)
+  // console.log('settingsState',settingsState)
   useEffect(() => {
-    if(settingsState.printer || settingsState.serviceCharge){
+    // console.log(inputs)
+    if(settingsState.printers || settingsState.serviceCharge){
       document.querySelector("input[name='serviceCharge']").value = settingsState.serviceCharge?settingsState.serviceCharge:0
       document.querySelector("input[name='bill']").value = settingsState.printers.bill?settingsState.printers.bill:''
       document.querySelector("input[name='kitchen']").value = settingsState.printers.kitchen?settingsState.printers.kitchen:''
@@ -72,19 +73,19 @@ const SettingsModal = () => {
     inputs[2].value = ''
     inputs[3].value = ''
     settings.user = initialSettings.user
-    setCss(initialCss)
+    // setCss(initialCss)
     return
     }
     else setDisplayError({error:'All the fields should be filled.',errorInput:'createUser',display:'block'});return    
 
   }
-  console.log(settings)
+  // console.log(settings)
   const submitSettings = () => {
     window.settings.createSettings({
       printers:settings.printers,
       serviceCharge:settings.serviceCharge,
-      ...settingsState._rev,
-      ...settingsState._id
+      _rev:settingsState._rev,
+      _id:settingsState._id
     })
     .then(data => {if(data)dispatch(assignSettings(data))})
     
@@ -94,14 +95,14 @@ const SettingsModal = () => {
     let clickedUser = currentUsers.filter((user) => {
       return user._id === _id
     })
-    console.log(clickedUser)
+    // console.log(clickedUser)
     inputs[1].value = clickedUser[0].userName
     inputs[2].value = clickedUser[0]._id
     inputs[3].value = clickedUser[0].password
   }
   const removeUser = (e) => {
     let _id = inputs[2].value
-    console.log(window.settings)
+  
    if(_id){
     window.settings.removeDoc(_id)
     .then(res => {if(res.ok) dispatch(removeUsers(_id))})
@@ -147,8 +148,8 @@ const SettingsModal = () => {
           <input required className="modal-form-input" name="password" placeholder='Password: Login credential' onChange={userCredentials} /><br/>
           <span  className='font-small bold'>Role:</span><button className='settings-role-btn font-small' id="admin" onClick={setRole}  style={css.button==='admin'?{...css.css}:{}}>Admin</button>
           <button onClick={setRole} id='cashier'  className='settings-role-btn font-small' style={css.button==='cashier'?{...css.css}:{}}>Cashier</button><br/>
-          <button onClick={addNewUser}>Add User</button>
-          <button onClick={removeUser}>Remove User</button>
+          <button onClick={addNewUser} className="do-action do-action-bg">Add User</button>
+          <button onClick={removeUser}  className="cancel-action cancel-action-bg">Remove User</button>
           <span style={{display:displayError.errorInput==='createUser'?displayError.display:'none'}} className='error'>{displayError.error}</span>
 
         </div>

@@ -9,9 +9,10 @@ import ItemContent from './components/ItemContent.component/ItemContent.componen
 import Orders from './components/Orders.component/Orders.component';
 import { calculateWindowHeight,calculateWindowWidth,  } from './redux/windowResize';
 import { loadOngoingOrders,updateOrderNumber } from './redux/orderSlice';
+import {changeModalForm,setModalDisplay} from './redux/modalSlice'
 
 import './App.css';
-import { addUsers, assignSettings } from './redux/settingsSlice';
+import { addUsers, assignSettings,setCurrentUser, unsetCurrentUser } from './redux/settingsSlice';
 
 const Container = () => {
 
@@ -19,29 +20,20 @@ const Container = () => {
   const [resizeWindowHeight, setResizeWindowHeight] = useState(window.innerHeight)
   const [resizeWindowWidth, setResizeWindowWidth] = useState(window.innerWidth)
   const shrinkWidth = useSelector(state => state.windowResize.shrink.width)
-  // console.log(shrinkWidth)
-  const resetTimeOrder = () => {
-    let checkDate = new Date()
-    // let splitDate = checkDate.split(',').shift()
-    checkDate.setHours(6)
-    checkDate.setMinutes(0)
-    checkDate.setSeconds(0)
-   
-    let getDate = checkDate.getDate()
-    let adddate = new Date(checkDate).setDate(getDate+1)
-    let endDate = new Date(adddate)
-    let stringToDate = new Date(endDate)
-    console.log('resetTime',checkDate,getDate,endDate,stringToDate.toLocaleString())
-    window.orders.timeAndOrderReset(checkDate,endDate).then(data => {
-      if(data.ok){
-        dispatch(updateOrderNumber(data.orderNumber))
-      } else {
-        console.log(data)
-      }
-    })
-  }
-  useEffect(() =>{                    
+  const onlineUserState = useSelector(state => state.settings.userOnline)
+  const {currentUser} = useSelector(state => state.settings )
+  // console.log(currentUser)
 
+  useEffect(() =>{                    
+    if(!currentUser){
+      // console.log('no user',currentUser)
+      dispatch(setModalDisplay())
+      dispatch(unsetCurrentUser())
+      dispatch(changeModalForm('login'))
+    } else {
+      dispatch(setModalDisplay())
+    }
+ 
     let checkDate = new Date()
     // let splitDate = checkDate.split(',').shift()
     checkDate.setHours(6)
@@ -51,23 +43,26 @@ const Container = () => {
     let getDate = checkDate.getDate()
     let adddate = new Date(checkDate).setDate(getDate+1)
     let endDate = new Date(adddate)
-    let stringToDate = new Date(endDate)
-    console.log('resetTime',checkDate,getDate,endDate,stringToDate.toLocaleString())
+ 
+    // console.log('resetTime',checkDate,getDate,endDate,stringToDate.toLocaleString())
     window.orders.timeAndOrderReset(checkDate,endDate).then(data => {
       if(data.orderNumber){
-        console.log(data)
+        // console.log(data)
         dispatch(updateOrderNumber(data.orderNumber))
       } else {
-        console.log(data)
+        // console.log(data)
       }
     })
     .catch(error => console.log('get time reset error',error))
+    if(currentUser){
 
+      window.orders.getOngoingOrders().then(orders =>{if(orders) dispatch(loadOngoingOrders(orders))})
+      window.settings.getSettings().then(settings => {dispatch(assignSettings(settings))})
+      window.settings.getUsers().then(users => {dispatch(addUsers(users))})
+    }
     // window.orders.timeAndOrderReset(new Date().toLocaleString(),'6:00:00 AM').then(number => dispatch(updateOrderNumber(number)))
-    window.orders.getOngoingOrders().then(data =>{ console.log(data);if(data) dispatch(loadOngoingOrders(data))})
-    window.settings.getSettings().then(data => {console.log(data);dispatch(assignSettings(data))})
-    window.settings.getUsers().then(data => {console.log(data);dispatch(addUsers(data))})
-  },[])
+
+  },[onlineUserState,currentUser])
 
   useEffect(() => {
     window.addEventListener('resize', handleWindowResize)

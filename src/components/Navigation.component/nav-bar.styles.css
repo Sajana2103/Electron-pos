@@ -32,8 +32,27 @@
   justify-self: center;
   align-self: center;
   opacity: 0.7;
-  
 }
 .settings-icon:hover{
   opacity: 1;
+}
+.login-btn{
+  text-align: center;
+  align-self: center;
+  border:none;
+  background-color: transparent;
+  color: #f1f1f1;
+  border: 1px #ef6369 solid;
+  border-radius: 1ch;
+  transition-duration: 0.2s;
+  box-shadow: #f1f1f1 1px 1px 2px;
+  height: 20px;
+}
+.login-btn:hover{
+  transition-duration: 0.2s;
+  cursor: pointer;
+  background-color: #f15058;
+  box-shadow: #f1f1f1 2px 2px 4px;
+ 
+ 
 }

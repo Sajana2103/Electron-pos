@@ -13,7 +13,7 @@ const shrinkWidth = useSelector(state => state.windowResize.shrink.width)
 let {height,width} = props
 // console.log(props)
 
-console.log(shrinkWidth)
+
  return(
    <div style={{width:shrinkWidth,transitionDuration:'0.2s'}} >
    <div className="index-category" style={{height:`${height-90}px`,}} >

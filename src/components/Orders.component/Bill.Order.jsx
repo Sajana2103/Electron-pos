@@ -1,6 +1,6 @@
 import React from 'react'
 import { setModalDisplay } from '../../redux/modalSlice'
-import { useDispatch } from 'react-redux'
+import { useDispatch, useSelector } from 'react-redux'
 import { completeCloseBill } from '../../redux/orderSlice'
 
 const initialDiscount ={ type: '', discountedAmount: 0 }
@@ -39,6 +39,7 @@ let modal = document.getElementById("modal-main")
   const [css,setCss] = React.useState(initialCss)
   const [print,setPrint] = React.useState(initialPrint)
 
+  const settingsState = useSelector(state => state.settings)
   const regNumbers = /\D/
   
   console.log(paidAmountAndBalance.payPortions)
@@ -50,7 +51,7 @@ let modal = document.getElementById("modal-main")
   let subTotal = 0
   let vat = 0
    let extras = 0
-   let serviceCharge = 10
+   let serviceCharge = settingsState.serviceCharge
   order.data.map((item) => {
      if(item.vat){
     // console.log('vat',item.vat,currentVat,item.price)
@@ -136,7 +137,7 @@ let modal = document.getElementById("modal-main")
     extras:extras,
     serviceCharge:serviceChargeAmount,
     subTotal:amount,
-    printer:'XP-58'
+    printer:settingsState.printers.bill
     }
     window.orders.completeOrCancelOrder(finalBill)
     .then(data => {
@@ -176,7 +177,7 @@ finalBill = {...order,...paidAmountAndBalance,...discount,
     serviceCharge:serviceChargeAmount,
     subTotal:amount,
     printItem:'bill',
-    printer:'XP-58'
+    printer:settingsState.printers.bill
     }
 
     setPrint(true)
@@ -206,7 +207,8 @@ finalBill = {...order,...paidAmountAndBalance,...discount,
       <div style={{borderRight:'1px solid #d3d3d3'}}>
 
         <div>
-          <div className='font-small'>Payment Split : <input className='inputs' inputTag="billCloseModal" placeholder='Ex:4' onChange={onChangePaymentSplit} style={{ width: '30px' }} />
+          <h3 className='font-large bold'>PAYMENT:</h3>
+          <div style={{marginTop:10}} className='font-small'>Payment Split : <input className='inputs' inputTag="billCloseModal" placeholder='Ex:4' onChange={onChangePaymentSplit} style={{ width: '30px' }} />
             <button className='do-action' onClick={paymentSplitByCustomers}>Split</button>
           </div>
           {
@@ -221,27 +223,18 @@ finalBill = {...order,...paidAmountAndBalance,...discount,
               <div className='error'>{error.split}</div> : <></>
           }
           {/* <button onClick={() => {setPaymentSplitByItems({split:true})}}>Payment Split By Item</button> */}
-          {/* {
-         paymentSplitByItems.split?
-         <div>
-           <button onClick={() => {setPaymentSplitByItems(prevState => 
-           {return {...prevState,split:false}})}}>Cancel</button>
-         </div>
-         :
-         <></>
-       } */}
-          <div style={{ display: 'grid', gridTemplateColumns: 'repeat(2,3rem)', marginTop: '1ch' }}>
+          <div style={{ display: 'grid', gridTemplateColumns: 'repeat(2,3rem)', marginTop: '1ch',columnGap:5 }}>
 
-            <div onClick={() => { sePaymentMethod({ method: 'card' }); setCss(prev => { return { ...prev, button: 'card' } }) }} style={css.button === 'card' ? { ...css.css } : { cursor: 'pointer' }} className='bold'>CARD</div>
+            <div onClick={() => { sePaymentMethod({ method: 'card' }); setCss(prev => { return { ...prev, button: 'card' } }) }} style={css.button === 'card' ? { ...css.css } : { cursor: 'pointer', }} className='bold'>CARD </div>
             <div onClick={() => { sePaymentMethod({ method: 'cash' }); setCss(prev => { return { ...prev, button: 'cash' } }) }} style={css.button === 'cash' ? { ...css.css } : { cursor: 'pointer' }} className='bold' >CASH</div>
           </div>
 
         {
           
             paymentMethod.method === 'cash' || paymentMethod.method === 'card' ?
-              <div style={{  display: 'grid', gridTemplateRows: '1rem 1rem 1.5rem',marginTop:'0.5rem', }}>
+              <div style={{  display: 'grid', gridTemplateRows: '1rem 1rem 1.5rem',marginTop:'0.5rem', }} className="font-small">
               
-                <div style={{ display: 'grid', gridTemplateColumns: '100px 70px 20px 20px',columnGap:'10px' }}><label>Paid Amount </label>
+                <div style={{ display: 'grid', gridTemplateColumns: '100px 70px 20px 20px', }}><label>Paid Amount </label>
 
                   <input placeholder='paid amount' className='inputs'inputTag="billCloseModal" 
                     onChange={(e) => {

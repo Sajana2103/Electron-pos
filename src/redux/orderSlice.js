@@ -20,7 +20,7 @@ const createOrderSlice = createSlice({
  initialState,
  reducers : {
     loadOngoingOrders(state,action){
-      console.log('loadONgoing orders',action.payload)
+      // console.log('loadONgoing orders',action.payload)
       if(!state.currentOrders.length && !state.kitchenOrders.length){
 
       action.payload.map((order) => {

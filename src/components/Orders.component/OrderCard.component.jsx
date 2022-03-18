@@ -4,23 +4,24 @@ import { addNewOrder ,appendOrder,addItemsToOngoingOrder,addItemsToKitchOrders} 
 import ItemCard from "./OrderedItem";
 import BillCardOngoingOrder from "./BillCard.OngoingOrders";
 
+const initialServerCustomer = {server:'',customer:''}
 
 const OrderCard = () => {
      const server = 'server-1'
-  const user = 'user-1'
+  const user = useSelector(state=> state.settings.currentUser.userName)
   const customerId ='customerId-1'
   const dispatch = useDispatch()
   const [disabled, setDisabled] = React.useState(false)
   const [tableNumber, setTableNumber] = React.useState('')
   const [finalAmount,setFinalAmount] = React.useState(0)
 
-  const currentOrders = useSelector(state => state.orders.currentOrders)
+  const settingsState = useSelector(state => state.settings)
   const newOrderNumber = useSelector(state => state.orders.orderNumber)
   const ongoingOrder = useSelector(state => state.orders.newOrder)
   const {canAddNewItems,orderNumber,table,appendedOrder,_id,_rev} = useSelector(state => state.orders.appendOrder)
   const [error,setError] = React.useState({error:''})
+  const [serverAndCustomer,setServerAndCustomer] = React.useState(initialServerCustomer)
 
-  console.log('canAddNewItems',newOrderNumber)
   const createNewOrder = () => {
     if(tableNumber === ''){
       setError({error:'Choose a table or takeout.'})
@@ -37,15 +38,15 @@ const OrderCard = () => {
           appendedOrder: 0,
           status:'ongoing',
           dateAndTime: [newDate],
-          server:server,
+          server:serverAndCustomer.server,
           user:user,
-          customerId:customerId,
+          customerId:serverAndCustomer.customer,
           title:'order',
           client:'client123',
-          printItem:'kitchen'
-    
+          printItem:'kitchen',
+          printer:settingsState.printers.kitchen,
+
         }
-     console.log('newOrderNumber',newOrderNumber)
       window.orders.createOrder(addOrder).then(data => data._id? dispatch(addNewOrder(data)):[])
         window.api.printBill(addOrder)
     }
@@ -73,12 +74,12 @@ const OrderCard = () => {
       let extraProps ={
         printItem:'kitchen',
         table: tableNumber,
-        printer:'XP-80',
-        server:server
+        printer:settingsState.printers.kitchen,
+        server:serverAndCustomer.server
       }
     window.orders.createOrder(addOrder).then(data => {
       if(data){
-      console.log(data)
+      // console.log(data)
     dispatch(addItemsToOngoingOrder(data))
     window.api.printBill({...addOrder,...extraProps})}})
     } else {
@@ -87,7 +88,7 @@ const OrderCard = () => {
     }
     
   }
-  console.log('canAddNewItems,orderNumber,table',canAddNewItems,orderNumber,table,appendedOrder)
+  // console.log('canAddNewItems,orderNumber,table',canAddNewItems,orderNumber,table,appendedOrder)
 
   let amount = 0 
   let newOrder = {data:[]}
@@ -97,7 +98,7 @@ const OrderCard = () => {
     amount += parseInt(item.price)*item.quantity
    })
 
-  console.log(finalAmount,amount)
+  // console.log(finalAmount,amount)
 
 
   
@@ -129,17 +130,29 @@ const OrderCard = () => {
            :
            <div>
          
-        <span className="do-action" onClick={() => {
+        <span className="do-action do-action-bg font-small" onClick={() => {
           setTableNumber('takeout')
           setDisabled(true)
           setError({error:''})
         }} style={{
-          border: `1px solid ${disabled ? '#ef6369' : '#313638'}`, fontSize: '15px'
-          , borderRadius: '5px', color: `${disabled ? '#ef6369' : '#313638'}`, padding: '2px', alignItems: 'center', transitionDuration: '0.2s'
+          border: `2px solid ${disabled ? '#ef6369' : '#313638'}`, fontSize: '15px',letterSpacing:0, padding:'5px',
+          borderRadius: '5px', color: `${disabled ? '#ef6369' : '#313638'}`, padding: '2px', alignItems: 'center', transitionDuration: '0.2s'
         }}>Takeout</span>
         </div>
          }
-
+         <div style={{marginTop:7}} className="font-small grid2col">
+        <div  className="grid2col">
+        <label>Server:</label>
+        <input onChange={(e) => {
+          setServerAndCustomer(ps=> {return {...ps,server:e.target.value}})}} className="inputs " style={{width:'70px'}} name="server"/>
+        </div>
+        <div className="grid2col" >
+        <label>Customer:</label>
+        <input onChange={(e) => {
+          setServerAndCustomer(ps=> {return {...ps,customer:e.target.value}})
+        }} className="inputs "  name="customer_id" style={{width:'70px'}}/>
+        </div>
+         </div>
       </div>
 
       {

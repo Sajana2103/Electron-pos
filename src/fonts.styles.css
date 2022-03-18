@@ -218,3 +218,32 @@
   color: #313638;
   cursor: pointer;
 }
+.do-action-bg{
+  margin-top:5px;
+  width: 100px;
+  background-color: #f1f1f1;
+  border: #313638 2px solid;
+  opacity: 0.5;
+  border-radius: 5px;
+}
+.cancel-action-bg{
+  margin-top:5px;
+  width: 100px;
+  background-color: #f1f1f1;
+  border: #ef6369 2px solid;
+  opacity: 0.5;
+  border-radius: 5px;
+}
+.grid2col{
+  display: grid;
+  grid-template-columns: repeat(2,auto);
+  align-items: center;
+}
+.width100{
+  width: 100px;
+}
+.grid2row{
+  display: grid;
+  grid-template-rows: repeat(2,auto);
+  align-items: center;
+}

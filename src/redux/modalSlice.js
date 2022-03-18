@@ -9,30 +9,30 @@ const modalSlice = createSlice({
         setModalDisplay(state,action) {
 
             let modal = document.getElementById("modal-main")
-            console.log(action.payload)
+        
             if(action.payload) {
                 modal.style.display = action.payload
                 return
                 }
-            console.log('modalCreateThread', modal.style.display)
+            // console.log('modalCreateThread', modal.style.display)
            
             if(modal.style.display === 'grid')   {
-                console.log('turning off modal')
+                // console.log('turning off modal')
                 modal.style.display = 'none'
 
             } else {
-                   console.log('turning off modal')
+                //    console.log('turning off modal')
                  modal.style.display = 'grid'
             }
                
         },
        
         changeModalForm(state, action) {
-            console.log('changeModalForm', action.payload)
+            // console.log('changeModalForm', action.payload)
            state.form = action.payload
         },
         setMenuItemId(state,action){
-            console.log('MenuItem _id',action.payload)
+            // console.log('MenuItem _id',action.payload)
             state._id = action.payload
         }
     }

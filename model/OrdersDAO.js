@@ -148,15 +148,15 @@ class OrdersDAO {
   static async timeAndOrderReset(start, end) {
     let isToday
     let timeNow = new Date()
-    console.log(timeNow, end, end >= timeNow)
+    // console.log(timeNow, end, end >= timeNow)
 
     try {
-      console.log('try timeAndOrderReset')
+      // console.log('try timeAndOrderReset')
       isToday = await db.get("timeAndOrderReset")
-      let endTime = new Date(isToday.endtime)
-      console.log(isToday.endtime < timeNow,isToday,endTime<timeNow)
+      let endTime = new Date(isToday.endTime)
+      // console.log(isToday.endTime,endTime,timeNow,endTime<timeNow)
       if (!isToday) {
-        console.log('no time doc found. creating new doc')
+        // console.log('no time doc found. creating new doc')
         let createDate = {
           
             _id: 'timeAndOrderReset',
@@ -166,11 +166,11 @@ class OrdersDAO {
           
         }
         let res = await db.put(createDate)
-        console.log('created a new time doc', createDate)
+        // console.log('created a new time doc', createDate)
         if (res.ok) return { ...createDate }
       }
       if (endTime <= timeNow) {
-        console.log('time doc found. creating new doc', isToday.endTime, timeNow)
+        // console.log('time doc found. creating new doc', endTime, timeNow)
         let newDate = await db.put({
           _id: isToday._id,
           _rev: isToday._rev,

@@ -5,6 +5,7 @@ import ModalFormMenuItem from "./modalForm.menuItem";
 import MenuItemModal from "./modal.menuItem";
 import BillModal from "./Bill.Modal";
 import SettingsModal from "./Settings.Modal";
+import Login from './Login.Modal'
 import './ModalMain.styles.css'
 
 const ModalMain = () => {
@@ -20,7 +21,7 @@ const dispatch = useDispatch()
     }
   }
 const windowResize = useSelector(state => state.windowResize)
-console.log('windowResize',windowResize)
+// console.log('windowResize',windowResize)
 const display = useSelector(loadModalDisplay)
 const form = useSelector(loadModalForm)
 
@@ -39,13 +40,16 @@ switch (form) {
   case 'settings':
     modalForm = <SettingsModal/>
     break;
+  case 'login' :
+    modalForm = <Login/>
+    break;
   default:
     break;
 }
-console.log(display)
+// console.log(display)
   return(
     <div className="modal-main" id="modal-main" 
-    style={{display:display,width:form==='loadCloseBill' || form==='settings'? windowResize.width : windowResize.width-300
+    style={{display:display,width:form==='loadCloseBill' || form==='settings' || form==='login'? windowResize.width : windowResize.width-300
     ,}}>
       <div className="modal-content" id="modal-content" >
       {modalForm}
