@@ -7,6 +7,8 @@
 /out
 /pos-database
 /database
+/Settings
+/pos-orders
 
 # testing
 /coverage
