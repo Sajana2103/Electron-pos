@@ -1,8 +1,9 @@
 const path = require("path");
+require('update-electron-app')()
 const cp = require('child_process')
 const fs = require('fs')
 require('@electron/remote/main').initialize()
-const { app, BrowserWindow, ipcMain, dialog } = require("electron")
+const { app, BrowserWindow, ipcMain, autoUpdater, dialog } = require("electron")
 // const fs = require("@electron/get/node_modules/fs-extra/lib/fs/index")
 async function startServer(){
   cp.execFile('node', [`${path.join(__dirname,'../server/index.js')}`])
@@ -12,6 +13,33 @@ const isDev = require("electron-is-dev");
 
 let installExtension, REACT_DEVELOPER_TOOLS; 
 
+if(!isDev){
+  const server = 'https://vercel.com/sajana2103/electron-pos/HkLSWVHAc9YBMDAaEQwDUpvxCZ9r' 
+const url = `${server}/update/${process.platform}/${app.getVersion()}`  
+autoUpdater.setFeedURL({ url:url })
+
+setInterval(() => {
+  autoUpdater.checkForUpdates()
+}, 60000)
+
+autoUpdater.on('update-downloaded', (event, releaseNotes, releaseName) => {
+  const dialogOpts = {
+    type: 'info',
+    buttons: ['Restart', 'Later'],
+    title: 'Application Update',
+    message: process.platform === 'win32' ? releaseNotes : releaseName,
+    detail: 'A new version has been downloaded. Restart the application to apply the updates.'
+  }
+
+  dialog.showMessageBox(dialogOpts).then((returnValue) => {
+    if (returnValue.response === 0) autoUpdater.quitAndInstall()
+  })
+})
+autoUpdater.on('error', message => {
+  console.error('There was a problem updating the application')
+  console.error(message)
+})
+}
 
 if (isDev) {
   const devTools = require("electron-devtools-installer");
