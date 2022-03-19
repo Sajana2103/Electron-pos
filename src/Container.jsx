@@ -22,7 +22,7 @@ const Container = () => {
   const shrinkWidth = useSelector(state => state.windowResize.shrink.width)
   const onlineUserState = useSelector(state => state.settings.userOnline)
   const {currentUser} = useSelector(state => state.settings )
-  // console.log(currentUser)
+  console.log(currentUser)
 
   useEffect(() =>{                    
     if(!currentUser){

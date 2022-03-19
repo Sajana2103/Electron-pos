@@ -30,7 +30,7 @@ let db = new PouchDB('Settings')
 // clockInData()
 async function createAdmin(){
     // console.log('userDetails',userDetails)
-    let adminExists = await db.get('admin')
+ 
     let admin = {
         title:'user',
         _id:'admin',
@@ -39,8 +39,8 @@ async function createAdmin(){
         password:'admin',
        clockIn_id:`admin-clockIn`,
     }
-    if(!adminExists){
-
+  
+        console.log('creating admin')
         try{
             let res = await db.put(admin)
             // console.log(res)
@@ -56,7 +56,7 @@ async function createAdmin(){
         } catch(error) {
             return {error:error}
         }
-    } else { console.log('Admin exists')}
+    
 }
 createAdmin()
 class SettingsDAO{
