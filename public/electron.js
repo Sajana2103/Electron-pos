@@ -66,6 +66,21 @@ if (require("electron-squirrel-startup")) {
 }
 let win
 let childWindow
+let win2
+function createDefaultWindow() {
+  win2 = new BrowserWindow({
+    webPreferences: {
+      nodeIntegration: true,
+      contextIsolation: false
+    }
+  });
+  win.webContents.openDevTools();
+  win.on('closed', () => {
+    win = null;
+  });
+  win.loadURL(path.join(__dirname,`updater-#v${app.getVersion()}.html`));
+  return win;
+}
 async function createWindow() {
   // Create the browser window.
 
@@ -76,7 +91,7 @@ async function createWindow() {
     webPreferences: {
          enableRemoteModule: false,
          nodeIntegration:true,
-         contextIsolation:true,
+         contextIsolation:false,
     preload: path.resolve(__dirname,'preload.js')
     },
     
