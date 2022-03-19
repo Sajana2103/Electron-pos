@@ -21,7 +21,7 @@ const Container = () => {
   const [resizeWindowWidth, setResizeWindowWidth] = useState(window.innerWidth)
   const shrinkWidth = useSelector(state => state.windowResize.shrink.width)
   const {currentUser} = useSelector(state => state.settings )
-  console.log('Autoupdater on v1.0.3')
+  console.log('Autoupdater on 0.1.4')
 
   useEffect(() =>{                    
     if(!currentUser){
