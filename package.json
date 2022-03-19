@@ -1,6 +1,6 @@
 {
   "name": "pos-restaurants",
-  "version": "0.1.0",
+  "version": "0.1.1",
   "main": "public/electron.js",
   "homepage": "./",
   "private": true,
@@ -15,6 +15,7 @@
     "cross-env": "^7.0.3",
     "electron-is-dev": "^2.0.0",
     "electron-squirrel-startup": "^1.0.0",
+    "electron-updater": "^4.6.5",
     "pouchdb": "^7.2.2",
     "pouchdb-find": "^7.2.2",
     "react": "^17.0.2",
@@ -50,7 +51,6 @@
     ],
     "development": [
       "last 1 electron version"
-      
     ]
   },
   "devDependencies": {
@@ -61,36 +61,39 @@
     "@electron-forge/maker-zip": "^6.0.0-beta.63",
     "concurrently": "^7.0.0",
     "electron": "^17.0.0",
-    "electron-devtools-installer": "^3.2.0",
-    "electron-rebuild": "^3.2.7",
     "electron-builder": "^22.14.5",
     "electron-builder-squirrel-windows": "^23.0.2",
+    "electron-devtools-installer": "^3.2.0",
+    "electron-rebuild": "^3.2.7",
     "nodemon": "^2.0.15",
     "wait-on": "^6.0.0"
   },
-  "build":{
+  "build": {
     "win": {
       "target": "nsis",
-      "icon":"build/icon.png"
+      "icon": "build/icon.png"
     },
-    "files": ["**/*"],
+    "files": [
+      "**/*"
+    ],
     "directories": {
       "buildResources": "public"
-    },"nsis": {
+    },
+    "nsis": {
       "oneClick": false,
       "perMachine": false,
       "allowToChangeInstallationDirectory": true
     },
     "artifactName": "POSR_${version}_Setup.${ext}",
     "forceCodeSigning": false,
-    "appId":"com.posr.app",
-    "productName":"POSR",
-    "copyright":"Copyright © 2022 posr."
+    "appId": "com.posr.app",
+    "productName": "POSR",
+    "copyright": "Copyright © 2022 posr."
   },
   "config": {
     "forge": {
       "packagerConfig": {
-        "target":"nsis",
+        "target": "nsis",
         "icon": "icon.png",
         "description": "Point of sale for restaurants.",
         "executableName": "POS-Restaurants"
@@ -101,7 +104,7 @@
           "config": {
             "certificateFile": "./cert.pfx",
             "certificatePassword": "this-is-a-secret",
-            "msi":"true"
+            "msi": "true"
           }
         }
       ]
