@@ -20,9 +20,8 @@ const Container = () => {
   const [resizeWindowHeight, setResizeWindowHeight] = useState(window.innerHeight)
   const [resizeWindowWidth, setResizeWindowWidth] = useState(window.innerWidth)
   const shrinkWidth = useSelector(state => state.windowResize.shrink.width)
-  const onlineUserState = useSelector(state => state.settings.userOnline)
   const {currentUser} = useSelector(state => state.settings )
-  console.log('Autoupdater on')
+  console.log('Autoupdater on v1.0.3')
 
   useEffect(() =>{                    
     if(!currentUser){
@@ -62,7 +61,7 @@ const Container = () => {
     }
     // window.orders.timeAndOrderReset(new Date().toLocaleString(),'6:00:00 AM').then(number => dispatch(updateOrderNumber(number)))
 
-  },[onlineUserState,currentUser])
+  },[currentUser])
 
   useEffect(() => {
     window.addEventListener('resize', handleWindowResize)

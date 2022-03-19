@@ -1,44 +1,58 @@
 const path = require("path");
 require('update-electron-app')()
-const cp = require('child_process')
-const fs = require('fs')
 require('@electron/remote/main').initialize()
-const { app, BrowserWindow, ipcMain, autoUpdater, dialog } = require("electron")
-// const fs = require("@electron/get/node_modules/fs-extra/lib/fs/index")
-async function startServer(){
-  cp.execFile('node', [`${path.join(__dirname,'../server/index.js')}`])
-}
+const {autoUpdater } = require('electron-updater')
+const { app, BrowserWindow, ipcMain, dialog } = require("electron")
 const isDev = require("electron-is-dev");
+const log = require('electron-log');
 
 
 let installExtension, REACT_DEVELOPER_TOOLS; 
 
-
-  const server = 'https://electron-pos-3dupl8c9x-sajana2103.vercel.app/' 
-const url = `${server}/update/${process.platform}/${app.getVersion()}`  
-autoUpdater.setFeedURL({ url:url})
-
-setInterval(() => {
-  autoUpdater.checkForUpdates()
-}, 60000)
-
-autoUpdater.on('update-downloaded', (event, releaseNotes, releaseName) => {
-  const dialogOpts = {
-    type: 'info',
-    buttons: ['Restart', 'Later'],
-    title: 'Application Update',
-    message: process.platform === 'win32' ? releaseNotes : releaseName,
-    detail: 'A new version has been downloaded. Restart the application to apply the updates.'
-  }
-
-  dialog.showMessageBox(dialogOpts).then((returnValue) => {
-    if (returnValue.response === 0) autoUpdater.quitAndInstall()
+let template = []
+if (process.platform === 'darwin') {
+  // OS X
+  const name = app.getName();
+  template.unshift({
+    label: name,
+    submenu: [
+      {
+        label: 'About ' + name,
+        role: 'about'
+      },
+      {
+        label: 'Quit',
+        accelerator: 'Command+Q',
+        click() { app.quit(); }
+      },
+    ]
   })
+}
+function sendStatusToWindow(text) {
+  log.info(text);
+  win.webContents.send('message', text);
+}
+autoUpdater.on('checking-for-update', () => {
+  sendStatusToWindow('Checking for update...');
 })
-autoUpdater.on('error', message => {
-  console.error('There was a problem updating the application')
-  console.error(message)
+autoUpdater.on('update-available', (info) => {
+  sendStatusToWindow('Update available.');
 })
+autoUpdater.on('update-not-available', (info) => {
+  sendStatusToWindow('Update not available.');
+})
+autoUpdater.on('error', (err) => {
+  sendStatusToWindow('Error in auto-updater. ' + err);
+})
+autoUpdater.on('download-progress', (progressObj) => {
+  let log_message = "Download speed: " + progressObj.bytesPerSecond;
+  log_message = log_message + ' - Downloaded ' + progressObj.percent + '%';
+  log_message = log_message + ' (' + progressObj.transferred + "/" + progressObj.total + ')';
+  sendStatusToWindow(log_message);
+})
+autoUpdater.on('update-downloaded', (info) => {
+  sendStatusToWindow('Update downloaded');
+});
 
 
 if (isDev) {
@@ -171,3 +185,9 @@ app.on("activate", () => {
     createWindow();
   }
 });
+// autoUpdater.on('update-available', () => {
+//   mainWindow.webContents.send('update_available');
+// });
+// autoUpdater.on('update-downloaded', () => {
+//   mainWindow.webContents.send('update_downloaded');
+// });
