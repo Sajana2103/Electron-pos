@@ -1,11 +1,11 @@
 {
   "name": "pos-restaurants",
-  "version": "0.1.4",
+  "version": "0.1.5",
   "main": "public/electron.js",
   "homepage": "./",
   "private": true,
   "license": "LGPL.",
-  "description": "React + Electron app",
+  "description": "POS system for restaurants with online status checking.",
   "dependencies": {
     "@electron/remote": "^2.0.4",
     "@reduxjs/toolkit": "^1.7.2",
@@ -13,6 +13,7 @@
     "@testing-library/react": "^12.1.2",
     "@testing-library/user-event": "^13.5.0",
     "cross-env": "^7.0.3",
+    "dotenv": "^16.0.0",
     "electron-is-dev": "^2.0.0",
     "electron-log": "^4.4.6",
     "electron-squirrel-startup": "^1.0.0",
@@ -38,7 +39,8 @@
     "make": "react-scripts build && electron-forge make",
     "watch": "cd server && nodemon index.js",
     "postinstall": "electron-builder install-app-deps",
-    "electron:package:win": "npm run build && electron-builder -w -c.extraMetadata.main=build/electron.js -p always "
+    "electron:package:win": "npm run build && electron-builder -w -c.extraMetadata.main=build/electron.js -p always ",
+    "electron:package:win:0": "npm run build && electron-builder -w -c.extraMetadata.main=build/electron.js -p never "
   },
   "eslintConfig": {
     "extends": [
@@ -73,13 +75,14 @@
     "win": {
       "target": "nsis",
       "icon": "build/icon.png"
-   
     },
-    "publish":[{
-      "provider":"github",
-      "owner":"sajana2103",
-      "repo":"Electron-pos"
-    }],
+    "publish": [
+      {
+        "provider": "github",
+        "owner": "sajana2103",
+        "repo": "Electron-pos"
+      }
+    ],
     "files": [
       "**/*"
     ],

@@ -35,12 +35,13 @@ const OnGoingOrders = ({ order }) => {
       <div >
         {
           openOrder? 
-          <div className="nonClickable bg-dark-white w100 font-small" style={{ paddingTop: '5px', color: "#313638" }}>ORDERED : {order.dateAndTime[0]}</div>
+          <div className="nonClickable bg-dark-white w100 font-small" style={{ paddingTop: '5px', color: "#313638" }}>ORDERED : {new Date(order.dateAndTime[0]).toLocaleString()}</div>
             : <></>
         }
         {
           openOrder ?
             order.data.map((item, id) => {
+              
               let { appendedOrder } = item
               if (appendedOrder > currentAppendedOrder) {
                 currentAppendedOrder = appendedOrder
@@ -48,7 +49,7 @@ const OnGoingOrders = ({ order }) => {
                   <div>
                     <div className="nonClickable bg-dark-white" style={{ color: 'gray' }}>------------------------------</div>
                     <div className='bg-dark-white' key={id} style={{ padding: '5px 0px 5px 0px' }}>
-                      <div className=" font-small" style={{ paddingTop: '5px', color: "#313638" }}>ORDERED : {order.dateAndTime[currentAppendedOrder]}</div>
+                      <div className=" font-small" style={{ paddingTop: '5px', color: "#313638" }}>ORDERED : {new Date(order.dateAndTime[currentAppendedOrder]).toLocaleString()}</div>
                       <div className='ongoing-order-extended bg-dark-white' key={id}>
                         <span className="ordered-quantity">{item.quantity}</span>
                         <span>{item.item.toUpperCase()} ({item.portion ? item.portion : ''})</span>
@@ -87,19 +88,19 @@ const OnGoingOrders = ({ order }) => {
 
             <BillCardOngoingOrder order={order} />
             <div className="bg-white" style={{ padding: '10px' }}>
-              <button className="do-action rounded-btn " onClick={() => {
+              <button className="blackBtn bold" onClick={() => {
 
                 dispatch(appendOrder({
                   canAddNewItems: true, orderNumber: order.orderNumber,
                   table: order.table, appendedOrder: order.appendedOrder + 1, _id: order._id, _rev: order._rev
                 }))
               }}>Add More Items</button>
-              <button className="cancel-action rounded-btn " onClick={() => {
+              <button className="redBtn bold " onClick={() => {
                 dispatch(setModalDisplay())
                 dispatch(changeModalForm('loadCloseBill'))
                 dispatch(closeBill(order))
               }}>Close Bill</button>
-              <button onClick={() => window.orders.removeOrder(order._id)}>Remove order</button>
+              <button className="redBtn bold " onClick={() => window.orders.removeOrder(order._id)}>Remove order</button>
             </div>
 
             <button className="minimize" onClick={() => setOpenOrder(!openOrder)} >Minimize</button>

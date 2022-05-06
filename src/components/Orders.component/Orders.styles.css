@@ -190,3 +190,15 @@ background-color: #1a1c1d;
    cursor: pointer;
    
 }
+.paymentBtn{
+  border: 2px #313638 solid;
+  border-radius: 5px;
+  padding: 5px;
+  width: 50px;
+  text-align: center;
+  opacity: 0.7;
+}
+.paymentBtn:hover{
+  opacity: 1;
+  cursor: pointer;
+}

@@ -4,6 +4,7 @@ import { setModalDisplay } from '../../redux/modalSlice'
 import { setCurrentUser } from '../../redux/settingsSlice'
 
 const initilCredentials = {user_id:'',password:''}
+const initialError = { error: '',input:'' }
 
 const Login = () => {
     let modal = document.getElementById("modal-main")
@@ -13,8 +14,9 @@ const Login = () => {
     
   }
     const dispatch = useDispatch()
+    const [error,setError] = React.useState(initialError)
     const [credentials,setCredentials] = React.useState(initilCredentials)
-    
+    console.log(credentials)
     let onChangeLogin = {}
     // console.log(currentUser)
     const onChangeCredentials = (e) =>{
@@ -36,33 +38,44 @@ const Login = () => {
         let expireTime = new Date(addHours)
         checkInAndOut.loginTime = loginTime
         checkInAndOut.expireTime = expireTime
-        // console.log(checkInAndOut)
+        console.log(checkInAndOut)
 
-        // console.log(credentials)
+        console.log(credentials)
         window.settings.login(credentials,checkInAndOut).then(token => {
+            console.log('setting token with user',token)
             if(token.token){
-                // console.log('setting token with user',token)
+                setError({error:'',input:''})
+                console.log('setting token with user',token)
 
                 dispatch(setCurrentUser({...credentials,token:token.token}))
                 
-            }})
+            } else {
+
+                setError({error:'Username or Password is incorrect.'})
+            }
+        })
     }
     return( 
-        <div>
-            <form>
-                <div>
+        <div className='MainDiv' >
+            <form className='loginForm'>
+                <h3 className='centerText'>
                     LOGIN
+                </h3>
+                <div>
+                    <label className='font-small strong'>User-id:</label>
+                    <input onClick={()=>setError(initialError)} className='loginInputs' onChange={onChangeCredentials} name="user_id" type="text" required/>
                 </div>
                 <div>
-                    <label>User-id:</label>
-                    <input onChange={onChangeCredentials} name="user_id" type="text" required/>
+                    <label className='font-small strong'>Password:</label>
+                    <input onClick={()=>setError(initialError)} className='loginInputs'  onChange={onChangeCredentials} name="password" type="password" required/>
                 </div>
-                <div>
-                    <label>Password:</label>
-                    <input onChange={onChangeCredentials} name="password" type="password" required/>
-                </div>
-                <button onClick={submitLogin} type="submit">Submit</button>
+                <button className='redBtn' onClick={submitLogin} type="submit">Submit</button>
             </form>
+            {
+                error.error?
+                <span className='error' style={{width:'auto'}}>{error.error}</span>
+                :<></>
+            }
         </div>
     )
 }

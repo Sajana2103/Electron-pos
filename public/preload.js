@@ -7,7 +7,7 @@ const { ipcRenderer } = require('electron')
 const printBill = async (data) => {
     await ipcRenderer.send('print-bill',data)
     ipcRenderer.on('bill',(event,arg) => {
-        console.log('ipcRenderer bill',arg)
+        console.log('ipcRenderer bill',arg,data)
     })
 }
 let path
@@ -72,6 +72,8 @@ contextBridge.exposeInMainWorld(
         removeDoc:SettingsDAO.removeDoc,
         login:SettingsDAO.login,
         getCurrentUser:SettingsDAO.getCurrentUser,
-        logout:SettingsDAO.logout
+        logout:SettingsDAO.logout,
+        setClientInfo:SettingsDAO.setClientInfo,
+        getClientInfo:SettingsDAO.getClientInfo
     }
 )

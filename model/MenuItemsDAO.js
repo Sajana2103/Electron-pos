@@ -1,10 +1,17 @@
 const PouchDB = require('pouchdb')
 PouchDB.plugin(require('pouchdb-find'))
+const {getClient} = require('./RemoteDb')
+const db = require('./pouchdb')
 
-let db = new PouchDB('pos-database') 
-let remoteDB ='http://localhost:4000/db/database-server'
-
-
+async function getAllMenuItems(){
+  let docs = await db.find({
+    selector:{
+      title:'menuItem'
+    }
+  })
+  console.log('getAllMenuItems',docs)
+}
+getAllMenuItems()
 
 class MenuItemsDAO{
   static async injectDB(database){
@@ -41,9 +48,8 @@ static async getMenuItems(){
  
   try{
    let docs= await db.find({
-      selector :{title: 'menuItem',clientId:'client123'},
-      
-      attachments: true
+      selector :{title: 'menuItem'},
+    
     })
     // console.log('find menu Items',docs)
   return docs
@@ -58,12 +64,12 @@ static async updateItem(item){
     let doc = await db.get(item._id)
     let res = await db.put({
       title: 'menuItem',
-      clientId:'client123',
       _rev:doc._rev,
       _id:doc._id,
       ...item
     })
     console.log(res)
+
     return {res:res,data:item}
   } catch(error){
     console.log('error',error)
@@ -137,6 +143,7 @@ static async createMenuItemCategory(category,clientId){
       selector : {title : 'itemCategory',clientId: clientId,category:category},
       fields: ['_id','title','itemCategories','category']
     })
+    console.log('createMenuItemCategory',res)
     if(res.docs.length < 1 && category !== undefined && clientId !== undefined){
       res = await db.post({
         title : 'itemCategory',

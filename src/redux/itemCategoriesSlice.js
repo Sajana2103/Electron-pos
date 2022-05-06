@@ -17,9 +17,18 @@ const itemCategoriesSlice = createSlice({
         state.categories.push(category)
       })
       }
+    },
+    addNewCategory(state,action){
+      console.log(action.payload)
+     
+      let hasCategory =  state.categories.find((category) => {
+        return category === action.payload
+      })
+      if(!hasCategory) state.categories.push(action.payload)
     }
-  }
+  },
+  
 })
 
-export const {getCategories} = itemCategoriesSlice.actions
+export const {getCategories,addNewCategory} = itemCategoriesSlice.actions
 export default itemCategoriesSlice.reducer

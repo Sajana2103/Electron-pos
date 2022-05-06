@@ -32,7 +32,7 @@ const createOrderSlice = createSlice({
       }
     },
     openNewOrder(state,action){
-      console.log(action.payload)
+      // console.log(action.payload)
      state.newOrder.push(action.payload)
       
     },
@@ -88,7 +88,7 @@ const createOrderSlice = createSlice({
       state.currentBill = action.payload
     },
     updateOrderNumber(state,action){
-      console.log('updateOrderNumber',action.payload)
+      // console.log('updateOrderNumber',action.payload)
       state.orderNumber = action.payload
     },
     completeCloseBill(state,action){

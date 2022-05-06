@@ -1,7 +1,6 @@
 
 import React,{ useEffect, useState } from 'react';
 
-import logo from './logo.svg';
 import { useDispatch, useSelector } from 'react-redux';
 import NavigationBar from './components/Navigation.component/NavigationBar.component';
 import CategoryIndex from './components/MenuIndex.component/CategoryIndex.component';
@@ -12,7 +11,8 @@ import { loadOngoingOrders,updateOrderNumber } from './redux/orderSlice';
 import {changeModalForm,setModalDisplay} from './redux/modalSlice'
 
 import './App.css';
-import { addUsers, assignSettings,setCurrentUser, unsetCurrentUser } from './redux/settingsSlice';
+import { addUsers, assignSettings,setClientInfo, unsetCurrentUser } from './redux/settingsSlice';
+
 
 const Container = () => {
 
@@ -21,9 +21,10 @@ const Container = () => {
   const [resizeWindowWidth, setResizeWindowWidth] = useState(window.innerWidth)
   const shrinkWidth = useSelector(state => state.windowResize.shrink.width)
   const {currentUser} = useSelector(state => state.settings )
-  console.log('Autoupdater on 0.1.4')
+  // console.log('Autoupdater on 0.1.4')
 
-  useEffect(() =>{                    
+  useEffect(() =>{    
+    // console.log(window.api,window.orders,window.settings)                
     if(!currentUser){
       // console.log('no user',currentUser)
       dispatch(setModalDisplay())
@@ -49,15 +50,20 @@ const Container = () => {
         // console.log(data)
         dispatch(updateOrderNumber(data.orderNumber))
       } else {
-        // console.log(data)
+        console.log(data)
       }
     })
     .catch(error => console.log('get time reset error',error))
     if(currentUser){
 
       window.orders.getOngoingOrders().then(orders =>{if(orders) dispatch(loadOngoingOrders(orders))})
-      window.settings.getSettings().then(settings => {dispatch(assignSettings(settings))})
+      window.settings.getSettings().then(settings => {
+        // console.log(settings)
+        dispatch(assignSettings(settings))})
       window.settings.getUsers().then(users => {dispatch(addUsers(users))})
+      window.settings.getClientInfo().then(clientInfo => {
+        // console.log(clientInfo);
+        dispatch(setClientInfo(clientInfo))})
     }
     // window.orders.timeAndOrderReset(new Date().toLocaleString(),'6:00:00 AM').then(number => dispatch(updateOrderNumber(number)))
 

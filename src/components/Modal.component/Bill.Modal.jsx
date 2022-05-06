@@ -13,8 +13,7 @@ let modal = document.getElementById("modal-main")
     if (e.target === modal && e.target !== modalContent) {
       // console.log(e.target)
       //     console.log(modal.style.display)
-      dispatch(setModalDisplay('none'))
-      setHeight({bill:0,modal:0})
+      
     }
   }
 
@@ -42,24 +41,29 @@ let modal = document.getElementById("modal-main")
       }
     })
   }
-
+const closeWindow= () =>{
+  dispatch(setModalDisplay('none'))
+      setHeight({bill:0,modal:0})
+}
   return(
     <div id="billModal" >
+
       <div className='bill-close-modal'>
       <div className='font-small strong bg-white' style={{padding:'10px',display:'grid',
-      gridTemplateColumns:'70px 70px auto',backgroundColor:'#313638',color:'white'}}>
+      gridTemplateColumns:'70px 70px auto 10%',backgroundColor:'#313638',color:'white',alignItems:'center'}}>
        <span>ORDER {currentBill.orderNumber} </span>
        {
          currentBill.table === 'takeout'?
          <span>TAKEOUT &nbsp;</span>
          : <span>TABLE : {currentBill.table}</span>
-       }
-       <span style={{opacity:'0.5',paddingLeft:'10px'}}>{currentBill.dateAndTime[0]}</span>
+        }
+       <span style={{opacity:'0.5',paddingLeft:'10px'}}>{new Date(currentBill.dateAndTime[0]).toLocaleString()}</span>
+       <button title="close window" className="redBtn bold "style={{backgroundColor:'transparent',width:'30px'}} onClick={closeWindow}>x</button>
        </div>
       
         <div style={{overflowX:billHeight.modal>height?'scroll':'',
         display:'grid',gridTemplateColumns:'repeat(2,auto)',columnGap:'10px'
-        }}>
+      }}>
       {
 
         currentBill.data.map((item,id) =>{
@@ -74,7 +78,7 @@ let modal = document.getElementById("modal-main")
 
               <div className="w100 font-small noPointerEvents" 
               style={{color:'#a1a1a1',paddingTop:'2px',paddingBottom:'2px',display:'grid',alignItems:'center',justifyContent:'start'}}>
-                ORDERED : {currentBill.dateAndTime[currentAppendedOrder]}</div>
+                ORDERED : {new Date(currentBill.dateAndTime[currentAppendedOrder]).toLocaleString()}</div>
 
                <div className='ongoing-order-extended noPointerEvents bg-dark-white' key={id} >
               <span className="ordered-quantity">{item.quantity}</span>
@@ -100,7 +104,7 @@ let modal = document.getElementById("modal-main")
             <div className='bg-dark-white 'aria-label={id} onClick={splitReducerTotal}  style={{padding:'5px 0px 5px 0px'}}>
              <div className="w100 font-small noPointerEvents" 
               style={{color:'#a1a1a1',paddingTop:'2px',paddingBottom:'2px',display:'grid',alignItems:'center',justifyContent:'start'}}>
-                ORDERED : {currentBill.dateAndTime[0]}</div>
+                ORDERED : {new Date(currentBill.dateAndTime[0]).toLocaleString()}</div>
 
             <div className="ongoing-order-extended bg-dark-white noPointerEvents" key={id}>
               

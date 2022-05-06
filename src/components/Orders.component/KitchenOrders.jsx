@@ -34,7 +34,7 @@ const KitchenOrders = ({ order }) => {
               return (
                 <div className="bg-white " key={`${id}-${item.item}`}>
                   <div>------------------------------</div>
-                  <div className="font-small " style={{ padding: '10px' }}>Time : {order.dateAndTime[currentAppendedOrder]}</div>
+                  <div className="font-small " style={{ padding: '10px' }}>Time : {new Date(order.dateAndTime[currentAppendedOrder]).toLocaleString()}</div>
 
                   <div className="ongoing-order-kitchen" key={id}>
 
@@ -62,7 +62,7 @@ const KitchenOrders = ({ order }) => {
 
             return (
               <div >
-                <div className="bg-white font-small " style={{ padding: '10px' }}>Time : {order.dateAndTime[currentAppendedOrder]}</div>
+                <div className="bg-white font-small " style={{ padding: '10px' }}>Time : {new Date(order.dateAndTime[currentAppendedOrder]).toLocaleString()}</div>
 
                 <div className="ongoing-order-kitchen" key={id}>
 

@@ -1,50 +1,75 @@
-import React, { useEffect, useState } from "react";
-import { useDispatch,useSelector } from "react-redux";
-import { setModalDisplay,changeModalForm } from "../../redux/modalSlice";
+import React, {  useEffect, useState } from "react";
+import { useDispatch, useSelector } from "react-redux";
+import { setModalDisplay, changeModalForm } from "../../redux/modalSlice";
 import { shrinkColumn } from "../../redux/windowResize";
+import { filterByCategory } from "../../redux/menuItemSlice";
 import './CategoryIndex.styles.css'
 
 
-const CategoryIndex = ({props}) =>{
-const categories = useSelector(state => state.itemCategories.categories)
-const shrinkWidth = useSelector(state => state.windowResize.shrink.width)
-// console.log(categories)
+const CategoryIndex = ({ props }) => {
+  let { height, width } = props
+  
   const dispatch = useDispatch()
-let {height,width} = props
-// console.log(props)
 
+  const {filteredMenuItems} = useSelector(state => state.menuItems)
+  const categories = useSelector(state => state.menuItems.itemCategories)
+  const shrinkWidth = useSelector(state => state.windowResize.shrink.width)
+  
+  const { currentUser } = useSelector(state => state.settings)
+  // console.log(categories)
+  // console.log(props)
+  const [filteredItems, setFilteredItems] = useState([])
 
- return(
-   <div style={{width:shrinkWidth,transitionDuration:'0.2s'}} >
-   <div className="index-category" style={{height:`${height-90}px`,}} >
-     <button className="back-btn" onClick={() => {
+  const filterCategory = (e) => {
+    e.preventDefault()
+    dispatch(filterByCategory(e.target.id))
+    // console.log(searchItem)
+  }
+  useEffect(()=>{
+    if(width<660){
+      dispatch(shrinkColumn({ column: 'categories', width: 30 }))
+    } else {
+      dispatch(shrinkColumn({ column: 'categories', width: 200 }))
+    }
+  },[width])
+console.log(categories)
+  return (
+    <div style={{ width: shrinkWidth, transitionDuration: '0.2s' }} >
+      <div className="index-category" style={{ height: `${height - 90}px`, }} >
+        <button className="back-btn  font-size-large" onClick={() => {
 
-       shrinkWidth===200?dispatch(shrinkColumn({column:'categories',width:30}))
-      : dispatch(shrinkColumn({column:'categories',width:200}))
-      }}><img style={{width:10}} src='left-arrow.png'/></button>
-     {
-       categories.length > 0 ?
-       categories.map((category,idx) => {
-        //  console.log('category index',category)
-         return(
-     <div style={{display:shrinkWidth===200?'grid':'none',transitionDelay:'0.3s'}} key={category._id} className="index-item">{category.category ? category.category : '(unnamed)'}</div>
+          shrinkWidth === 200 ? dispatch(shrinkColumn({ column: 'categories', width: 30 }))
+            : dispatch(shrinkColumn({ column: 'categories', width: 200 }))
+        }}>&#60;</button>
+        <div  className="index-item" onClick={() => dispatch(filterByCategory('allItems'))}>All Categories</div>
+        {
+          categories.length ?
+            categories.map((category, idx) => {
+              
+              return (
+                <div style={{ display: shrinkWidth === 200 || width<700? 'grid' : 'none' }} id={category} key={idx} 
+                className="index-item" onClick={filterCategory}>{category }</div>
 
-         )
-       })
-       : <p>Loading categories</p>
-     }
-     
-   </div>
-    <div style={{transitionDuration:'0.2s'}} className="create-order-btn sub-header-btn"
-    onClick={() => {
-      dispatch(setModalDisplay())
-      dispatch(changeModalForm('createMenuItem'))
-      }}
-    >{shrinkWidth===200?
-      <p style={{margin:0,display:shrinkWidth===200?'':'none',transitionDelay:'0.6s'}}>Create Menu item +</p>
-   : '+' }</div>
+              )
+            })
+            : <p>Loading categories</p>
+        }
+
+      </div>
+      {
+        currentUser && currentUser.role === 'admin' ?
+          <div style={{ transitionDuration: '0.2s' }} className="create-order-btn sub-header-btn"
+            onClick={() => {
+              dispatch(setModalDisplay())
+              dispatch(changeModalForm('createMenuItem'))
+            }}>
+            {shrinkWidth === 200 ?
+              <p style={{ margin: 0, display: shrinkWidth === 200 ? '' : 'none',}}>Create Menu item +</p> : '+'}
+
+          </div> : <></>
+      }
     </div>
- )
+  )
 }
 
 export default CategoryIndex

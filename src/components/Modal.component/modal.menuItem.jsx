@@ -10,7 +10,7 @@ const initialPortionSize ={portionSize:'',portionPrice:''}
 
 const MenuItemModal = () => {
   const regNumbers = /\D/
- 
+  const {currentUser} = useSelector(state => state.settings)
   let modal = document.getElementById("modal-main")
   let modalContent = document.getElementById("modal-content")
   window.onclick = function (e) {
@@ -49,7 +49,7 @@ const MenuItemModal = () => {
   const ongoingOrders = useSelector(state => state.orders.newOrder)
   const { canAddNewItems, orderNumber, appendedOrder } = useSelector(state => state.orders.appendOrder)
   const ongoingCurrentOrders = useSelector(state => state.orders.currentOrders)
-
+  
   // console.log('MENU ITEMS ', menuItem.name)
   let currentOrderExists = ongoingCurrentOrders.find((item) => item.orderNumber === orderNumber)
   let newOrder = {
@@ -154,7 +154,7 @@ console.log('extraItems',extras.extraItems)
           menuItem.image ?
             <img className='menuitem-modal' src={menuItem.image} />
             :
-            <img className='menuitem-modal' src="maxresdefault.jpg" />
+            <img className='menuitem-modal' src="noimage.jpeg" />
         }
       </div>
 
@@ -166,8 +166,8 @@ console.log('extraItems',extras.extraItems)
       </div>
 
       <div style={{ paddingTop: '5px', paddingBottom: '5px' }}>
-        <span style={{ opacity: '0.7' }}>{menuItem.ingredients ? menuItem.ingredients : 'No ingredient details.'}</span>
-        <br /><span style={{ opacity: '0.7' }}>{menuItem.dishType}</span>
+        <span style={{ opacity: '0.7'}}>{menuItem.ingredients ? menuItem.ingredients : 'No ingredient details.'}</span>
+        <div className='font-small' style={{ opacity: '0.7', paddingTop:5}}>{menuItem.dishType?menuItem.dishType.toUpperCase():''}</div>
       </div>
       {
         menuItem.portionSizes && menuItem.portionSizes.length>0 ?
@@ -211,11 +211,11 @@ console.log('extraItems',extras.extraItems)
       </div>
       <div>
         <label >Extras </label><br/>
-      <section  style={{display:'grid',gridTemplateColumns:'repeat(2,auto) 10px'}}>
+      <section  style={{display:'grid',gridTemplateColumns:'repeat(2,auto) 1fr'}}>
 
         <div >
         <label className='font-size-small'>Name</label>
-        <input className='inputs ' style={{width:'5rem'}} maxLength="17" onChange={(e) => {
+        <input className='inputs ' name='inputExtrasName' style={{width:'5rem'}} maxLength="17" onChange={(e) => {
 
           setExtras((prevState) => {
             let {item:{price}} = prevState
@@ -226,7 +226,7 @@ console.log('extraItems',extras.extraItems)
 
         <div>
         <label className='font-size-small'>Price</label>
-          <input maxLength="5" onChange={(e) => {
+          <input maxLength="5" name='inputExtrasPrice'  onChange={(e) => {
           if(!regNumbers.exec(e.target.value)){
                   setError(initialError)
           setExtras((prevState) => {
@@ -236,7 +236,10 @@ console.log('extraItems',extras.extraItems)
           }}  className='inputs' style={{width:'5rem'}}/>
         </div>
         <button onClick={(e) => {
-          console.log(extras.item.price,extras.item.name)
+          let extrasInputs = document.getElementsByClassName('inputs')
+          extrasInputs[0].value = ''
+          extrasInputs[1].value = ''
+          // console.log(extras.item.price,extras.item.name)
           if(extras.item.name && extras.item.price ){
 
             setError(initialError)
@@ -244,7 +247,7 @@ console.log('extraItems',extras.extraItems)
             let {extraItems} = prevState
              return {...prevState,extraItems:[...extraItems,extras.item]}})
           } else{ setError({error:'Name or price is missing.',input:'extras'})}
-        }} className='plus-btn'>+</button>
+        }} className='extraPlus'>+</button>
       </section>
         {
           error.input==='extras'?
@@ -280,7 +283,7 @@ console.log('extraItems',extras.extraItems)
           className="modifications" placeholder="Modifications to the order" type="textarea" />
       </div>
       <div style={{ justifyContent: "center", display: 'grid' }}>
-        <button className='do-action strong font-size-med' style={{ border: '3px #313638 solid', width: '100px' }} onClick={() => {
+        <button className='redBtn ' style={{ fontSize:'18px',width:100,background:'transparent'}} onClick={() => {
           if (canAddNewItems) {
             addItemsToOngoingOrder()
           } else {
@@ -307,6 +310,9 @@ console.log('extraItems',extras.extraItems)
           </div>
           : <></>
       }
+      {
+        currentUser && currentUser.role==='admin'?
+
       <div style={{
         paddingTop: '10px', paddingBottom: '10px', display: 'grid', justifyContent: 'end',
         gridTemplateColumns: 'repeat(2,auto'
@@ -314,7 +320,8 @@ console.log('extraItems',extras.extraItems)
         <img onClick={() => updateItem()} className='small-icon' src='edit.png' alt='edit' title='edit-item' />
         <img onClick={() => setDeleteWarning({ warning: 'This action will permanently delete this item. Are you sure?' })} className='small-icon' src='delete.png' alt='delete' title='delete-item' />
 
-      </div>
+      </div> : <></>
+      }
     </div>
   )
 }

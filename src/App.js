@@ -11,7 +11,7 @@ const App = () => {
 useEffect(() =>{
   window.settings.getCurrentUser().then(currentUser => {
     if(currentUser.token) {
-      console.log(currentUser);
+      // console.log(currentUser);
       dispatch(setCurrentUser(currentUser))
     } else{
       console.log(currentUser)

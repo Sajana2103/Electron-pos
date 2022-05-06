@@ -9,21 +9,21 @@ const ItemCard = ({_id,data}) => {
 
 const dispatch = useDispatch()
 
-   const openItemCardModal = (title) => {
+   const openItemCardModal = (id) => {
     //  console.log(title)
     dispatch(setModalDisplay())
       dispatch(changeModalForm('loadMenuItem'))
-      dispatch(setMenuItemId(title))
+      dispatch(setMenuItemId(id))
   }
   // console.log(data)
   return(
-    <div onClick={(e) => {openItemCardModal(e.target.title)}} 
-     className="item-card" title={_id}>
+    <div onClick={(e) => {openItemCardModal(e.target.id)}} 
+     className="item-card" id={_id} title={data.name}>
        {
          data.image?
          <img src={data.image} className="item-img"/>
          :
-        <img className="item-img"src="maxresdefault.jpg"/>
+        <img className="item-img"src="noimage.jpeg"/>
 
        }
    

@@ -9,7 +9,7 @@ const initialPaymentSplit = 0
 const initialErrorState = { error: '', discount: '', split: '', payByCash: '',unpaid:'',print:''}
 const initialPaymentMethod = { method: '' }
 const initialPaidAmountBalance = { cash: 0, balance: 0, payPortions: [],paidAmount:0 }
-const initialCss = {button:'',css:{color:'#ef6369'}}
+const initialCss = {button:'',css:{color:'#ef6369',border:'2px #ef6369 solid',opacity:1}}
 const initialPrint = false
 
 const Bill = ({ order }) => {
@@ -17,16 +17,16 @@ const Bill = ({ order }) => {
   const dispatch =useDispatch()
 let modal = document.getElementById("modal-main")
    let modalContent = document.getElementById("modal-content")
-  window.onclick = function (e) {
-    // console.log(e.target)
-    if (e.target === modal && e.target !== modalContent) {
-      // console.log(e.target)
-      //     console.log(modal.style.display)
+  // window.onclick = function (e) {
+  //   // console.log(e.target)
+  //   if (e.target === modal && e.target !== modalContent) {
+  //     // console.log(e.target)
+  //     //     console.log(modal.style.display)
       
-      dispatch(setModalDisplay('none'))
-      cancelCloseBill()
-    }
-  }
+  //     dispatch(setModalDisplay('none'))
+  //     cancelCloseBill()
+  //   }
+  // }
 
   const [discount, setDiscount] = React.useState(initialDiscount)
   const [finalAmount, setFinalAmount] = React.useState(initialFinalAmount)
@@ -132,12 +132,13 @@ let modal = document.getElementById("modal-main")
     balance : discountedBalance,
     vat:vat,
     status:'completed',
-    billCloseTime: new Date().toLocaleString(),
-    clientName:clientName,
+    billCloseTime: new Date(),
+    
     extras:extras,
     serviceCharge:serviceChargeAmount,
     subTotal:amount,
-    printer:settingsState.printers.bill
+    printer:settingsState.printers.bill,
+    ...settingsState.shopDetails
     }
     window.orders.completeOrCancelOrder(finalBill)
     .then(data => {
@@ -171,13 +172,13 @@ finalBill = {...order,...paidAmountAndBalance,...discount,
     balance : discountedBalance,
     vat:vat,
     status:'completed',
-    billCloseTime: new Date().toLocaleString(),
+    billCloseTime: new Date(),
     extras:extras,
-     clientName:clientName,
     serviceCharge:serviceChargeAmount,
     subTotal:amount,
     printItem:'bill',
-    printer:settingsState.printers.bill
+    printer:settingsState.printers.bill,
+    ...settingsState.shopDetails
     }
 
     setPrint(true)
@@ -223,10 +224,10 @@ finalBill = {...order,...paidAmountAndBalance,...discount,
               <div className='error'>{error.split}</div> : <></>
           }
           {/* <button onClick={() => {setPaymentSplitByItems({split:true})}}>Payment Split By Item</button> */}
-          <div style={{ display: 'grid', gridTemplateColumns: 'repeat(2,3rem)', marginTop: '1ch',columnGap:5 }}>
+          <div style={{ display: 'grid', gridTemplateColumns: 'repeat(2,4rem)', marginTop: '1ch',columnGap:5 }}>
 
-            <div onClick={() => { sePaymentMethod({ method: 'card' }); setCss(prev => { return { ...prev, button: 'card' } }) }} style={css.button === 'card' ? { ...css.css } : { cursor: 'pointer', }} className='bold'>CARD </div>
-            <div onClick={() => { sePaymentMethod({ method: 'cash' }); setCss(prev => { return { ...prev, button: 'cash' } }) }} style={css.button === 'cash' ? { ...css.css } : { cursor: 'pointer' }} className='bold' >CASH</div>
+            <div onClick={() => { sePaymentMethod({ method: 'card' }); setCss(prev => { return { ...prev, button: 'card' } }) }} style={css.button === 'card' ? { ...css.css } : { cursor: 'pointer', }} className='bold paymentBtn'>CARD </div>
+            <div onClick={() => { sePaymentMethod({ method: 'cash' }); setCss(prev => { return { ...prev, button: 'cash' } }) }} style={css.button === 'cash' ? { ...css.css } : { cursor: 'pointer' }} className='bold paymentBtn' >CASH</div>
           </div>
 
         {
@@ -243,7 +244,7 @@ finalBill = {...order,...paidAmountAndBalance,...discount,
                         setError({ payByCash: '' })
                         setPaidAmountAndBalance(prevState => {
                           let cash = parseInt(e.target.value)
-                          let balance = (amount + vat) - cash
+                          let balance = (amount + vat+extras) - cash
                           
                           console.log(balance)
                           if (balance < 0) {

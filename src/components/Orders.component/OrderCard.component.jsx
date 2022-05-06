@@ -1,15 +1,15 @@
 import React, { useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
-import { addNewOrder ,appendOrder,addItemsToOngoingOrder,addItemsToKitchOrders} from "../../redux/orderSlice";
+import { addNewOrder ,appendOrder,addItemsToOngoingOrder} from "../../redux/orderSlice";
 import ItemCard from "./OrderedItem";
 import BillCardOngoingOrder from "./BillCard.OngoingOrders";
 
 const initialServerCustomer = {server:'',customer:''}
 
 const OrderCard = () => {
-     const server = 'server-1'
+
   const user = useSelector(state=> state.settings.currentUser.userName)
-  const customerId ='customerId-1'
+ 
   const dispatch = useDispatch()
   const [disabled, setDisabled] = React.useState(false)
   const [tableNumber, setTableNumber] = React.useState('')
@@ -30,7 +30,7 @@ const OrderCard = () => {
     if(ongoingOrder.length < 1){
       setError({error:'Add item to order.'})
     }else {
-      let newDate = new Date().toLocaleString()
+      let newDate = new Date()
       let addOrder ={
           orderNumber: newOrderNumber,
           data: ongoingOrder,
@@ -47,12 +47,13 @@ const OrderCard = () => {
           printer:settingsState.printers.kitchen,
 
         }
+        console.log('addorder',addOrder)
       window.orders.createOrder(addOrder).then(data => data._id? dispatch(addNewOrder(data)):[])
         window.api.printBill(addOrder)
     }
   }
   const createNewOrderForExistingOrder = () => {
-    let newDate = new Date().toLocaleString()
+    let newDate = new Date()
     if(ongoingOrder.length > 0){
      let addOrder = {
         data: ongoingOrder,
@@ -174,6 +175,7 @@ const OrderCard = () => {
       }
 
       <button className="do-action" onClick={ () => {
+       
         if(canAddNewItems){
           createNewOrderForExistingOrder()
           dispatch(appendOrder({canAddNewItems:false}))

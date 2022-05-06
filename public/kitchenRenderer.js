@@ -11,12 +11,13 @@ let startDateAndTime = document.getElementById('order-time')
 
 ipcRenderer.on('bill-window', async (event, arg) => {
   let {  dateAndTime, table, orderNumber,appendedOrder,server, } = arg
-
+  let dateTimeString = dateAndTime.length===1? new Date(dateAndTime[0]).toLocaleString() : new Date(dateAndTime).toLocaleString()
+  console.log(arg)
   isDine.innerText = table==='takeout'?'TAKE-AWAY' : 'DINE IN'
   order.innerText = `ORDER:${orderNumber}/${appendedOrder}`
   tableNo = table!=='takeout'? `TABLE:${table}` : ''
   serverEle.innerText = server? `Server:${server}` : ''
-  startDateAndTime.innerText =dateAndTime.length===1? `${dateAndTime[0].split(',').pop()}` : dateAndTime.split(',').pop()
+  startDateAndTime.innerText = dateTimeString.split(',').pop()
  
   arg.data.map((item) => {
     let breakingLine = document.createElement('div')

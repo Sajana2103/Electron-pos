@@ -19,18 +19,34 @@ let extrasAmount = document.getElementById('extras')
 let discountAmount = document.getElementById('discount')
 let serviceChargeAmount = document.getElementById('service-charge')
 let subtotalAmount = document.getElementById('sub-total')
+let shopAddress = document.getElementById('address')
+let shopOpenHours = document.getElementById('openHours')
+let shopPhone = document.getElementById('phone')
+let shopLogo = document.getElementById('logo')
 
 ipcRenderer.on('bill-window', async (event, arg) => {
-  let { subTotal, serviceCharge, extras, vat, discountedTotal, clientName, balance, total, dateAndTime, user, billCloseTime, paidAmount, table, _id } = arg
+  let { subTotal, serviceCharge, extras, 
+    vat, discountedTotal, clientName, 
+    balance, total, dateAndTime, user, 
+    billCloseTime, paidAmount, table, _id,
+  logo,address,phone,openHours } = arg
+
+  let dateTimeString = dateAndTime[0]? new Date(dateAndTime[0]).toLocaleString() : new Date(dateAndTime).toLocaleString()
+  console.log(dateTimeString,dateAndTime)
+  let billCloseDateTimeString =  new Date(billCloseTime).toLocaleString()
   client.innerText = clientName
+  shopAddress.innerText = address? address.toString():''
+  shopOpenHours.innerText = openHours? `Open-${openHours}`:''
+  shopPhone.innerText = phone? `Tel-${phone}`:''
+  shopLogo.src = logo? logo:''
   order.innerText = `ORDER:${table.toUpperCase()}`
   bill.innerText = `Invoice #${_id}`
   cashier.innerText = `Cashier:${user}`
   netTotal.innerText = `${total.toString()}`
   cash.innerText = `${paidAmount.toString()}`
   balanceAmount.innerText = `${balance.toString()}`
-  startDateAndTime.innerText = `Start time:${dateAndTime[0].toString()}|`
-  endDateAndTime.innerText = `|End time:${billCloseTime.toString()}`
+  startDateAndTime.innerText = `Start time:${dateTimeString}|`
+  endDateAndTime.innerText = `|End time:${billCloseDateTimeString}`
   if (vat) vatAmount.innerText = `+ Vat:${vat}`
   if (extras) extrasAmount.innerText = `+ Extras:${extras}`
   if (discountedTotal) discountAmount.innerText = `- Discount:${discountedTotal}`
@@ -46,13 +62,13 @@ ipcRenderer.on('bill-window', async (event, arg) => {
     let div = document.createElement('div')
     let labelName = document.createElement('div')
     let extras = document.createElement('div')
-    qty.className = "tiny-text"
-    price.className = "tiny-text"
+    qty.className = "med-text bold"
+    price.className = "med-text bold"
     qty.innerText = item.quantity
     price.innerText = (item.price * item.quantity)
     
     labelName.innerText = item.item
-    div.style = "display: grid;grid-template-columns: 20px 120px 50px;"
+    div.style = "display: grid;grid-template-columns: 10% 70% 20%;"
     console.log(item, extras)
     if (item.extras && item.extras.length) {
       item.extras.map((extra, idx) => {
@@ -66,7 +82,7 @@ ipcRenderer.on('bill-window', async (event, arg) => {
     if (!item.extras || !item.extras.length) {
       let extraItem = document.createElement('p')
       extraItem.className = "tiny-text"
-      extraItem.innerText = '- - -'
+      extraItem.innerText = '...'
       extras.appendChild(extraItem)
     }
     console.log(extras.toString(),extras)

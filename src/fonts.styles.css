@@ -1,3 +1,12 @@
+.categoryTitles{
+  color:#a1a9ac;
+  font-size: 16px;
+  text-align: left;
+  margin-left: 15px;
+  border-bottom: #464d50 1px solid;
+  
+}
+
 .sub-header{
   color:#d9f1fa ;
   font-size: 14px;
@@ -36,14 +45,14 @@
 .error{
   display: grid;
   align-items: center;
-  background-color: #313638;
-  color: #ffffff ;
+  background-color: #fff0f0;
+  color: #ef6369 ;
   margin: 5px;
   padding: 3px;
   font-size: 12px;
-  font-weight: bold;
+
   border-radius: 5px;
-  border:3px #ef6369 solid;
+  border:1px #ef6369 solid;
 }
 .font-color-orange{
   color:#f5ac72;
@@ -131,17 +140,21 @@
   border:1px solid #ef6369;
 }
 .inputs{
-  border: 1px solid #ffd3d3;
-  background-color: #fff2f2;
+  border: 1px white solid;
+  background-color: #ffffff;
   color: #6f6f6f;
   margin-right: 5px;
+  box-shadow: 2px 2px 2px #e9e9e9;
+  border-radius: 5px;
+  opacity:0.8;
+  transition-duration: 0.2s;
 }
 .inputs::placeholder{
   color: #666666
 }
 .inputs:hover{
-    border: 1px solid #ef6369;
-    
+    border: 1px solid #e6e6e6;
+    opacity:1;
 }
 .bg-grey{
   background-color: #dfdfdf;

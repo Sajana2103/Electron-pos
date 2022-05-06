@@ -6,9 +6,10 @@
   padding-left: 20px;
   justify-content: left;
   align-items: center;
+  transition-duration: 0.2s;
 }
 .index-item:hover{
-  transition-duration: 0.2s;
+ 
    background-color:  #596266;
     color: whitesmoke;
     cursor: pointer;
@@ -53,11 +54,12 @@
   border:#596266 2px solid;
   margin-top: 5px;
   border-radius: 20px;
-  
+  color: #596266;
  
   transition-duration: 0.2s;
 }
 .back-btn:hover{
-  background-color: #596266;
+  border:#ef6369 2px solid;
+  color: #ef6369;
   transition-duration: 0.2s;
 }

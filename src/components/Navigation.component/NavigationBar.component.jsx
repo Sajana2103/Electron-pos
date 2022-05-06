@@ -7,14 +7,25 @@ import './nav-bar.styles.css'
 
 const NavigationBar = ({width}) => {
     const dispatch = useDispatch()
-    const {currentUser} = useSelector(state => state.settings)
+    const {currentUser,shopDetails} = useSelector(state => state.settings)
     const [logout,setLogout] = React.useState(false)
 
     
-  // console.log(width)
+  // console.log(currentUser)
   return (
-    <div className='nav-bar font-small' style={{gridTemplateColumns:`220px ${width-400}px 130px auto`,alignContent:'center'}}>
-      <div className='logo'>LOGO</div>
+    <div className='nav-bar font-small' style={{gridTemplateColumns:`200px ${width-400}px 130px auto`,alignContent:'center',alignItems:'center'}}>
+    {
+      shopDetails && shopDetails.logo ?
+     <div className=' logoMain'>
+      <img className="invert sizeSmall" src={shopDetails.logo?shopDetails.logo:''}/>
+     </div>
+     :
+  
+       <span style={{color:'white'}}>Logo</span>
+
+
+    }
+
       <div className="nav-btns" >
         <div className='nav-btn'>MENU</div>
         <div className='nav-btn'>TABLES</div>
@@ -29,6 +40,7 @@ const NavigationBar = ({width}) => {
            <div onMouseLeave={() =>setLogout(false)} onClick={() => {
              let date = new Date()
              window.settings.logout(date).then(res =>{ 
+              //  console.log(res)
                if(res.res.ok) dispatch(unsetCurrentUser())
              })
            }} className='login-btn'  >LOGOUT</div>
@@ -44,10 +56,15 @@ const NavigationBar = ({width}) => {
           dispatch(changeModalForm('login'))
         }} className='login-btn '>LOGIN</button>
      }
-        <img className='settings-icon' src="settings.png" onClick={() => {
-        dispatch(setModalDisplay())
-         dispatch(changeModalForm('settings'))
-        }}/>
+     {
+       currentUser && currentUser.role==='admin'?
+       <img className='settings-icon invert' src="settings.png" onClick={() => {
+       dispatch(setModalDisplay())
+        dispatch(changeModalForm('settings'))
+       }}/>
+       : <></>
+
+     }
      
     </div>
   )

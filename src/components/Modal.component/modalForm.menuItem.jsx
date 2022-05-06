@@ -1,24 +1,25 @@
-import React, { useEffect, useRef } from "react";
+import React, { useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
+import { addNewCategory } from "../../redux/itemCategoriesSlice";
 import { addMenuItem, updateMenuItem,modifyUpdateItem} from '../../redux/menuItemSlice'
 import { setModalDisplay,changeModalForm, } from "../../redux/modalSlice";
 
 
 const ModalFormMenuItem = () => {
-  const currentVat = 8
+  const {shopDetails} = useSelector(state => state.settings)
   const [menuItemState, setMenuItemState] = React.useState({
-    clientId: 'client123',
+    clientId: shopDetails.clientName? shopDetails.clientName : '',
     title: 'menuItem',
-    vat: true,
+    vat: false,
     dishType: '',
     portionSizes:[]
   })
   const updateItemSelector = useSelector(state => state.menuItems.updateItem)
-  const itemCategoryState = useSelector(state => state.itemCategories.categories)
+  const itemCategoryState = useSelector(state => state.menuItems.itemCategories)
   const [portion,setPortion] = React.useState({portionSize:'',portionPrice:0})
   const [error, setError] = React.useState({ error: '', input: '' })
-  const dishes = ['meat', 'fish','egg', 'vegetarian', 'vegan','mix']
-  let modal = document.getElementById("modal-main")
+  const dishes = ['meat', 'fish','egg', 'vegetarian', 'vegan','mixed']
+
   const dispatch = useDispatch()
 
   const regNumbers = /\D/
@@ -41,7 +42,14 @@ useEffect(() => {
  
 },[updateItemSelector.update])
 
-
+  const clearInputs = () => {
+    let inputs = document.getElementsByName('createMenuItemInput')
+    for(let i = 0;i<inputs.length;i++){
+      
+      inputs[i].value = ''
+    }
+  }
+  
   const onChangeImage = (e) => {
 
     let file = e.target.files[0]
@@ -67,21 +75,39 @@ useEffect(() => {
   const submitMenuItem = async () => {
     if (!menuItemState.name) {
       // console.log('name error', menuItemState.name)
-      setError({ error: 'Item name is Required.', input: 'name' })
+      setError({ error: 'Item name is required.', input: 'name' })
       return
     } else if (!menuItemState.price && menuItemState.portionSizes.length<1) {
       console.log('price error',menuItemState.portionSizes)
       setError({ error: 'Price or Portion is requried.', input: 'price' })
       return
     }
-    console.table(menuItemState)
+    if(!menuItemState.category){
+       menuItemState.category = 'Uncategorized'
+       await window.api.createItemCategory(menuItemState.category, 'itemCategories')
+       window.api.getItemCategories('itemCategories').then(data => {
+        console.log(data.docs,data)
+        dispatch(addNewCategory(data.docs))
+      })
+      }
     let result = await window.api.addMenuItem(menuItemState)
-    console.log(result)
-
-    let category = await window.api.createItemCategory(menuItemState.category, 'client123')
+    // console.log(result)
+    console.log(menuItemState.category)
+    let category = await window.api.createItemCategory(menuItemState.category, 'itemCategories')
     console.log(category)
+    if(category.result && category.result.ok){
+
+      window.api.getItemCategories('itemCategories').then(data => {
+        console.log(data.docs,data)
+        dispatch(addNewCategory(menuItemState.category))
+      })
+    } else {
+      console.log('Category exists')
+    }
+  
     dispatch(setModalDisplay())
     dispatch(addMenuItem(result))
+    clearInputs()
   }
 
    const onCancel = () => {
@@ -109,10 +135,18 @@ useEffect(() => {
       return
     }
 
-    let category = await window.api.createItemCategory(menuItemState.category, 'client123')
-
+    let category = await window.api.createItemCategory(menuItemState.category, 'itemCategories')
+    console.log(category)
+    if(category.result && category.result.ok){
+      console.log(category)
+      dispatch(addNewCategory(category.category))
+    } else if(category.response){
+      console.log('category exists')
+    }
+    console.log(category)
     let response = await window.api.updateItem(menuItemState)
-    if(response.res.ok){
+    console.log(response)
+    if(response.res.ok || response.update){
       let {res,data} = response
       dispatch(modifyUpdateItem(data))
       console.log(res,category)
@@ -161,28 +195,28 @@ useEffect(() => {
           <label className="modal-form-label" >Select Category : </label>
           <div style={{ display: 'grid', gridTemplateColumns: 'repeat(2,auto)', width: '200px', marginTop: '5px' }}>
             {
-              itemCategoryState.length > 0 ?
+              itemCategoryState.length ?
                 itemCategoryState.map((item, idx) => {
                   const cssForSelectedCategory = {
                     backgroundColor: '#ef6369', color: 'white',
                   }
-                  if (menuItemState.category === item.category) {
+                  if (menuItemState.category === item) {
                     return (
                       <div style={{ margin: '2px 0px 2px 0px' }} key={idx}>
-                        <label className="" onClick={(e) => setMenuItemState((prevState) => {
+                        <label className="font-small" onClick={(e) => setMenuItemState((prevState) => {
                           return { ...prevState, category: e.target.id }
                         })} style={cssForSelectedCategory}
-                          id={item.category}>{item.category? item.category.toUpperCase() : ''}</label>
+                          id={item}>{item? item.toUpperCase() : ''}</label>
                       </div>
                     )
 
                   } else {
                     return (
                       <div style={{ margin: '2px 0px 2px 0px' }} key={idx}>
-                        <label className="" onClick={(e) => setMenuItemState((prevState) => {
+                        <label className="font-small" onClick={(e) => setMenuItemState((prevState) => {
                           return { ...prevState, category: e.target.id }
                         })}
-                          id={item.category}>{item.category ? item.category.toUpperCase() : ''}</label>
+                          id={item}>{item ? item.toUpperCase() : ''}</label>
                       </div>
                     )
                   }
@@ -332,7 +366,7 @@ useEffect(() => {
 
         <div className="input-section-box">
 
-          <span style={{fontWeight:'600'}}>Add Vat(current{currentVat}%)</span><br />
+          <span style={{fontWeight:'600'}}>Add Vat(current-{shopDetails.vat}%)</span><br />
           <button className="do-action modal-form-input bg-grey"
             name="vat" onClick={() => {
               setMenuItemState((prevState) => {
