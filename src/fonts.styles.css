@@ -54,14 +54,35 @@
   border-radius: 5px;
   border:1px #ef6369 solid;
 }
+.success{
+  display: grid;
+  align-items: center;
+  background-color: #f0fff0;
+  color: #5ad85a ;
+  margin: 5px;
+  padding: 3px;
+  font-size: 12px;
+
+  border-radius: 5px;
+  border:1px #5ad85a solid;
+}
+.font-color-lightGray{
+  color: #f1f1f1;
+}
+.font-color-green{
+  color: #5ad85a ;
+}
 .font-color-orange{
-  color:#f5ac72;
+  color:#F69333;
 }
 .font-size-large{
   font-size: 20px;
 }
 .font-size-med{
   font-size: 16px;
+}
+.font-size-xsmall{
+  font-size: x-small;
 }
 .black-red-bg{
   color: white;
@@ -259,4 +280,9 @@
   display: grid;
   grid-template-rows: repeat(2,auto);
   align-items: center;
+}
+.noData{
+  border: #6f6f6f 1px solid;
+  color: #6f6f6f;
+  border-radius: 5px;
 }

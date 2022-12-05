@@ -5,25 +5,40 @@ const db = new PouchDB('DB')
 
 
 
-const api = process.env.API_URL
+const api = 'http://localhost:4000/db/'
 // console.log(api)
 
 async function getClient(){
 
     let client = await db.get('clientInfo')
-    // console.log('getClient',client)
+    console.log('getClient',client)
+    if(client){
+        // console.log('client',client)
+        let remoteDB =`${api}${client.remoteDB}`
+        // console.log('remoteDB',remoteDB)
+        db.replicate.to(remoteDB).on('complete',(data) =>{
+            // console.log('synced',data)
+        }).on('error',(err) => {
+            console.log('Error!',err)
+            return
+        })
+    } else return
+}
+async function replicateDatabase(){
+    let client = await db.get('clientInfo')
+    console.log('getClient',client)
     if(client){
         console.log('client',client)
         let remoteDB =`${api}${client.remoteDB}`
-        console.log('remoteDB',remoteDB)
-        db.replicate.to(remoteDB).on('complete',(data) =>{
-            console.log('synced',data)
-        }).on('error',(err) => {
-            console.log('Error!',err)
-        })
-    }
+    db.sync(remoteDB).on('complete',(data) =>{
+        console.log('synced',data)
+    }).on('error',(err) => {
+        console.log('Error!',err)
+        return
+    })
+} else return
 }
-
 module.exports = {
-    getClient:getClient
+    getClient:getClient,
+    replicateDatabase:replicateDatabase
 }

@@ -9,7 +9,7 @@ const initialState = {
   serviceCharge:0,
   currentUser:null,
   syncDB:null,
-  shopDetails:{ phone: '', openHours: '', address: '', logo: '' ,clientName:''}
+  shopDetails:{ phone: '', openHours: '', address: '', logo: '' ,clientName:'My Client'}
 }
 
 const settingsSlice = createSlice({
@@ -18,6 +18,7 @@ const settingsSlice = createSlice({
  reducers : {
   assignSettings(state,action){
     // console.log(action.payload)
+    if(!action.payload) {console.log('settings not found');return}
     state._rev = action.payload._rev?action.payload._rev:action.payload.rev
     state._id = action.payload._id
     state.printers = action.payload.printers
@@ -56,6 +57,8 @@ const settingsSlice = createSlice({
     state.currentUser = null
   },
   setClientInfo(state,action){
+    if(action.payload.error){ console.log(action.payload);return}
+    
     state.syncDB = action.payload
   }
   }

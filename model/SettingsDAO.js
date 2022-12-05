@@ -1,64 +1,10 @@
 const PouchDB = require('pouchdb')
 PouchDB.plugin(require('pouchdb-find'))
-const {getClient} = require('./RemoteDb')
+const {getClient,replicateDatabase} = require('./RemoteDb')
 const db = require('./pouchdb')
 
+replicateDatabase()
 
-// const api = process.env.API_URL
-// console.log(api)
-
-// async function getClient(){
-
-//     let client = await db.get('clientInfo')
-//     console.log('getClient',client)
-//     if(client){
-//         let remoteDB =`${api}${client.remoteDB}`
-//         console.log('remoteDB',remoteDB)
-//         db.sync(remoteDB).on('complete',(data) =>{
-//             console.log('synced',data)
-//         }).on('error',(err) => {
-//             console.log('Error!',err)
-//         })
-//     }
-// }
-
-
-// let db = new PouchDB('Settings') 
-// let remoteDB ='http://localhost:4000/db'
-
-// async function replicateDB(){
-
-//   let result = await PouchDB.replicate(db,`${remoteDB}/client123`)
-//   console.log('replicate orders',result)
-//   }
-  
-// createItem('111')
-// replicateDB()
-// async function removeItem(_id) {
-//     try {
-        
-//         let doc = await db.get(_id)
-//         let removeItem = await db.remove(doc)
-//         console.log('item removed', removeItem)
-//         return removeItem
-//     } catch (error) {
-//         return error
-//     }
-// }
-// removeItem('admin-clockIn')
-//   removeItem('loginToken')
-// const getDoc = async () =>{
-//     let doc = await db.get(`admin`)
-//     console.log('getDoc',doc)
-// }
-// getDoc()
-// async function clockInData(){
-//     const docs  = await db.find({
-//         selector:{title:'clockIn'}
-//     })
-//     console.log(docs.docs)
-// }
-// clockInData()
 async function createAdmin(){
     // console.log('userDetails',userDetails)
  
@@ -93,11 +39,28 @@ async function createSettingsDoc(){
     
     console.log('create settings',)
     try{
-    
-            let res = await db.put({
-                _id:'settings',
-               
+        let res = db.get('settings').catch(error => {
+                if(error.name==='not_found'){
+                    console.log('settings not found. creating doc')
+                    let settingsDoc = {
+                        printers:{bill:'',kitchen:''},
+                        currentUsers:[],
+                        
+                        _id:'settings',
+                        vat:0,
+                        serviceCharge:0,
+                        
+                        shopDetails:{ phone: '', openHours: '', address: '', logo: '' ,clientName:'My Client'}
+                      }
+                    db.put(settingsDoc,(err,doc) => {
+                        if(doc.ok) return doc
+                    })
+                }
             })
+            if(res.ok){
+                console.log('res.ok',res)
+                return res
+            }
             console.log(res)
            
             
@@ -190,6 +153,7 @@ static async login(credentials,LoginAndExpire){
     let checkPassword
     console.log(db)
     try{
+        console.log('try')
         let doc = await db.get(credentials.user_id)
         console.log(doc)
         if(doc) checkPassword  = doc.password === credentials.password
@@ -278,28 +242,55 @@ static async getCurrentUser(){
         return {error:error}
     }
 }
-static async setClientInfo(data){
-    console.log('setClientInfo',data)
-    try{
-        let remoteDB = `${data.email.split('@')[0]}-${data.client}`
-        let res
-        let doc = await db.get('clientInfo')
-        if(doc){
-            res = await db.put({_id:doc._id,_rev:doc._rev,...data,remoteDB:remoteDB})
-            return res
-        }
-       res = await db.put({_id:'clientInfo',...data})
-        return res
-    } catch (error){
-        console.log('clientInfo ERROR',error)
-        return {error:'Client info is missing.'}
-    }
+static setClientInfo(syncData){
+    console.log('setClientInfo',syncData)
+    let remoteDB
+        if(syncData && syncData.client && syncData.email){
+            remoteDB = `${syncData.email.split('@')[0]}-${syncData.client}`
+            console.log('remoteDB',remoteDB)
+        } else { console.log('remote database not set.')}
 
+      
+        let doc = db.get('clientInfo')
+        .then(data => {
+            console.log('clientINfo Promise',data)
+            if(data._id){
+                let response =  db.put({_id:syncData._id,_rev:syncData._rev,...syncData,remoteDB:remoteDB},function(err,res){
+                       
+                    if(err) {
+                           console.log(err)
+                           return {error:err}
+                       } else{ 
+                           console.log('sssss',res)
+                           
+                           return {success:res}}
+                       
+                   })
+                return response
+               } else { console.log(data);return {error:data}}
+        })
+        .catch(error => {
+            if(error.name==='not_found'){
+                let clientInfoDoc = {_id:'clientInfo',...data}
+                db.put(clientInfoDoc,(err,doc) => {
+                    if(doc.ok){return doc}
+                    else{ 
+                        console.log(error)
+                       
+                        return {error:'Incorrect credentials'}}
+                })
+            }
+        })
+        return doc
+    
+        
+        
 }
 static async getClientInfo(){
     try{
         let doc = await db.get('clientInfo')
-        getClient()
+        console.log('clientInfo',doc)
+        
         return doc
     } catch(error){
         console.log("get client info Error",error)

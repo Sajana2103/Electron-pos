@@ -86,9 +86,10 @@ const createOrderSlice = createSlice({
     },
     closeBill(state,action){
       state.currentBill = action.payload
+      
     },
     updateOrderNumber(state,action){
-      // console.log('updateOrderNumber',action.payload)
+      console.log('updateOrderNumber',action.payload)
       state.orderNumber = action.payload
     },
     completeCloseBill(state,action){
@@ -96,6 +97,18 @@ const createOrderSlice = createSlice({
       state.currentOrders = state.currentOrders.filter((order) => {
         console.log(order.orderNumber)
         return (order.orderNumber !== action.payload.orderNumber)
+      })
+      state.kitchenOrders = state.kitchenOrders.filter((order) => {
+        return order.orderNumber !== action.payload.orderNumber
+      })
+    },
+    cancelOrder(state,action){
+      console.log(action.payload)
+      state.currentOrders = state.currentOrders.filter(order => {
+       return order._id !== action.payload.id
+      })
+      state.kitchenOrders = state.kitchenOrders.filter(order => {
+        return order._id !== action.payload.id
       })
     }
   }
@@ -113,6 +126,6 @@ export const {
   closeBill,
   loadOngoingOrders,
   updateOrderNumber,
-  completeCloseBill
+  completeCloseBill,cancelOrder
   } = createOrderSlice.actions
 export default createOrderSlice.reducer

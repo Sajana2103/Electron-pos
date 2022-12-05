@@ -2,7 +2,7 @@ import { createSlice } from "@reduxjs/toolkit";
 
 const initialState = {
   items: [],
-  filteredMenuItems:[],
+  savedItems:[],
   itemModal: '',
   dishes: [],
   updateItem: {
@@ -19,11 +19,12 @@ const menuItemSlice = createSlice({
     loadMenuItems(state, action) {
       let category = new Set()
       // console.log('loadmenuitems slice',action.payload)
-      if (action.payload && !state.items.length) {
+      if (action.payload && !state.items.length && !state.itemCategories.length) {
+        action.payload.sort((a, b) => a.category.localeCompare(b.category))
         action.payload.map((item, id) => {
           category.add(item.category)
           state.items.push(item)
-          
+          state.savedItems.push(item)
         })
         category.forEach((item) => 
         state.itemCategories.push(item)
@@ -32,12 +33,22 @@ const menuItemSlice = createSlice({
         
       }
     },
+    addCategory(state,action){
+       
+      if(action.payload){
+        let hasItem  = state.itemCategories.find((item) => { return item===action.payload})
+        if(!hasItem){
+          state.itemCategories.push(action.payload)
+          state.itemCategories.sort((a,b) => a.localeCompare(b))
+        }
+      }
+    },
     filterByCategory(state,action){
       const id = action.payload
       console.log(action.payload)
-      if(id==='allItems') {console.log('allItems'); state.filteredMenuItems = state.items;return}
-      state.filteredMenuItems = state.items
-      state.filteredMenuItems = state.filteredMenuItems.filter((item) => {
+      if(id==='allItems') {console.log('allItems'); state.items =  state.savedItems ;return}
+      state.items =  state.savedItems 
+      state.items = state.items.filter((item) => {
  
       if(item.category) return item.category.toLowerCase() === id.toLowerCase()
       
@@ -52,15 +63,14 @@ const menuItemSlice = createSlice({
 
       data._id = result.id
       state.items.push(data)
-      state.filteredMenuItems = []
-      state.filteredMenuItems = state.items
+      state.savedItems.push(data)
     },
     removeItemFromState(state, action) {
       console.log('remove items', action.payload)
       state.items = state.items.filter((item) => {
         return item._id !== action.payload
       })
-      state.filteredMenuItems = state.items
+      
       return
     },
     currentItemModal(state, action) {
@@ -84,7 +94,7 @@ const menuItemSlice = createSlice({
           }
         }
       })
-      state.filteredMenuItems = state.items
+    
 
     }
   }
@@ -94,6 +104,7 @@ export const {
   loadMenuItems,
   addMenuItem,
   getCategories,
+  addCategory,
   removeItemFromState,
   currentItemModal,
   resetCurrentItemModal,

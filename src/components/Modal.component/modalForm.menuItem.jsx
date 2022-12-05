@@ -1,19 +1,22 @@
 import React, { useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { addNewCategory } from "../../redux/itemCategoriesSlice";
-import { addMenuItem, updateMenuItem,modifyUpdateItem} from '../../redux/menuItemSlice'
+import { addMenuItem, updateMenuItem,modifyUpdateItem,addCategory} from '../../redux/menuItemSlice'
 import { setModalDisplay,changeModalForm, } from "../../redux/modalSlice";
 
 
 const ModalFormMenuItem = () => {
-  const {shopDetails} = useSelector(state => state.settings)
-  const [menuItemState, setMenuItemState] = React.useState({
-    clientId: shopDetails.clientName? shopDetails.clientName : '',
+  const {shopDetails,vat} = useSelector(state => state.settings)
+  const initialMenuItemState = {
+    clientId: shopDetails.clientName ? shopDetails.clientName : 'My Client',
     title: 'menuItem',
     vat: false,
     dishType: '',
     portionSizes:[]
-  })
+  }
+
+  
+  const [menuItemState, setMenuItemState] = React.useState(initialMenuItemState)
   const updateItemSelector = useSelector(state => state.menuItems.updateItem)
   const itemCategoryState = useSelector(state => state.menuItems.itemCategories)
   const [portion,setPortion] = React.useState({portionSize:'',portionPrice:0})
@@ -23,9 +26,8 @@ const ModalFormMenuItem = () => {
   const dispatch = useDispatch()
 
   const regNumbers = /\D/
-  let itemComparison = {}
-  console.log(updateItemSelector)
  
+  let itemComparison
 
 useEffect(() => {
 
@@ -82,32 +84,16 @@ useEffect(() => {
       setError({ error: 'Price or Portion is requried.', input: 'price' })
       return
     }
-    if(!menuItemState.category){
-       menuItemState.category = 'Uncategorized'
-       await window.api.createItemCategory(menuItemState.category, 'itemCategories')
-       window.api.getItemCategories('itemCategories').then(data => {
-        console.log(data.docs,data)
-        dispatch(addNewCategory(data.docs))
-      })
-      }
+ 
     let result = await window.api.addMenuItem(menuItemState)
-    // console.log(result)
+    console.log(result,menuItemState.category)
     console.log(menuItemState.category)
-    let category = await window.api.createItemCategory(menuItemState.category, 'itemCategories')
-    console.log(category)
-    if(category.result && category.result.ok){
-
-      window.api.getItemCategories('itemCategories').then(data => {
-        console.log(data.docs,data)
-        dispatch(addNewCategory(menuItemState.category))
-      })
-    } else {
-      console.log('Category exists')
-    }
-  
+   
     dispatch(setModalDisplay())
     dispatch(addMenuItem(result))
+    dispatch(addCategory(menuItemState.category))
     clearInputs()
+    setMenuItemState(initialMenuItemState)
   }
 
    const onCancel = () => {
@@ -115,14 +101,15 @@ useEffect(() => {
      for(let key in inputs){
        if(inputs[key].name==='createMenuItemInput') inputs[key].value = ''
      }
-     setMenuItemState({})
+     setMenuItemState(initialMenuItemState)
     dispatch(setModalDisplay())  
   }
   const cancelUpdate = () => {
     dispatch(updateMenuItem({update:false,item:{}}))
     dispatch(changeModalForm('loadMenuItem'))
-    setMenuItemState({})
+    setMenuItemState(initialMenuItemState)
   }
+  
   const updateCurrentItem = async () => {
   
     if (!menuItemState.name) {
@@ -366,7 +353,7 @@ useEffect(() => {
 
         <div className="input-section-box">
 
-          <span style={{fontWeight:'600'}}>Add Vat(current-{shopDetails.vat}%)</span><br />
+          <span style={{fontWeight:'600'}}>Add Vat(current-{vat}%)</span><br />
           <button className="do-action modal-form-input bg-grey"
             name="vat" onClick={() => {
               setMenuItemState((prevState) => {

@@ -11,6 +11,7 @@ const initialSettings = {
 const initialDisplayError = { display: 'none', error: '', errorInput: '', opacity: 0 }
 const initialCss = { button: '', css: '' }
 const initialSyncDatabase = { email: '', password: '', token: '' }
+
 const SettingsModal = () => {
 
   const dispatch = useDispatch()
@@ -33,8 +34,10 @@ const SettingsModal = () => {
   const [displayError, setDisplayError] = React.useState(initialDisplayError)
   const [syncDatabase, setSyncDatabase] = React.useState(initialSyncDatabase)
   const [css, setCss] = React.useState(initialCss)
-
-  console.log('settings', settings,settingsState)
+  const [success,setSuccess] = React.useState({message:'',status:false})
+// console.log(syncDatabase)
+  console.log('settings', settings)
+  console.log('settingsState',settingsState)
   useEffect(() => {
     // console.log(inputs)
     if (settingsState.printers || settingsState.serviceCharge || settingsState.shopDetails) {
@@ -45,7 +48,7 @@ const SettingsModal = () => {
       document.querySelector("input[name='phone']").value = settingsState.shopDetails.phone ? settingsState.shopDetails.phone : ''
       document.getElementById('address').value = settingsState.shopDetails.address ? settingsState.shopDetails.address : ''
       document.querySelector("input[name='openHours']").value = settingsState.shopDetails.openHours ? settingsState.shopDetails.openHours : ''
-      document.querySelector("input[name='clientName']").value = settingsState.shopDetails.clientName ? settingsState.shopDetails.clientName : ''
+      document.querySelector("input[name='clientName']").value = settingsState.shopDetails.clientName ? settingsState.shopDetails.clientName : 'My Client'
 
       setSettings(prevState => { 
        
@@ -132,17 +135,29 @@ const SettingsModal = () => {
   }
 
   const syncDatabaseOnSubmit = () => {
-    fetch(`${process.env.REACT_APP_API_URL}v1/users/sync-database`, {
+    
+    fetch(`http://localhost:4000/v1/users/sync-database`, {
       method: "POST",
       body: JSON.stringify(syncDatabase),
       headers: {
         "Content-type": "application/json"
       }
     }).then(res => res.json()).then(data => {
+      console.log('sync Database',data)
       if (data.success) {
-        window.settings.setClientInfo(syncDatabase)
-        dispatch(setClientInfo(syncDatabase))
-      }
+        console.log('Sync Success')
+        setSuccess({message:data.success,status:true})
+        window.settings.setClientInfo(syncDatabase).then(res => {
+          console.log('syncDatabaseOnSubmit',res)
+          let syncdb = syncDatabase
+          syncdb._rev = res.rev
+          
+         
+          dispatch(setClientInfo(syncdb))
+          
+        })
+
+      } else setSuccess({message:`Syncing failed.${data.error}`,status:false})
     })
   }
 
@@ -175,6 +190,7 @@ const SettingsModal = () => {
     console.log(settingsSubmit)
     window.settings.createSettings(settingsSubmit)
       .then(data => {
+        console.log(data)
         if (data) {
           dispatch(assignSettings(data))
           dispatch(setModalDisplay())
@@ -188,9 +204,9 @@ const SettingsModal = () => {
       return user._id === _id
     })
     // console.log(clickedUser)
-    inputs[1].value = clickedUser[0].userName
-    inputs[2].value = clickedUser[0]._id
-    inputs[3].value = clickedUser[0].password
+    inputs[2].value = clickedUser[0].userName
+    inputs[3].value = clickedUser[0]._id
+    inputs[4].value = clickedUser[0].password
   }
   const removeUser = (e) => {
     let _id = inputs[2].value
@@ -279,7 +295,11 @@ const SettingsModal = () => {
             <label htmlFor='subscriptionPassword' className='font-small bold'>Password:<input id="subscriptionPassword" onChange={setSyncDatabaseCredentials} type="password" name="password" className="modal-form-input" required /></label>
             <label htmlFor='subscriptionToken' className='font-small bold'>Token:<input id="subscriptionToken" onChange={setSyncDatabaseCredentials} name="token" type="password" className="modal-form-input" required /></label>
             <label htmlFor='subscriptionClient' className='font-small bold' >Client:<input id="subscriptionClient" onChange={setSyncDatabaseCredentials} name="client" type="text" className="modal-form-input" required /></label>
-
+            {
+              success.message?
+              <div className={success.status?'success':'error'} style={{width:'100%'}}>{success.message}</div>
+              : <></>
+            }
             <button onClick={syncDatabaseOnSubmit} className="redBtn medBtn">SYNC</button>
 
           </div>

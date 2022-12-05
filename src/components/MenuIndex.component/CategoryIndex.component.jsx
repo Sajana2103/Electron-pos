@@ -32,7 +32,7 @@ const CategoryIndex = ({ props }) => {
       dispatch(shrinkColumn({ column: 'categories', width: 200 }))
     }
   },[width])
-console.log(categories)
+
   return (
     <div style={{ width: shrinkWidth, transitionDuration: '0.2s' }} >
       <div className="index-category" style={{ height: `${height - 90}px`, }} >
@@ -52,7 +52,7 @@ console.log(categories)
 
               )
             })
-            : <p>Loading categories</p>
+            : <p className='noData'>Loading categories</p>
         }
 
       </div>

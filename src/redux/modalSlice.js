@@ -1,6 +1,6 @@
 import { createSlice } from "@reduxjs/toolkit";
 
-const initialState = { display: 'none', form: '',_id:'' }
+const initialState = { display: 'none', form: '',_id:'',modalData:{} }
 
 const modalSlice = createSlice({
     name: 'modal',
@@ -28,8 +28,12 @@ const modalSlice = createSlice({
         },
        
         changeModalForm(state, action) {
-            // console.log('changeModalForm', action.payload)
-           state.form = action.payload
+            console.log('changeModalForm', action.payload)
+             state.form = action.payload
+          
+        },
+        changeModalData(state,action){
+            state.modalData = action.payload
         },
         setMenuItemId(state,action){
             // console.log('MenuItem _id',action.payload)
@@ -40,5 +44,5 @@ const modalSlice = createSlice({
 })
 export const loadModalDisplay = state => state.modal.display
 export const loadModalForm = state => state.modal.form
-export const { setModalDisplay, changeModalForm ,setDisplay,setMenuItemId} = modalSlice.actions
+export const { setModalDisplay, changeModalForm ,setDisplay,setMenuItemId,changeModalData} = modalSlice.actions
 export default modalSlice.reducer

@@ -5,6 +5,9 @@ import itemCategoriesReducer from './itemCategoriesSlice'
 import createOrderReducer from './orderSlice'
 import windowResizeReducer from './windowResize'
 import settingsReducer from './settingsSlice'
+import ordersHistorySlice from './orderHistorySlice'
+import navigationSlice from './navigationSlice'
+import tablesSlice from './tablesSlice'
 
 export default configureStore({
   reducer:{
@@ -13,6 +16,9 @@ export default configureStore({
     itemCategories: itemCategoriesReducer,
     orders:createOrderReducer,
     windowResize: windowResizeReducer,
-    settings: settingsReducer
+    settings: settingsReducer,
+    ordersHistory: ordersHistorySlice,
+    navigation:navigationSlice,
+    tables:tablesSlice
   }
 })

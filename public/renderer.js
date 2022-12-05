@@ -39,7 +39,7 @@ ipcRenderer.on('bill-window', async (event, arg) => {
   shopOpenHours.innerText = openHours? `Open-${openHours}`:''
   shopPhone.innerText = phone? `Tel-${phone}`:''
   shopLogo.src = logo? logo:''
-  order.innerText = `ORDER:${table.toUpperCase()}`
+  order.innerText = `ORDER:${table==='takeout'?'Take-away':"Dine-in"}`
   bill.innerText = `Invoice #${_id}`
   cashier.innerText = `Cashier:${user}`
   netTotal.innerText = `${total.toString()}`
@@ -68,7 +68,7 @@ ipcRenderer.on('bill-window', async (event, arg) => {
     price.innerText = (item.price * item.quantity)
     
     labelName.innerText = item.item
-    div.style = "display: grid;grid-template-columns: 10% 70% 20%;"
+    div.style = "display: grid;grid-template-columns: 15% 60% 25%;"
     console.log(item, extras)
     if (item.extras && item.extras.length) {
       item.extras.map((extra, idx) => {

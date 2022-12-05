@@ -1,0 +1,71 @@
+.tableCard{
+    font-weight: 100;
+    font-size: small;
+    color: #f1f1f1;
+    padding:5px;
+    margin-bottom: 5px;
+    background-color: #363d3f;
+    display: grid;
+    grid-template-rows: repeat(auto,4px);
+    row-gap: 5px;
+    border: 2px #363d3f solid;
+    border-radius: 5px;
+   
+    transition-duration: 0.2s;
+    box-shadow: #282c2e 1px 1px 3px;
+}
+.tableCard:hover{
+    cursor: pointer;
+ 
+    border: #ef6369 2px solid;
+}
+.tableOccupied{
+    cursor:none;
+    background-color: #313638;
+    border: #313638 2px solid;
+    color: #646e72;
+}
+.tablesDropdown{
+    display: grid;
+    justify-content: center;
+  
+}
+.tablesDropdown:hover{
+   
+    cursor: pointer;
+}
+.dropdownTable{
+  
+ justify-self: center;
+    display: none;
+  position: absolute;
+  width: 80px;
+  box-shadow: 0px 8px 16px 0px rgba(0,0,0,0.2);
+
+  z-index: 1;
+
+  background-color: white;
+   
+    overflow: scroll;
+    max-height: 250px;
+}
+.tablesDropdown:hover .dropdownTable{
+ 
+    display: block;
+  
+}
+.vacantTable{
+    display: grid;
+    align-items: center;
+    grid-template-columns: 30% 80%;
+    border-bottom: #313638 solid 1px;
+   
+}
+.vacantTable:hover{
+    border-bottom: #ef6369 solid 1px;
+    color:#ef6369;
+}
+.tableForm{
+    max-width: 400px;
+   
+}

@@ -16,7 +16,7 @@ const Login = () => {
     const dispatch = useDispatch()
     const [error,setError] = React.useState(initialError)
     const [credentials,setCredentials] = React.useState(initilCredentials)
-    console.log(credentials)
+    // console.log(credentials)
     let onChangeLogin = {}
     // console.log(currentUser)
     const onChangeCredentials = (e) =>{
@@ -38,14 +38,14 @@ const Login = () => {
         let expireTime = new Date(addHours)
         checkInAndOut.loginTime = loginTime
         checkInAndOut.expireTime = expireTime
-        console.log(checkInAndOut)
+        // console.log(checkInAndOut)
 
-        console.log(credentials)
+        // console.log(credentials)
         window.settings.login(credentials,checkInAndOut).then(token => {
-            console.log('setting token with user',token)
+            // console.log('setting token with user',token)
             if(token.token){
                 setError({error:'',input:''})
-                console.log('setting token with user',token)
+                // console.log('setting token with user',token)
 
                 dispatch(setCurrentUser({...credentials,token:token.token}))
                 

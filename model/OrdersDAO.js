@@ -1,22 +1,22 @@
 const PouchDB = require('pouchdb')
 PouchDB.plugin(require('pouchdb-find'))
 const db = require('./pouchdb')
-const {getClient} = require('./RemoteDb')
+const { getClient } = require('./RemoteDb')
 
 
-async function changeOrderTime(){
-  let {docs} = await db.find({
-      selector:{title:'order'}
+async function changeOrderTime() {
+  let { docs } = await db.find({
+    selector: { title: 'order' }
   })
-  console.log('changeOrderTime',docs)
+  console.log('changeOrderTime', docs)
   let doc = await db.get('05042022-1409-5')
   let time = new Date(doc.billCloseTime).setMonth(0)
-  
+
   let setTime = new Date(time)
-  console.log('changeOrderTime doc',doc.billCloseTime,setTime)
+  console.log('changeOrderTime doc', doc.billCloseTime, setTime)
 
 }
-changeOrderTime()
+// changeOrderTime()
 
 function create_id(orderDate, orderNumber) {
   let [date, time] = orderDate.split(',')
@@ -52,8 +52,11 @@ async function createItem(_id) {
     return error
   }
 }
-
-
+async function getTimeOrderReset() {
+  let doc = await db.get('timeAndOrderReset')
+  console.log('timeAndOrderReset', doc)
+}
+// getTimeOrderReset()
 
 
 
@@ -133,78 +136,93 @@ class OrdersDAO {
     }
 
   }
+
+  static async getAllOrders() {
+    try {
+
+      let doc = await db.find({
+        selector: {
+          title: 'order'
+        }
+      })
+      return doc.docs
+    } catch (error) {
+      return { error: error }
+    }
+  }
   static async removeOrder(_id) {
     let doc = await db.get(_id)
 
     let removeItem = await db.put({
       ...doc,
-      _id:doc._id,
-      _rev:doc._rev,
-      status:'cancelled',
+      _id: doc._id,
+      _rev: doc._rev,
+      status: 'cancelled',
     })
-    getClient()
-    console.log('item removed', removeItem)
-    return removeItem
+    if(removeItem.ok){
+
+      console.log('item removed', removeItem)
+      return {success:removeItem,item:doc}
+    } else { return {error:'Remove item failed.'}}
   }
 
   static async getOngoingOrders() {
 
     let docs = await db.find({
-      selector: { status: 'ongoing' }
+      selector: { status: 'ongoing',title:'order' }
     })
     // console.log(docs)
     return docs.docs
   }
   static async getLastOrder() {
-    let lastOrder = await db.get(timeAndOrderReset)
+    let lastOrder = await db.get('timeAndOrderReset')
     return lastOrder.orderNumber
   }
 
   static async timeAndOrderReset(start, end) {
+
+
     console.log('try timeAndOrderReset')
-    let isToday
-    isToday = await db.get("timeAndOrderReset")
-    // console.log(isToday)
-      if(isToday.error) {
+    let res
+    await db.get("timeAndOrderReset",function(err,isToday){
+      console.log(err,isToday)
+      if (err && err.name === 'not_found') {
         console.log('no time doc found. creating new doc')
         let createDate = {
-          
+
           _id: 'timeAndOrderReset',
           startTime: start,
           endTime: end,
           orderNumber: 1
-          
+
         }
-         db.put(createDate,(err,doc) =>{
-
+        db.put(createDate, (err, doc) => {
           //  console.log('created a new time doc', createDate)
-           if (doc.ok) return createDate
+          if (doc.ok) return createDate
         })
+      } else {
+        console.log('doc exists', isToday.endTime)
+        let endTime = new Date(isToday.endTime)
+        let timeNow = new Date()
+
+        console.log(timeNow, end, end >= timeNow)
+        if (endTime <= timeNow) {
+          console.log('time doc found. creating new doc', endTime, timeNow)
+         db.put({
+            _id: isToday._id,
+            _rev: isToday._rev,
+            startTime: start,
+            endTime: end,
+            orderNumber: 1
+          }).then(doc => {
+            console.log(doc)
+            if(doc.ok) {return doc}
+        
+          })
+        } else res = isToday
       }
-    
-    
-    // console.log('doc exists',isToday)
-    let endTime = new Date(isToday.endTime)
-    let timeNow = new Date()
-  
-    // console.log(timeNow, end, end >= timeNow)
-
-    try {
-      if (endTime <= timeNow) {
-        console.log('time doc found. creating new doc', endTime, timeNow)
-        let newDate = await db.put({
-          _id: isToday._id,
-          _rev: isToday._rev,
-          startTime: start,
-          endTime: end,
-          orderNumber: 1
-        })
-        if (newDate.ok) { return newDate }
-      } else { return {...isToday}}
-    } catch (error) {
-      return { error: error }
-    }
-
+    })
+        return res
   }
 
 }

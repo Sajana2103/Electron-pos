@@ -64,7 +64,7 @@ const MenuItemModal = () => {
 
   }
  
-console.log('extraItems',extras.extraItems)
+
   const addItemToOrder = () => {
     console.log(newOrder)
     if(!newOrder.price) {setError({input:'portion', error:'Select a portion before ordering.'}); return}

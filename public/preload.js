@@ -1,6 +1,8 @@
 const MenuItemsDAO = require('../model/MenuItemsDAO')
 const OrdersDAO = require('../model/OrdersDAO')
 const SettingsDAO = require('../model/SettingsDAO')
+const TablesReservationsDAO = require('../model/TablesReservationsDAO')
+
 const { ipcRenderer } = require('electron')
 
 
@@ -10,24 +12,7 @@ const printBill = async (data) => {
         console.log('ipcRenderer bill',arg,data)
     })
 }
-let path
-const addImage =  (data) => {
-    ipcRenderer.send('add-image',data)
-    console.log(data)
-    // await ipcRenderer.on('add-image-path', arg => {
-    //     console.log(arg)
-    // })
-//  ipcRenderer.on('add-image-path', (e,arg) => {
-//         console.log('get image',arg)
-//         path = arg
-//         getImage(path)
-//     })
-}
 
-const getImage = async ( path) => {
-
-    return path
-}
 
 const {
     contextBridge,
@@ -47,10 +32,10 @@ contextBridge.exposeInMainWorld(
         createItemCategory:MenuItemsDAO.createMenuItemCategory,
         getItemCategories:MenuItemsDAO.getMenuItemCategories,
         printBill:printBill,   
-        addImage:addImage,
-        allDocs:MenuItemsDAO.getAll,
+    
         getDishTypes:MenuItemsDAO.dishType,
-        addDish:MenuItemsDAO.createDishType
+        addDish:MenuItemsDAO.createDishType,
+   
     }
 );
 contextBridge.exposeInMainWorld(
@@ -60,7 +45,11 @@ contextBridge.exposeInMainWorld(
         timeAndOrderReset:OrdersDAO.timeAndOrderReset,
         getLastOrder:OrdersDAO.getLastOrder,
         removeOrder:OrdersDAO.removeOrder,
-        completeOrCancelOrder:OrdersDAO.completeOrCancelOrder
+        completeOrCancelOrder:OrdersDAO.completeOrCancelOrder,
+        getAllOrders:OrdersDAO.getAllOrders,
+        addNewTable:OrdersDAO.addNewTable,
+        getAllTables:OrdersDAO.getAllTables,
+        removeTable:OrdersDAO.removeTable
     }
 )
 contextBridge.exposeInMainWorld(
@@ -76,4 +65,16 @@ contextBridge.exposeInMainWorld(
         setClientInfo:SettingsDAO.setClientInfo,
         getClientInfo:SettingsDAO.getClientInfo
     }
+
 )
+contextBridge.exposeInMainWorld(
+    "tablesReservations", {
+        addNewTable:TablesReservationsDAO.addNewTable,
+        getAllTables:TablesReservationsDAO.getAllTables,
+        removeTable:TablesReservationsDAO.removeTable,
+        updateTable:TablesReservationsDAO.updateTable,
+        addReservation:TablesReservationsDAO.addReservation,
+        updateReservation:TablesReservationsDAO.updateReservation,
+        loadReservations:TablesReservationsDAO.loadReservations,
+        loadReservations:TablesReservationsDAO.loadReservations
+    })

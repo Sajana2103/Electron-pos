@@ -5,8 +5,11 @@ import ModalFormMenuItem from "./modalForm.menuItem";
 import MenuItemModal from "./modal.menuItem";
 import BillModal from "./Bill.Modal";
 import SettingsModal from "./Settings.Modal";
+import OrderCardModal from "./OrderCard.Modal";
 import Login from './Login.Modal'
 import './ModalMain.styles.css'
+import AddTableModal from "./Modal.Tables";
+import AddReservationModal from "./Reservations.Modal";
 
 const ModalMain = () => {
 const dispatch = useDispatch()
@@ -23,10 +26,10 @@ const dispatch = useDispatch()
 const windowResize = useSelector(state => state.windowResize)
 // console.log('windowResize',windowResize)
 const display = useSelector(loadModalDisplay)
-const form = useSelector(loadModalForm)
+const form = useSelector(state => state.modal.form)
 
 let modalForm
-
+console.log(form)
 switch (form) {
   case 'createMenuItem':
     modalForm = <ModalFormMenuItem/>
@@ -43,6 +46,15 @@ switch (form) {
   case 'login' :
     modalForm = <Login/>
     break;
+  case 'orderCardModal' :
+    modalForm = <OrderCardModal/>
+  break;
+  case 'addTable' :
+    modalForm = <AddTableModal/>
+  break;
+  case 'addReservation' :
+    modalForm = <AddReservationModal/>
+  break;
   default:
     break;
 }

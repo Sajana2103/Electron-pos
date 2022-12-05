@@ -10,37 +10,18 @@ import ItemCard from './ItemCard.component'
 const ItemContent = ({ props }) => {
 
   const { filteredMenuItems, items,itemCategories } = useSelector(state => state.menuItems)
-  const menuItems = useSelector(state => state.menuItems.items)
   const shrinkWidth = useSelector(state => state.windowResize.shrink.width)
-  const { categories } = useSelector(state => state.itemCategories)
-  const [searchValue, setSearchValue] = useState('')
-  let sortedCategories = []
   const dispatch = useDispatch()
-  console.log(itemCategories)
-  if (categories.length) {
-    categories.map((category) => {
-      sortedCategories.push(category.category)
-    })
 
-  }
   const [search, setSearch] = useState([])
-  let itemArray = []
-  if (search.length) {
-    search.map(item => {
-      itemArray.push(item)
-    })
-    itemArray.sort((a, b) => a.category.localeCompare(b.category))
-    console.log(itemArray)
-  }
-  let { height, width } = props
-  let item
 
+  let { height, width } = props
 
   const onSearch = (e) => {
-    setSearchValue(e.target.value)
+
     e.preventDefault()
 
-    let searchItem = filteredMenuItems.filter((item) => {
+    let searchItem = items.filter((item) => {
       //  console.log(item.name)
       return item.name.toLowerCase().includes(e.target.value.toLocaleLowerCase())
     })
@@ -54,14 +35,12 @@ const ItemContent = ({ props }) => {
 
       window.api.getMenuItems().then(data => {
         dispatch(loadMenuItems(data.docs));
-        setSearch(filteredMenuItems)
-        if (!filteredMenuItems.length) dispatch(filterByCategory('allItems'))
+        console.log(data.docs)
+        setSearch(items)
+        if (!items.length) dispatch(filterByCategory('allItems'))
       })
       window.api.replicateDB().then(data => console.log(data))
-      window.api.getItemCategories('itemCategories').then(data => {
-        // console.log(data.docs)
-        dispatch(getCategories(data.docs))
-      })
+    
     }
     fetchData()
   }, [filteredMenuItems, items])
@@ -70,6 +49,7 @@ const ItemContent = ({ props }) => {
 
   // console.log("SEARCH", search, items)
   let category = ''
+
   return (
     <div>
 
@@ -78,24 +58,28 @@ const ItemContent = ({ props }) => {
        
         {
 
-            itemCategories.length ?
-            itemCategories.map(cat => {
-
-              if (category !== cat) {
-                category = cat
+            itemCategories.length && search.length?
+            search.map((item,idx) => {
+              let itemIdx 
+              if (category !== item.category) {
+                category = item.category
+                // console.log(itemArray)
                 return (
                   <div>
                     <div className='categoryTitles'>{category}</div>
                     <div className='item-cards ' style={{ gridTemplateColumns: `repeat(${maxCards < 0 ? 1 : maxCards},1fr)` }}>
                       {
-                        itemArray.map((item, idx) => {
+                        search.map((item, idx) => {
                           if (category === item.category) {
-                            // let spliced = itemArray.splice(idx, 1)[0]
+                            itemIdx = idx
+                            // let removed = itemArray.splice(idx,1)[0]
+                            // console.log(item.name,removed.name,idx,itemArray)
+                            
                             return (
                               <ItemCard key={item._id} _id={item._id} data={item} />
 
                             )
-                          }
+                          } 
                         })
                       }
                     </div>
@@ -104,7 +88,7 @@ const ItemContent = ({ props }) => {
               }
 
             }
-            ) : <div>Loading</div>
+            ) : <div className='noData'>Loading</div>
         }
       </div>
 

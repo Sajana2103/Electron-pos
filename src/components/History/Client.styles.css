@@ -1,0 +1,120 @@
+.orderCards{
+    display: grid;
+   grid-template-columns: repeat(4,150px);
+    column-gap: 5px;
+}
+.orderCard{
+    color: #f1f1f1;
+    padding: 10px;
+    margin-bottom: 5px;
+    background-color: #363d3f;
+    display: grid;
+    grid-template-rows: repeat(auto,4px);
+    row-gap: 5px;
+    border: 2px #363d3f solid;
+    border-radius: 5px;
+    opacity: 0.75;
+    transition-duration: 0.2s;
+    box-shadow: #282c2e 1px 1px 3px;
+}
+.orderCard:hover{
+    cursor: pointer;
+    opacity: 1;
+    border: #ef6369 2px solid;
+}
+.orderCardTitle{
+    padding-bottom: 5px;
+    color:#ef6369;
+}
+.clientCard{
+    color: white;
+    opacity: 0.6;
+    background-color: #F69333;
+    padding: 5px;
+    height: 20px;
+    width: 100px;
+    text-align: center;
+    transition-duration: 0.3s;
+    border-radius: 10px;
+    cursor: pointer;
+}
+.clientCard:hover{
+    opacity: 1;
+   
+}
+.ordersSortDropdown{
+
+    margin-top: 20px;
+    margin-left: 20px;
+    width: 100px;
+    text-align: center;
+    background-color: #313638;
+    padding: 2px;
+    cursor: pointer;
+
+    border: #ef6369 2px solid;
+    color: #ef6369;
+    opacity: 0.6;
+    transition-duration: 0.2s;
+}
+.ordersSortDropdown:hover{
+    opacity: 1;
+}
+.dropdownSort{
+ 
+    display: none;
+  position: absolute;
+  width: 100px;
+  box-shadow: 0px 8px 16px 0px rgba(0,0,0,0.2);
+
+  z-index: 1;
+
+  background-color: #313638;
+    
+    transition-delay: 1s;
+}
+.ordersSortDropdown:hover .dropdownSort{
+ 
+    display: block;
+    transition-delay: 1s;
+}
+.dropdownSort:hover{
+    cursor: pointer;
+   
+}
+.statusSideMenu{
+    display: none;
+    position: absolute;
+    
+  transform: translateX(90px) translateY(-20px);
+
+  width: 100px;
+  box-shadow: 0px 8px 16px 0px rgba(0,0,0,0.2);
+ 
+  z-index: 1;
+  background-color: #313638;
+    
+}
+.status:hover .statusSideMenu{
+    display: block;
+    align-items: center;
+    
+}
+.dropdownItem{
+    padding: 5px;
+    border-bottom: #313638 1px solid;
+    
+}
+.dropdownItem:hover{
+    background-color: #313638;
+    border-bottom: #ef6369 1px solid;
+    transition-duration: 0.3s;
+    
+
+}
+.underline{
+    border-top: #646464 1px solid;
+   margin-left: 20px;
+ 
+    max-width: calc(100% - 5%);
+}

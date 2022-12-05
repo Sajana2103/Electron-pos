@@ -2,7 +2,7 @@ import React from 'react'
 import { useDispatch ,useSelector} from 'react-redux'
 import { changeModalForm,setModalDisplay } from '../../redux/modalSlice'
 import { unsetCurrentUser } from '../../redux/settingsSlice'
-
+import { navigate } from '../../redux/navigationSlice'
 import './nav-bar.styles.css'
 
 const NavigationBar = ({width}) => {
@@ -27,9 +27,9 @@ const NavigationBar = ({width}) => {
     }
 
       <div className="nav-btns" >
-        <div className='nav-btn'>MENU</div>
-        <div className='nav-btn'>TABLES</div>
-        <div className='nav-btn'>HISTORY</div>
+        <div onClick={() => dispatch(navigate('menuitems'))}  className='nav-btn'>MENU</div>
+        <div onClick={() => dispatch(navigate('tables'))}  className='nav-btn'>TABLES</div>
+        <div onClick={() => dispatch(navigate('history'))} className='nav-btn'>HISTORY</div>
       </div>
      {
       currentUser && currentUser.user_id?
