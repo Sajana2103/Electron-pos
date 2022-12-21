@@ -2,7 +2,7 @@ import React from "react";
 import Bill from "./Bill.Order";
 import BillCardOngoingOrder from "./BillCard.OngoingOrders";
 import OrderCard from "./OrderCard.component";
-import { changeModalForm, setModalDisplay } from "../../redux/modalSlice";
+import { changeBillStatus, changeModalForm, setModalDisplay } from "../../redux/modalSlice";
 import { appendOrder, cancelOrder, clearNewOrder, closeBill } from "../../redux/orderSlice";
 import { useDispatch, useSelector } from "react-redux";
 import { updateTableState } from "../../redux/tablesSlice";
@@ -20,7 +20,7 @@ const OnGoingOrders = ({ order }) => {
 
   let currentAppendedOrder = 0
   // console.log('currentstate',currentstate)
-console.log(order,currentTable)
+// console.log(order,currentTable)
   const removeOrder = () => {
     let updateTable = {
       ...currentTable,
@@ -31,7 +31,7 @@ console.log(order,currentTable)
     }
     window.orders.removeOrder(order._id)
     .then(removed =>{
-      console.log(removed)
+      // console.log(removed)
       if(removed.success){
         dispatch(cancelOrder(removed.success))
         dispatch(clearNewOrder())
@@ -46,7 +46,7 @@ console.log(order,currentTable)
           dispatch(updateTableState(updateTable))
        
       } else {
-          console.log(data)
+          // console.log(data)
       }
   })
   }
@@ -133,8 +133,10 @@ console.log(order,currentTable)
                 dispatch(setModalDisplay())
                 dispatch(changeModalForm('loadCloseBill'))
                 dispatch(closeBill(order))
+                dispatch(changeBillStatus(true))
               }}>Close Bill</button>
-              <button className=" redSubmitBtn bold font-size-xsmall" onClick={() => setConfirmCancelOrder(true)}>Cancel order</button>
+              <button className=" redSubmitBtn bold font-size-xsmall" onClick={() => 
+                setConfirmCancelOrder(true)}>Cancel order</button>
             </div>
 
             <button className="minimize" onClick={() => setOpenOrder(!openOrder)} >Minimize</button>

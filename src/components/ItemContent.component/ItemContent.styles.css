@@ -6,7 +6,7 @@
   background-color: #363d3f;
   opacity: 0.8;
   display: grid;
-  grid-template-rows: 100px auto auto;
+  
   padding: 10px;
   box-shadow: #282c2e 1px 1px 3px;
   width: 100px;
@@ -39,4 +39,19 @@
  border-radius: 10px;
   pointer-events: none;
 
+}
+.set-visibility{
+  opacity: 0.8;
+  border: #d9f1fa 1px solid;
+  border-radius: 5px;
+  color: #d9f1fa;
+  width: 60%;
+  padding: 0.1rem;
+  font-size: 0.75rem;
+}
+.set-visibility:hover{
+  border: #d8595f 1px solid;
+  cursor: pointer;
+  color: #d8595f;
+  opacity: 1;
 }

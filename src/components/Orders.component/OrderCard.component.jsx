@@ -26,7 +26,7 @@ const OrderCard = () => {
   const [serverAndCustomer, setServerAndCustomer] = React.useState(initialServerCustomer)
 
  
-  console.log(todayOrders)
+  // console.log(todayOrders)
   const createNewOrder = () => {
     if (tableNumber === '') {
       setError({ error: 'Choose a table or takeout.' })
@@ -53,7 +53,7 @@ const OrderCard = () => {
         table_id:tableId._id
 
       }
-      console.log('addorder', addOrder)
+      // console.log('addorder', addOrder)
       window.orders.createOrder(addOrder).then(data =>{ 
         if(data._id)  {
           dispatch(addNewOrder(data))
@@ -85,8 +85,9 @@ const OrderCard = () => {
       }
       window.orders.createOrder(addOrder).then(data => {
         if (data) {
-          // console.log(data)
+          console.log('ordercard',data)
           dispatch(addItemsToOngoingOrder(data))
+          dispatch(addOrderToday(data))
           window.api.printBill({ ...addOrder, ...extraProps })
         }
       })
@@ -110,7 +111,7 @@ const OrderCard = () => {
           dispatch(updateTableState(updateSelected))
         
       } else {
-          console.log(data)
+          // console.log(data)
       }
   }
   )
@@ -127,7 +128,7 @@ const OrderCard = () => {
 
   // console.log(finalAmount,amount)
 
-  console.log(tableNumber)
+  // console.log(tableNumber)
 
   return (
     <div className="order-card-side bg-white">
@@ -180,7 +181,7 @@ const OrderCard = () => {
               <span className="font-small" onClick={() => {
                 setTableNumber('takeout')
                 setDisabled(true)
-                console.log(disabled)
+                // console.log(disabled)
                 setError({ error: '' })
               }} style={{
                 border: `2px solid ${disabled ? '#ef6369' : '#313638'}`, padding: '5px', cursor: 'pointer',

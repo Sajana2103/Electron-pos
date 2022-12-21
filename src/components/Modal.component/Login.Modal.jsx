@@ -45,7 +45,7 @@ const Login = () => {
             // console.log('setting token with user',token)
             if(token.token){
                 setError({error:'',input:''})
-                // console.log('setting token with user',token)
+                console.log('setting token with user',token)
 
                 dispatch(setCurrentUser({...credentials,token:token.token}))
                 

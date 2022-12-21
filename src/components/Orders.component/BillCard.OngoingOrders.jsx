@@ -7,7 +7,7 @@ const BillCardOngoingOrder = ({ order }) => {
   let vatAmount = 0
   let extras = 0
 
-  console.log(vat)
+  // console.log(vat)
 
   order.data.map((item) => {
 
@@ -20,7 +20,7 @@ const BillCardOngoingOrder = ({ order }) => {
   }
     amount += (item.price * item.quantity)
   })
-  console.log(vatAmount)
+  // console.log(vatAmount)
   // let vat = Math.floor((amount * 1.08) - amount)
   return (
     <div className="order-card-side">

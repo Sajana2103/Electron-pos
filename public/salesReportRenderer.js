@@ -23,15 +23,14 @@ let shopAddress = document.getElementById('address')
 let shopOpenHours = document.getElementById('openHours')
 let shopPhone = document.getElementById('phone')
 let shopLogo = document.getElementById('logo')
-let cashTag = document.getElementById('cash-tag')
-let balanceTag = document.getElementById('balance-tag')
+
 
 ipcRenderer.on('bill-window', async (event, arg) => {
   let { subTotal, serviceCharge, extras, 
     vat, discountedTotal, clientName, 
     balance, total, dateAndTime, user, 
     billCloseTime, paidAmount, table, _id,
-  logo,address,phone,openHours ,status, data} = arg
+  logo,address,phone,openHours } = arg
 
   let dateTimeString = dateAndTime[0]? new Date(dateAndTime[0]).toLocaleString() : new Date(dateAndTime).toLocaleString()
   console.log(dateTimeString,dateAndTime)
@@ -45,18 +44,9 @@ ipcRenderer.on('bill-window', async (event, arg) => {
   bill.innerText = `Invoice #${_id}`
   cashier.innerText = `Cashier:${user}`
   netTotal.innerText = `${total.toString()}`
-  cashTag.innerText = table === 'takeout' ? 'Cash :' : ''
-  balanceTag.innerText = table === 'takeout' ? 'Balance :' : ''
+  
   cash.innerText = table==="takeout" ? `${paidAmount.toString()}` : ''
-  balanceAmount.innerText = table==="takeout" ? `${balance.toString()}` : ''
-
-  if(status ==='completed' && table !== 'takeout'){
-    cashTag.innerText = 'Cash :' 
-  balanceTag.innerText = 'Balance :'
-  cash.innerText = `${paidAmount.toString()}` 
-  balanceAmount.innerText = `${balance.toString()}` 
-  }
-
+  balanceAmount.innerText = `${balance.toString()}`
   startDateAndTime.innerText = `Start time:${dateTimeString}|`
   endDateAndTime.innerText = `|End time:${billCloseDateTimeString}`
   if (vat) vatAmount.innerText = `+ Vat:${vat}`
@@ -66,51 +56,49 @@ ipcRenderer.on('bill-window', async (event, arg) => {
   if (subTotal) subtotalAmount.innerText = `Sub-Total:${subTotal}`
 
 
-  if(data.length){
 
-    data.map((item) => {
-      let itemParent = document.createElement('div')
-      let qty = document.createElement('p')
-      let price = document.createElement('p')
-      let div = document.createElement('div')
-      let labelName = document.createElement('div')
-      let extras = document.createElement('div')
-      qty.className = "med-text bold"
-      price.className = "med-text bold"
-      qty.innerText = item.quantity
-      price.innerText = (item.price * item.quantity)
-      
-      labelName.innerText = item.item
-      div.style = "display: grid;grid-template-columns: 15% 60% 25%;"
-      console.log(item, extras)
-      if (item.extras && item.extras.length) {
-        item.extras.map((extra, idx) => {
-          let extraItem = document.createElement('p')
-          extraItem.className = "tiny-text"
-          extraItem.innerText = `[${extra.name} ${extra.price}]`
-          extras.appendChild(extraItem)
-          console.log(idx,extra)
-        })
-      }
-      if (!item.extras || !item.extras.length) {
+  arg.data.map((item) => {
+    let itemParent = document.createElement('div')
+    let qty = document.createElement('p')
+    let price = document.createElement('p')
+    let div = document.createElement('div')
+    let labelName = document.createElement('div')
+    let extras = document.createElement('div')
+    qty.className = "med-text bold"
+    price.className = "med-text bold"
+    qty.innerText = item.quantity
+    price.innerText = (item.price * item.quantity)
+    
+    labelName.innerText = item.item
+    div.style = "display: grid;grid-template-columns: 15% 60% 25%;"
+    console.log(item, extras)
+    if (item.extras && item.extras.length) {
+      item.extras.map((extra, idx) => {
         let extraItem = document.createElement('p')
         extraItem.className = "tiny-text"
-        extraItem.innerText = '...'
+        extraItem.innerText = `[${extra.name} ${extra.price}]`
         extras.appendChild(extraItem)
-      }
-      console.log(extras.toString(),extras)
-      // div.innerHTML = (`<p class="small-text" style="margin-top:2px;" >${item.quantity}</p>${extras.toString()}
-      //  <p class="small-text" >${item.price * item.quantity}</p>`)
-       console.log(div)
-       div.appendChild(qty)
-       div.appendChild(extras)
-       div.appendChild(price)
-      itemParent.appendChild(labelName)
-      labelName.appendChild(div)
-      printItems.appendChild(itemParent)
-  
-    })
-  }
+        console.log(idx,extra)
+      })
+    }
+    if (!item.extras || !item.extras.length) {
+      let extraItem = document.createElement('p')
+      extraItem.className = "tiny-text"
+      extraItem.innerText = '...'
+      extras.appendChild(extraItem)
+    }
+    console.log(extras.toString(),extras)
+    // div.innerHTML = (`<p class="small-text" style="margin-top:2px;" >${item.quantity}</p>${extras.toString()}
+    //  <p class="small-text" >${item.price * item.quantity}</p>`)
+     console.log(div)
+     div.appendChild(qty)
+     div.appendChild(extras)
+     div.appendChild(price)
+    itemParent.appendChild(labelName)
+    labelName.appendChild(div)
+    printItems.appendChild(itemParent)
+
+  })
   console.log(arg)
 })
 

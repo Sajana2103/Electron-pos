@@ -150,6 +150,43 @@ class OrdersDAO {
       return { error: error }
     }
   }
+
+  static async getOrdersToday(start, end, sortBy) {
+    console.log('%c Get Orders Today', 'color:green; font-size:18px;')
+    start.setHours(0)
+    
+    console.log
+    try {
+      let today = await db.get('timeAndOrderReset')
+      console.log('timeandorder', today)
+      let parsedDate = Date.parse(start)
+      console.log('timeandorder parsedDate', parsedDate, 'start', start)
+
+      let { docs } = await db.find({
+        selector: {
+          title: 'order'
+        }
+      })
+      let doc = []
+      console.log("find DOc", docs)
+      switch (sortBy) {
+        case 'today':
+          let doc = docs.filter((order) => {
+            //  if( Date.parse(order.dateAndTime[0]) > parsedDate || order.status === 'ongoing') console.log( order)
+            return Date.parse(order.dateAndTime[0]) > parsedDate || order.status === 'ongoing'
+          })
+          console.log('getOrdersToday DOC',doc)
+          if(doc.length) return doc
+          break;
+        default:
+          break;
+      }
+
+    } catch (error) {
+      console.error(error)
+    }
+  }
+
   static async removeOrder(_id) {
     let doc = await db.get(_id)
 
@@ -159,17 +196,17 @@ class OrdersDAO {
       _rev: doc._rev,
       status: 'cancelled',
     })
-    if(removeItem.ok){
-
+    if (removeItem.ok) {
+      getClient()
       console.log('item removed', removeItem)
-      return {success:removeItem,item:doc}
-    } else { return {error:'Remove item failed.'}}
+      return { success: removeItem, item: doc }
+    } else { return { error: 'Remove item failed.' } }
   }
 
   static async getOngoingOrders() {
 
     let docs = await db.find({
-      selector: { status: 'ongoing',title:'order' }
+      selector: { status: 'ongoing', title: 'order' }
     })
     // console.log(docs)
     return docs.docs
@@ -184,8 +221,8 @@ class OrdersDAO {
 
     console.log('try timeAndOrderReset')
     let res
-    await db.get("timeAndOrderReset",function(err,isToday){
-      console.log(err,isToday)
+    await db.get("timeAndOrderReset", function (err, isToday) {
+      console.log(err, isToday)
       if (err && err.name === 'not_found') {
         console.log('no time doc found. creating new doc')
         let createDate = {
@@ -208,7 +245,7 @@ class OrdersDAO {
         console.log(timeNow, end, end >= timeNow)
         if (endTime <= timeNow) {
           console.log('time doc found. creating new doc', endTime, timeNow)
-         db.put({
+          db.put({
             _id: isToday._id,
             _rev: isToday._rev,
             startTime: start,
@@ -216,13 +253,20 @@ class OrdersDAO {
             orderNumber: 1
           }).then(doc => {
             console.log(doc)
-            if(doc.ok) {return doc}
-        
+            if (doc.ok) { return doc }
+
           })
         } else res = isToday
       }
     })
-        return res
+    getClient()
+    return res
+  }
+  static async salesPerday() {
+    let docs = await db.find({
+      selector: { status: 'completed', title: 'order' }
+    })
+    console.log('salesPerday', docs)
   }
 
 }

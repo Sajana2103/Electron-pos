@@ -20,7 +20,7 @@ const windowResizeSlice = createSlice({
       state.width = width
       },
       shrinkColumn(state,action){
-        console.log('shrinkColumn',state.width)
+        // console.log('shrinkColumn',state.width)
         if(action.payload.column==='categories' ) {
           state.shrink={...action.payload}
         } 

@@ -1,6 +1,6 @@
 {
   "name": "pos-restaurants",
-  "version": "0.1.5",
+  "version": "0.1.8",
   "main": "public/electron.js",
   "homepage": "./",
   "private": true,

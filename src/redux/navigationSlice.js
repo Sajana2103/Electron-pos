@@ -1,7 +1,8 @@
 import { createSlice } from "@reduxjs/toolkit";
 
 const initialState = {
-  content:'menuitems'
+  content:'menuitems',
+  showImage:false
 }
 
 const navigationSlice = createSlice({
@@ -11,13 +12,17 @@ const navigationSlice = createSlice({
 
     navigate(state,action){
       if(action.payload){
-          console.log(action.payload)
+          // console.log(action.payload)
         state.content = action.payload
       }
+    },
+    setImage(state,action){
+   
+      state.showImage = !state.showImage
     }
   },
   
 })
 
-export const {navigate} = navigationSlice.actions
+export const {navigate,setImage} = navigationSlice.actions
 export default navigationSlice.reducer

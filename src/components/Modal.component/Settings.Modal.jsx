@@ -79,7 +79,7 @@ const SettingsModal = () => {
       return { ...prevState, user: { ...user } }
     })
   }
-
+console.log(syncDatabase)
   const setLogo = (e) => {
     let file = e.target.files[0]
     console.log(file)
@@ -125,6 +125,7 @@ const SettingsModal = () => {
   }
 
   const setSyncDatabaseCredentials = (e) => {
+    console.log(e.target.value)
     let key = e.target.name
     let value = e.target.value
     let field = {}
@@ -135,8 +136,8 @@ const SettingsModal = () => {
   }
 
   const syncDatabaseOnSubmit = () => {
-    
-    fetch(`http://localhost:4000/v1/users/sync-database`, {
+    console.log('syncdata base initiated')
+    fetch(`http://52.66.211.153:4000/v1/users/sync-database`, {
       method: "POST",
       body: JSON.stringify(syncDatabase),
       headers: {
@@ -147,10 +148,10 @@ const SettingsModal = () => {
       if (data.success) {
         console.log('Sync Success')
         setSuccess({message:data.success,status:true})
-        window.settings.setClientInfo(syncDatabase).then(res => {
-          console.log('syncDatabaseOnSubmit',res)
+        window.settings.setClientInfo(syncDatabase).then(resp => {
+          console.log('syncDatabaseOnSubmit',resp)
           let syncdb = syncDatabase
-          syncdb._rev = res.rev
+          syncdb._rev = resp.rev
           
          
           dispatch(setClientInfo(syncdb))

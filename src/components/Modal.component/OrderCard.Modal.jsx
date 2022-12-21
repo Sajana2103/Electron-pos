@@ -3,7 +3,7 @@ import { useSelector } from "react-redux";
 
 const OrderCardModal = () => {
     const {modalData} = useSelector(state => state.modal)
-    console.log(modalData)
+    // console.log(modalData)
     const startTime = new Date(modalData.dateAndTime[0]).toLocaleString()
     const endTime = modalData.billCloseTime? new Date(modalData.billCloseTime).toLocaleString().split(',')[1] : 'Ongoing'
     let subTotal = 0

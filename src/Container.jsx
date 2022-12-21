@@ -16,6 +16,8 @@ import UserOrders from './components/History/UserOrders.component';
 import { loadOrders } from './redux/orderHistorySlice';
 import TablesContent from './components/Tables/TablesContent';
 import {loadReservations, loadTables} from './redux/tablesSlice'
+import { getOrdersToday } from './redux/sortItemsSlice';
+
 
 const Container = () => {
 
@@ -37,7 +39,7 @@ const Container = () => {
     } else {
       dispatch(setModalDisplay())
     }
- 
+    let sortBy = 'today'
     let checkDate = new Date()
     // let splitDate = checkDate.split(',').shift()
     checkDate.setHours(6)
@@ -47,42 +49,49 @@ const Container = () => {
     let getDate = checkDate.getDate()
     let adddate = new Date(checkDate).setDate(getDate+1)
     let endDate = new Date(adddate)
- 
+    // console.log('getDate',checkDate)
     // console.log('resetTime',checkDate,getDate,endDate,stringToDate.toLocaleString())
     window.orders.timeAndOrderReset(checkDate,endDate)
     .then(data => {
-      console.log('updateOrderNumber',data)
+      // console.log('updateOrderNumber',data)
       if(data.orderNumber){
-        console.log('if(data.orderNumber)',data)
+        // console.log('if(data.orderNumber)',data)
         dispatch(updateOrderNumber(data.orderNumber))
       } else {
         console.log(data)
       }
     })
     .catch(error => console.log('get time reset error',error))
-  
+    
     if(currentUser){
-
+      
       window.orders.getOngoingOrders().then(orders =>{if(orders) dispatch(loadOngoingOrders(orders))})
       window.settings.getSettings().then(settings => {
         // console.log(settings)
         dispatch(assignSettings(settings))})
-      window.settings.getUsers().then(users => {dispatch(addUsers(users))})
-      window.settings.getClientInfo().then(clientInfo => {
-        // console.log(clientInfo);
+        window.settings.getUsers().then(users => {dispatch(addUsers(users))})
+        window.settings.getClientInfo().then(clientInfo => {
+          // console.log(clientInfo);
         dispatch(setClientInfo(clientInfo))})
-      window.orders.getAllOrders().then(data => {
-        console.log(data)
-        dispatch(loadOrders(data))
-      })
-      window.tablesReservations.getAllTables().then(tables => {
-        if(tables.length) dispatch(loadTables(tables))
-      })
-      window.tablesReservations.loadReservations().then(data => {
-        if(data.length){
-          dispatch(loadReservations(data.docs))
-        }
-      })
+        window.orders.getAllOrders().then(data => {
+          console.log(data)
+          dispatch(loadOrders(data))
+        })
+        window.tablesReservations.getAllTables().then(tables => {
+          if(tables.length) dispatch(loadTables(tables))
+        })
+        window.tablesReservations.loadReservations().then(data => {
+          if(data.length){
+            dispatch(loadReservations(data.docs))
+          }
+        })
+        window.orders.getOrdersToday(checkDate,endDate,sortBy)
+        .then(ordersToday => {
+          if(ordersToday.length){
+            dispatch(getOrdersToday(ordersToday))
+          }
+        
+        } )
     
    
     }
@@ -136,6 +145,7 @@ const Container = () => {
         <TablesContent props={{ height: resizeWindowHeight, width: resizeWindowWidth }}/>
         :<></>
        }
+   
         
         <Orders props={{ height: resizeWindowHeight, width: resizeWindowWidth }} />
 

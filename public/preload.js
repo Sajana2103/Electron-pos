@@ -47,7 +47,8 @@ contextBridge.exposeInMainWorld(
         removeOrder:OrdersDAO.removeOrder,
         completeOrCancelOrder:OrdersDAO.completeOrCancelOrder,
         getAllOrders:OrdersDAO.getAllOrders,
-        addNewTable:OrdersDAO.addNewTable,
+        salesPerday:OrdersDAO.salesPerday,
+        getOrdersToday:OrdersDAO.getOrdersToday,
         getAllTables:OrdersDAO.getAllTables,
         removeTable:OrdersDAO.removeTable
     }

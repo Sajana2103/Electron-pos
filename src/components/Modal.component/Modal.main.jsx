@@ -10,6 +10,7 @@ import Login from './Login.Modal'
 import './ModalMain.styles.css'
 import AddTableModal from "./Modal.Tables";
 import AddReservationModal from "./Reservations.Modal";
+import SalesReport from "./SalesReport.Modal";
 
 const ModalMain = () => {
 const dispatch = useDispatch()
@@ -29,7 +30,7 @@ const display = useSelector(loadModalDisplay)
 const form = useSelector(state => state.modal.form)
 
 let modalForm
-console.log(form)
+// console.log(form)
 switch (form) {
   case 'createMenuItem':
     modalForm = <ModalFormMenuItem/>
@@ -55,6 +56,9 @@ switch (form) {
   case 'addReservation' :
     modalForm = <AddReservationModal/>
   break;
+  case 'salesReport' :
+    modalForm = <SalesReport/>
+    break;
   default:
     break;
 }

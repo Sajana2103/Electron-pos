@@ -19,6 +19,7 @@ const [confirmCancelOrder, setConfirmCancelOrder] = React.useState(false)
 const [billsOrKitchen,setBillsOrKitchen] = React.useState(true)
 
 //window.orders.getLastOrder().then(data => console.log(data))
+console.log()
 const dispatch = useDispatch()
 useEffect(() => {
    if(ongoingOrder.length > 0){

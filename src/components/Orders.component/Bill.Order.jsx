@@ -3,6 +3,8 @@ import { setModalDisplay } from '../../redux/modalSlice'
 import { useDispatch, useSelector } from 'react-redux'
 import { completeCloseBill } from '../../redux/orderSlice'
 import { updateTableState } from '../../redux/tablesSlice'
+import { useEffect } from 'react'
+import { addOrderToday } from '../../redux/orderHistorySlice'
 
 const initialDiscount = { type: '', discountedAmount: 0 }
 const initialFinalAmount = 0
@@ -30,8 +32,13 @@ const Bill = ({ order }) => {
   const [css, setCss] = React.useState(initialCss)
   const [print, setPrint] = React.useState(initialPrint)
 
+  
   const settingsState = useSelector(state => state.settings)
   const {tables} = useSelector(state => state.tables)
+  const {currentBill} = useSelector(state => state.orders)
+  const {billStatus} = useSelector(state =>state.modal)
+  // console.log(billStatus)
+
   const regNumbers = /\D/
 
   let currentTable = tables.find(table => table.currentOrder === order.orderNumber)
@@ -47,8 +54,29 @@ const Bill = ({ order }) => {
   let paidAmount = document.getElementById('paidAmount') 
   let discountedFinalAmount = Math.floor(finalAmount + vat + extras + serviceChargeAmount ) - paidAmountAndBalance.paidAmount 
   let nonDiscountedFinalAmount = (amount + vat + extras + serviceChargeAmount) - paidAmountAndBalance.paidAmount 
+  let dAmount
+  let dPer
 
-  console.log('payfull11',finalAmount + vat + extras + serviceChargeAmount)
+  useEffect(() => {
+    dPer = document.getElementById('dPer').value
+    dAmount = document.getElementById('dAmount').value
+    console.log(dAmount,dPer)
+    if(discount.discountedAmount && discount.type && dAmount !== '' || dPer !== ''){
+      calculateDiscount()
+    } else {
+      cancelDiscount()
+    }
+    if(billStatus === false) {
+      
+      cancelDiscount()
+      cancelCloseBill()
+    
+    }
+  
+    
+  },[discount.type, discount.discountedAmount,billStatus])
+  
+  // console.log('payfull11',finalAmount + vat + extras + serviceChargeAmount)
   order.data.map((item) => {
     if (item.vat) {
 
@@ -105,10 +133,11 @@ const Bill = ({ order }) => {
     }
   }
   const setPaidAmount = () => {
+    
     if (paidAmountAndBalance.cash !== 0 && (paidAmountAndBalance.paidAmount <= (amount + vat + extras) || paidAmountAndBalance.paidAmount <= (finalAmount + vat + extras))) {
       paidAmount.value = 0
       setPaidAmountAndBalance(prevState => {
-        console.log('setPaiD runs')
+        // console.log('setPaiD runs')
         let { payPortions } = prevState
 
         let paidAmount = paidAmountAndBalance.cash + paidAmountAndBalance.paidAmount
@@ -122,16 +151,17 @@ const Bill = ({ order }) => {
           }
           
         } else {
-          console.log('setPaiD dont run')
+          // console.log('setPaiD dont run')
           return
         }
       })
     } else {
-      console.log('setPaiD dont run')
+      // console.log('setPaiD dont run')
       return
     }
   }
-  const closeBill = () => {
+ 
+  const closeBill = (e) => {
     
     let total = finalAmount ? (finalAmount + vat + extras + serviceChargeAmount) : (amount + vat + extras + serviceChargeAmount)
     let discountedBalance = finalAmount ? Math.abs(Math.floor(finalAmount + vat + extras) - paidAmountAndBalance.paidAmount) : paidAmountAndBalance.balance
@@ -143,8 +173,8 @@ const Bill = ({ order }) => {
       setError({ error: 'Unpaid amount left.', unpaid: true })
       return
     }
-    if (!print) {
-      console.log('print error')
+    if (!print ) {
+      // console.log('print error')
       setError({ print: 'Print bill before closing.' })
       return
     }
@@ -174,6 +204,7 @@ const Bill = ({ order }) => {
             server:'',
             status:'Vacant'
           }
+          // dispatch(addOrderToday(finalBill))
           dispatch(completeCloseBill(finalBill))
           dispatch(setModalDisplay())
           cancelCloseBill()
@@ -183,25 +214,32 @@ const Bill = ({ order }) => {
                 dispatch(updateTableState(updateTable))
              
             } else {
-                console.log(data)
+                // console.log(data)
             }
         })
-          console.log(finalBill)
+        
+        
+          // console.log(finalBill)
         } else {
           setError({ error: data.error, update: 'update' })
         }
       })
   }
   const sendBillToPrint = (e) => {
+
     e.preventDefault()
     // let serviceChargeAmount = subTotal * (serviceCharge / 100)
     let total = finalAmount ? (finalAmount + vat + extras + serviceChargeAmount) : (amount + vat + extras + serviceChargeAmount)
     let discountedBalance = finalAmount ? Math.abs(Math.floor(finalAmount + vat + extras + serviceChargeAmount) - paidAmountAndBalance.paidAmount) : paidAmountAndBalance.balance
     let discountedTotal = discount.type === 'discount-percentage' ? ((amount + vat + extras ) / 100) * discount.discountedAmount : discount.discountedAmount
-    console.log(total > paidAmountAndBalance.paidAmount)
-
-    if (total > paidAmountAndBalance.paidAmount) {
-      console.log('error', finalAmount, total, paidAmountAndBalance.paidAmount)
+    // console.log(total > paidAmountAndBalance.paidAmount)
+    // if (currentBill.table !== 'takeout'){
+    //   setPaidAmountAndBalance(prevState =>{
+    //      return {...prevState, balance : 0, paidAmount : total}
+    // })
+    // }
+    if (total > paidAmountAndBalance.paidAmount && currentBill.table === "takeout") {
+      // console.log('error', finalAmount, total, paidAmountAndBalance.paidAmount)
       setError({ error: 'Unpaid amount left.', unpaid: true })
       return
     }
@@ -212,7 +250,7 @@ const Bill = ({ order }) => {
       discountedTotal: discountedTotal ? discountedTotal : 0,
       balance: discountedBalance,
       vat: vat,
-      status: 'completed',
+      status: 'bill-processing',
       billCloseTime: new Date(),
       extras: extras,
       serviceCharge: serviceChargeAmount,
@@ -221,18 +259,29 @@ const Bill = ({ order }) => {
       printer: settingsState.printers.bill,
       ...settingsState.shopDetails
     }
-
+    console.log(finalBill)
     setPrint(true)
     setError({ error: '' })
+    if(currentBill.table === 'takeout'){
+      finalBill.status = 'completed'
+      window.api.printBill(finalBill)
+      return
+    } else if(total <= paidAmountAndBalance.paidAmount && currentBill.table !== "takeout"){
+      finalBill.status = 'completed'
+      window.api.printBill(finalBill)
+      return
+    } 
     window.api.printBill(finalBill)
 
-    console.log('printBill', order)
+
+    // console.log('printBill', order)
   }
   const cancelCloseBill = () => {
     for (let i = 0; i < 4; i++) {
+      console.log( getInputs[i])
       getInputs[i].value = ''
     }
-    paidAmount.value = 0
+    if(paidAmount) paidAmount.value = 0
     setDiscount(initialDiscount)
     setFinalAmount(initialFinalAmount)
     setPaymentSplitCustomers(initialPaymentSplit)
@@ -242,8 +291,10 @@ const Bill = ({ order }) => {
     setCss(initialCss)
     setPrint(initialPrint)
   }
-  console.log('total',(amount + vat + extras + serviceChargeAmount) )
-  console.log('extras',extras ,amount, vat,serviceChargeAmount)
+  // console.log('total',(amount + vat + extras + serviceChargeAmount) )
+  // console.log('extras',extras ,amount, vat,serviceChargeAmount)
+
+
 
   return (
     <div className="order-card-billModal ">
@@ -293,13 +344,13 @@ const Bill = ({ order }) => {
                     onChange={(e) => {
                      
                       if (!regNumbers.exec(e.target.value)) {
-                        console.log(e.target.value)
+                        // console.log(e.target.value)
                         setError({ payByCash: '' })
                         setPaidAmountAndBalance(prevState => {
                           let cash = parseInt(e.target.value)
                           let balance = (amount + vat + extras + serviceChargeAmount) - cash
 
-                          console.log(balance)
+                          // console.log(balance)
                           if (balance < 0) {
                             return { ...prevState, cash: cash, balance: Math.abs(balance), }
                           }
@@ -361,7 +412,7 @@ const Bill = ({ order }) => {
 
       <div>
         <div className="discount-section-main" style={{ display: 'grid', gridTemplateColumns: 'repeat(5,auto)', alignItems: 'center' }}>
-          <label className="font-small">Discount :</label> <input onChange=
+          <label className="font-small">Discount :</label> %<input onChange=
             {(e) => {
               // console.log('e.target.value',Boolean(e.target.value.length),discount.amount)
               let isNumber = regNumbers.exec(e.target.value)
@@ -373,23 +424,26 @@ const Bill = ({ order }) => {
                 setError({ discount: '' })
                 setDiscount({ type: e.target.name, discountedAmount: parseInt(e.target.value) })
               }
-            }}
-            className="discount-input inputs" name="discount-percentage" placeholder="%" inputTag="billCloseModal" />
-          <input onChange=
+            
+
+            }} 
+            className="discount-input input" id='dPer' name="discount-percentage" placeholder="%" inputTag="billCloseModal" />
+          Rs.<input style={{width:'70px'}} onChange=
             {(e) => {
 
               if (regNumbers.exec(e.target.value) && e.target.value.length) {
-                console.log('error')
+                // console.log('error')
                 setError({ discount: 'Enter a proper number for discount' })
                 return
               } else {
                 setError({ discount: '' })
+                dPer = 0
                 setDiscount({ type: e.target.name, discountedAmount: parseInt(e.target.value) })
-
               }
-            }} className="discount-input inputs" name="discount-amount" placeholder="Rs." inputTag="billCloseModal" />
-          <button className='font-small do-action' onClick={calculateDiscount}>Discount</button>
-          <button className='font-small cancel-action' onClick={cancelDiscount}>Cancel</button>
+              if(dAmount) dPer=0
+            }} className="discount-input input" id="dAmount" name="discount-amount" placeholder="Rs." inputTag="billCloseModal" />
+          {/* <button className='font-small do-action' onClick={calculateDiscount}>Discount</button>
+          <button className='font-small cancel-action' onClick={cancelDiscount}>Cancel</button> */}
         </div>
         {
           error.discount ?
@@ -407,30 +461,37 @@ const Bill = ({ order }) => {
           <span className="font-small" >+ EXTRAS {extras} </span>
           <span className="font-small" >+ VAT {settingsState.vat}.0% Rs.{vat} </span>
           <h3 className="highlight-font-color font-size-large bold" style={{ padding: '5px 0px 6px 0px' }}>
-            Rs.{Math.floor((finalAmount === 0 ? amount : finalAmount) + vat + extras+serviceChargeAmount)}</h3>
+            Total : Rs.{Math.floor((finalAmount === 0 ? amount : finalAmount) + vat + extras+serviceChargeAmount)}</h3>
         </div>
         <div>
 
           <div className='bill-icons-main' >
             {
-              finalAmount ?
+              finalAmount  ?
                 <>
-                  <label style={{ marginBottom: '1ch' }}>Balance:<span className='bold '>Rs.{(finalAmount + vat + extras + serviceChargeAmount) - paidAmountAndBalance.paidAmount < 0 ? Math.abs(Math.floor(finalAmount + vat + extras + serviceChargeAmount) - paidAmountAndBalance.paidAmount) : 0}</span></label>
+                  <label style={{ marginBottom: '1ch' }}>Balance:<span className='bold '>
+                    Rs.{(finalAmount + vat + extras + serviceChargeAmount) - paidAmountAndBalance.paidAmount < 0 ? Math.abs(Math.floor(finalAmount + vat + extras + serviceChargeAmount) - paidAmountAndBalance.paidAmount) : 0}</span></label>
                   <label style={{ marginBottom: '1ch' }}>Unpaid:<span className='bold highlight-font-color'>
                     Rs.{(finalAmount + vat + extras + serviceChargeAmount) > paidAmountAndBalance.paidAmount ? Math.floor(finalAmount + vat + extras + serviceChargeAmount ) - paidAmountAndBalance.paidAmount : 0}</span></label>
 
                 </>
-                :
+                : <></> }
+            {
+              finalAmount === 0  ?
                 <>
 
                   <label style={{ marginBottom: '1ch' }}>Balance:<span className='bold '>Rs.{paidAmountAndBalance.balance < 0 ? 0 : paidAmountAndBalance.balance}</span></label>
                   <label style={{ marginBottom: '1ch' }}>Unpaid:<span className='bold highlight-font-color'>
                     Rs.{(amount + vat + extras + serviceChargeAmount) > paidAmountAndBalance.paidAmount ? (amount + vat + extras + serviceChargeAmount) - paidAmountAndBalance.paidAmount : 0}</span></label>
-                </>
+                </> : <></>
             }
+            
 
             <div onClick={sendBillToPrint} className='bill-icons-bg' ><img className='bill-icons' src="printer.png" /></div>
-            <div onClick={() => closeBill()} className='bill-icons-bg'><img className='bill-icons' src="tick.png" /></div>
+            <div onClick={() => {
+              closeBill()
+              
+              }} className='bill-icons-bg'><img className='bill-icons' src="tick.png" /></div>
           </div>
           {
             error.unpaid ? <span className='error'>{error.error}</span> : <></>

@@ -32,7 +32,7 @@ const CategoryIndex = ({ props }) => {
       dispatch(shrinkColumn({ column: 'categories', width: 200 }))
     }
   },[width])
-
+// console.log("CATEGORIES",categories)
   return (
     <div style={{ width: shrinkWidth, transitionDuration: '0.2s' }} >
       <div className="index-category" style={{ height: `${height - 90}px`, }} >
@@ -47,8 +47,8 @@ const CategoryIndex = ({ props }) => {
             categories.map((category, idx) => {
               
               return (
-                <div style={{ display: shrinkWidth === 200 || width<700? 'grid' : 'none' }} id={category} key={idx} 
-                className="index-item" onClick={filterCategory}>{category }</div>
+                <div style={{ display: shrinkWidth === 200 || width<700? 'grid' : 'none'}} id={category} key={idx} 
+                className={`index-item ${idx%2===0? 'catBag2' : ''}`} onClick={filterCategory}>{category }</div>
 
               )
             })

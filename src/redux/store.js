@@ -8,6 +8,7 @@ import settingsReducer from './settingsSlice'
 import ordersHistorySlice from './orderHistorySlice'
 import navigationSlice from './navigationSlice'
 import tablesSlice from './tablesSlice'
+import sortItemsSlice from './sortItemsSlice'
 
 export default configureStore({
   reducer:{
@@ -19,6 +20,7 @@ export default configureStore({
     settings: settingsReducer,
     ordersHistory: ordersHistorySlice,
     navigation:navigationSlice,
-    tables:tablesSlice
+    tables:tablesSlice,
+    sortItems:sortItemsSlice
   }
 })

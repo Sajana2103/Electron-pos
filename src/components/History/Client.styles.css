@@ -118,3 +118,52 @@
  
     max-width: calc(100% - 5%);
 }
+.salesReport{
+    display: grid;
+    background-color: #363d3f;
+    text-align: center;
+    margin: 0.5rem;
+    color: #4fc580;
+    transition-duration: 0.2s;
+    border: #4fc580 1px solid;
+    border-radius: 0.5rem;
+    width : 10rem;
+    
+    align-items: center;
+    justify-content: center;
+  
+}
+.salesReport:hover{
+    color: #51ee92;
+    border: #51ee92 1px solid;
+
+    cursor: pointer;
+    transition-duration: 0.2s;
+}
+.salesHistoryBtns{
+    
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(4rem, 1fr));
+    gap: 1rem;
+    align-items: center;
+    padding: 20px;
+    
+    justify-content: center;
+
+}
+.salesHistoryBtn{
+    font-size: small;
+    border: 1px solid #646464;
+    padding: 0.3rem;
+    border-radius: 0.5rem;
+    color: #646464;
+    cursor: pointer;
+    transition-duration: 0.3s;
+}
+.salesHistoryBtn:hover{
+    color: #f1f1f1;
+    border: 1px solid #f1f1f1;
+    transform: scale(105%);
+    transition-duration: 0.3s;
+    
+}

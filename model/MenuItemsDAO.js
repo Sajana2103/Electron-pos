@@ -3,6 +3,15 @@ PouchDB.plugin(require('pouchdb-find'))
 const { getClient } = require('./RemoteDb')
 const db = require('./pouchdb')
 
+async function destroyDB(){
+
+  try {
+    await db.destroy();
+  } catch (err) {
+    console.log(err);
+  }
+}
+// destroyDB()
 async function getAllMenuItems() {
   let docs = await db.find({
     selector: {
@@ -26,6 +35,7 @@ class MenuItemsDAO {
     // } else if(!data.price && data.portionSizes.length<1) return {res:'Price or Portion is required.'}
     try {
       let res = await db.post(data)
+      getClient()
       return { result: res, data: data }
     } catch (error) {
       console.log('Add Item Error', error)
@@ -57,7 +67,7 @@ class MenuItemsDAO {
         ...item
       })
       console.log(res)
-
+      getClient()
       return { res: res, data: item }
     } catch (error) {
       console.log('error', error)
@@ -71,6 +81,7 @@ class MenuItemsDAO {
       console.log(doc)
       let response = await db.remove(doc)
       console.log(response)
+      getClient()
       return response
     } catch (error) {
       console.log('Remove', error)

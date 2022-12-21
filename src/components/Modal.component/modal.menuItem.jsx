@@ -3,6 +3,7 @@ import { useSelector, useDispatch } from 'react-redux'
 import { openNewOrder, addItemsToExistingOrder } from '../../redux/orderSlice'
 import { removeItemFromState, currentItemModal, resetCurrentItemModal,updateMenuItem } from '../../redux/menuItemSlice'
 import { setModalDisplay,changeModalForm } from '../../redux/modalSlice'
+import { addOrderToday } from '../../redux/orderHistorySlice'
 
 const initialError = { error: '',input:'' }
 const initialExtras ={item:{name:'',price:0},extraItems:[]}
@@ -66,7 +67,7 @@ const MenuItemModal = () => {
  
 
   const addItemToOrder = () => {
-    console.log(newOrder)
+    // console.log(newOrder)
     if(!newOrder.price) {setError({input:'portion', error:'Select a portion before ordering.'}); return}
     let itemExists = ongoingOrders.find((item) => (item.item === newOrder.item && item.portion === newOrder.portion))
     if (itemExists) {
@@ -76,6 +77,7 @@ const MenuItemModal = () => {
     setError(initialError)
     setPortionSize({portionSize:'',portionPrice:''})
     dispatch(openNewOrder(newOrder))
+   
     dispatch(setModalDisplay())
     setCount(1)
     setExtras(initialExtras)
@@ -91,12 +93,13 @@ const MenuItemModal = () => {
       setError({input:'duplicateItem', error: 'Item is already added to the ongoing order. Cancel and add quantity on the Order Card.' })
       return
     }
-    console.log(currentOrderExists, canAddNewItems)
+    // console.log(currentOrderExists, canAddNewItems)
     if (currentOrderExists && canAddNewItems) {
       clearInputs()
       setError(initialError)
       setPortionSize({portionSize:'',portionPrice:''})
       dispatch(addItemsToExistingOrder(newOrder))
+      
       dispatch(setModalDisplay())
       setCount(1)
       setExtras(initialExtras)
@@ -262,8 +265,8 @@ const MenuItemModal = () => {
              let idx = parseInt(e.target.id)
              setExtras(prevState => {
                let extraItems = prevState.extraItems
-              console.log(extraItems)
-                console.log('removing items',idx===index)
+              // console.log(extraItems)
+              //   console.log('removing items',idx===index)
                 extraItems= extraItems.filter((item,id) =>{return idx !== id})
                   return {...prevState,extraItems:[...extraItems]}
                })

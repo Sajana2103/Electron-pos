@@ -40,7 +40,7 @@ const AddTableModal = () => {
     const { modalData } = useSelector(state => state.modal)
     const { addNewTables } = useSelector(state => state.tables)
     const { currentUser } = useSelector(state => state.settings)
-    console.log(modalData)
+    // console.log(modalData)
     const [updateTable, setUpdateTable] = useState(false)
     const [deleteWarning, setDeleteWarning] = useState(initialDeleteWarning)
     const [error, setError] = useState(initialError)
@@ -80,9 +80,9 @@ const AddTableModal = () => {
     const submitTable = () => {
         setError(initialError)
         if (!error.error && tableValues.number && tableValues.seats && tableValues.location) {
-            console.log('Submit!')
+            // console.log('Submit!')
             window.tablesReservations.addNewTable(tableValues).then(data => {
-                console.log(data)
+                // console.log(data)
                 if (data.success) { dispatch(addTable(data.success)); submitSuccess(); }
                 else console.log(data.error)
 
@@ -91,7 +91,7 @@ const AddTableModal = () => {
 
         } else {
             setError({ input: 'submit', error: 'Fields are missing or invalid values.' })
-            console.log('No Submit!', regNumbers.exec(tableValues.number))
+            // console.log('No Submit!', regNumbers.exec(tableValues.number))
         }
 
     }
@@ -103,18 +103,18 @@ const AddTableModal = () => {
             location:tableValues.location?tableValues.location:modalData.location,
             
         }
-        console.log(updateTable)
+        // console.log(updateTable)
         window.tablesReservations.updateTable(updateTable).then(data => {
             if(data._rev){
                 updateTable._rev = data._rev
                 dispatch(updateTableState(updateTable))
                 submitSuccess()
             } else {
-                console.log(data)
+                // console.log(data)
             }
         })
     }
-    console.log(tableValues)
+    // console.log(tableValues)
     const cancelUpdate = () => {
         setUpdateTable(false)
     }

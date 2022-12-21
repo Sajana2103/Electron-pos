@@ -35,7 +35,6 @@ useEffect(() => {
     itemComparison = updateItemSelector.item
     setMenuItemState(updateItemSelector.item)
     let inputs = document.getElementsByName('createMenuItemInput')
-    console.log(inputs,updateItemSelector.item.ingredients)
     inputs[0].setAttribute('value',updateItemSelector.item.name)
     inputs[2].innerText = updateItemSelector.item.ingredients? updateItemSelector.item.ingredients:''
     inputs[3].setAttribute('value',updateItemSelector.item.price?updateItemSelector.item.price : '')
@@ -123,20 +122,18 @@ useEffect(() => {
     }
 
     let category = await window.api.createItemCategory(menuItemState.category, 'itemCategories')
-    console.log(category)
+  
     if(category.result && category.result.ok){
-      console.log(category)
+    
       dispatch(addNewCategory(category.category))
     } else if(category.response){
-      console.log('category exists')
+      // console.log('category exists')
     }
-    console.log(category)
+
     let response = await window.api.updateItem(menuItemState)
-    console.log(response)
     if(response.res.ok || response.update){
       let {res,data} = response
       dispatch(modifyUpdateItem(data))
-      console.log(res,category)
       dispatch(setModalDisplay())
      
      return
@@ -288,7 +285,7 @@ useEffect(() => {
             <input className="modal-form-input" name="createMenuItemInput" aria-label="portionPrice"
             onChange={(e) => {
               if(!regNumbers.exec(e.target.value)){
-                console.log(e.target.value)
+                // console.log(e.target.value)
                 setError({error:'',input:''})
               setPortion(prevState => { return {...prevState, portionPrice : parseInt(e.target.value)}})
               } else {

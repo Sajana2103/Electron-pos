@@ -26,7 +26,7 @@ const AddReservationModal = () => {
     window.onclick = function (e) {
         // console.log(e.target)
         if (e.target === modal && e.target !== modalContent) {
-            console.log('close modal')
+            // console.log('close modal')
             //     console.log(modal.style.display)
             submitSuccess()
         }
@@ -50,7 +50,7 @@ const AddReservationModal = () => {
     const [reservationValues, setReservationValues] = useState({ ...initialReservationValues, time: reservationTime })
     const regNumbers = /\D/
 
-    console.log(reservationValues,reservationTime)
+    // console.log(reservationValues,reservationTime)
     useEffect(() => {
         if (updateReservation) {
             setReservationValues({
@@ -64,7 +64,7 @@ const AddReservationModal = () => {
     const removeItemWithId = () => {
 
         window.api.removeItem(modalData._id).then(res => {
-            console.log(res)
+            // console.log(res)
             if (res.ok) {
                 clearInputs()
                 dispatch(removeReservation(modalData._id))
@@ -79,28 +79,29 @@ const AddReservationModal = () => {
         if (getInputs.length) {
 
             for (let i = 0; i < getInputs.length; i++) {
-                console.log(getInputs[i])
+                // console.log(getInputs[i])
                 getInputs[i].value = ''
             }
         }
     }
     const updateCurrentReservation = () => {
         if(error.error) {
-            console.log(error.error);setError({ input: '', error: '' })
+            // console.log(error.error);
+            setError({ input: '', error: '' })
         }
         if (reservationValues.contact.length < 9) {
             setError({ input: 'contact', error: 'Contact number length is less than 9 digits.' })
             return
         }
-        console.log(reservationValues)
+        // console.log(reservationValues)
         if (!error.error && reservationValues.table && 
             reservationValues.customerName && reservationValues.contact 
             && reservationValues.time) {
-            console.log('Submit!', reservationValues)
+            // console.log('Submit!', reservationValues)
             
            
             window.tablesReservations.updateReservation(reservationValues).then(data => {
-                console.log(data)
+                // console.log(data)
                 if (data.success) { dispatch(updateReservationState(data.success)); submitSuccess(); }
                 else console.log(data.error)
 
@@ -109,26 +110,26 @@ const AddReservationModal = () => {
 
         } else {
             setError({ input: 'submit', error: 'All fields are required.' })
-            console.log('No Submit!', regNumbers.exec(reservationValues.contact))
+            // console.log('No Submit!', regNumbers.exec(reservationValues.contact))
         }
         
     }
     
     const submit = () => {
         if(error.error) {
-            console.log(error.error);
+            // console.log(error.error);
             setError(initialError);
-            console.log(error.error)
+            // console.log(error.error)
         }
         if (reservationValues.contact.length < 9) {
             setError({ input: 'contact', error: 'Contact number length is less than 9 digits.' })
             return
         }
-        console.log(reservationValues,error.error )
+        // console.log(reservationValues,error.error )
         if (!error.error && reservationValues.table && 
             reservationValues.customerName && reservationValues.contact 
             && reservationValues.time) {
-            console.log('Submit!', reservationValues)
+            // console.log('Submit!', reservationValues)
             
             let {time} = reservationValues
             
@@ -136,7 +137,7 @@ const AddReservationModal = () => {
             
            
             window.tablesReservations.addReservation({...reservationValues,_id:_id}).then(data => {
-                console.log(data)
+                // console.log(data)
                 if (data.success) { dispatch(addReservations(data.success)); submitSuccess(); }
                 else console.log(data.error)
 
@@ -145,7 +146,7 @@ const AddReservationModal = () => {
 
         } else {
             setError({ input: 'submit', error: 'All fields are required.' })
-            console.log('No Submit!', regNumbers.exec(reservationValues.number))
+            // console.log('No Submit!', regNumbers.exec(reservationValues.number))
         }
 
     }

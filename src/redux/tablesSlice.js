@@ -33,7 +33,7 @@ const tablesSlice = createSlice({
         return( table.number === action.payload.number && table.location === action.payload.location)
       })
       if (!hasTableNumber) {
-        console.log(action.payload)
+        // console.log(action.payload)
         state.tables.push(action.payload)
       }
     },
@@ -58,6 +58,7 @@ const tablesSlice = createSlice({
     
     },
     loadReservations(state,action){
+      console.log(action.payload)
       if(!state.reservations.length){
 
         action.payload.map(reservation => {
@@ -69,7 +70,7 @@ const tablesSlice = createSlice({
       state.reservations.push(action.payload)
     },
     removeReservation(state,action){
-      console.log(action.payload)
+      // console.log(action.payload)
       state.reservations = state.reservations.filter(reservation => {
         return reservation._id !== action.payload
       })

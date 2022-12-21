@@ -274,3 +274,19 @@ textarea{
   border-bottom: white 1px solid;
   
 }
+
+.grid-salesReport{
+  display: grid;
+  grid-template-columns: 180px 40px 100px;
+  padding:0.25rem;
+  align-items: center;
+}
+
+.qty-total{
+cursor: pointer;
+text-align: right;
+
+}
+.qty-total:hover{
+  color: #ef6369;
+}

@@ -12,7 +12,7 @@ const TablesContent = ({props}) => {
     const shrinkWidth = useSelector(state => state.windowResize.shrink.width)
     let maxCards = shrinkWidth === 200 ? Math.floor((width - (400)) / 150) : Math.floor(((width + shrinkWidth) - (400)) / 120)
     const dispatch = useDispatch()
-    console.log(reservations)
+    // console.log(reservations)
     return(
         <div className='item-content' style={{ height: `${height - 80}px`, width: `${width - 400}` }}>
           <div style={{display:'grid',gridTemplateRows:'1fr 1fr',justifyContent:'center'}}>

@@ -17,10 +17,14 @@ const menuItemSlice = createSlice({
   initialState,
   reducers: {
     loadMenuItems(state, action) {
+
       let category = new Set()
-      // console.log('loadmenuitems slice',action.payload)
+      console.log('loadmenuitems slice',action.payload)
       if (action.payload && !state.items.length && !state.itemCategories.length) {
-        action.payload.sort((a, b) => a.category.localeCompare(b.category))
+        action.payload.sort((a, b) => {
+          // console.log(a.category,b.category)
+          if(a.category===undefined) a.category='Non Categorized'
+          return a.category.localeCompare(b.category)})
         action.payload.map((item, id) => {
           category.add(item.category)
           state.items.push(item)

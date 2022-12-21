@@ -1,12 +1,14 @@
 .index-item{
   display: grid;
-  margin-top: 10px;
+  margin-top: 5px;
+  text-align: left;
   grid-template-rows: minmax(30px,auto);
-  color: #596266;
+  color: #6d7275;
   padding-left: 20px;
   justify-content: left;
   align-items: center;
   transition-duration: 0.2s;
+  
 }
 .index-item:hover{
  
@@ -62,4 +64,7 @@
   border:#ef6369 2px solid;
   color: #ef6369;
   transition-duration: 0.2s;
+}
+.catBag2{
+ background-color: #2b2f31;
 }

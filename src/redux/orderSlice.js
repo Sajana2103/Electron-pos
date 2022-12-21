@@ -19,6 +19,7 @@ const createOrderSlice = createSlice({
  name: 'orders',
  initialState,
  reducers : {
+ 
     loadOngoingOrders(state,action){
       // console.log('loadONgoing orders',action.payload)
       if(!state.currentOrders.length && !state.kitchenOrders.length){
@@ -68,12 +69,12 @@ const createOrderSlice = createSlice({
       state.newOrder.push(action.payload)
     },
     addItemsToOngoingOrder(state,action){
-      console.log('addItemsToOngoingOrder',action.payload)
+      // console.log('addItemsToOngoingOrder',action.payload)
       const {data,orderNumber,appendedOrder,dateAndTime} = action.payload 
       let ongoingOrder = state.currentOrders.find((item) => 
         item.orderNumber === orderNumber
       )
-      console.log('ongoingOrder',ongoingOrder,'data',data)
+      // console.log('ongoingOrder',ongoingOrder,'data',data)
       data.map((item) => ongoingOrder.data.push(item))
       ongoingOrder.appendedOrder = appendedOrder
       ongoingOrder.dateAndTime.push(dateAndTime)
@@ -81,7 +82,7 @@ const createOrderSlice = createSlice({
       state.newOrder = []
     },
     addItemsToKitchOrders(state,action){
-      console.log('addItemsToKitchOrders',action.payload)
+      // console.log('addItemsToKitchOrders',action.payload)
       state.kitchenOrders.push(action.payload)
     },
     closeBill(state,action){
@@ -89,13 +90,13 @@ const createOrderSlice = createSlice({
       
     },
     updateOrderNumber(state,action){
-      console.log('updateOrderNumber',action.payload)
+      // console.log('updateOrderNumber',action.payload)
       state.orderNumber = action.payload
     },
     completeCloseBill(state,action){
-      console.log(action.payload)
+      // console.log(action.payload)
       state.currentOrders = state.currentOrders.filter((order) => {
-        console.log(order.orderNumber)
+        // console.log(order.orderNumber)
         return (order.orderNumber !== action.payload.orderNumber)
       })
       state.kitchenOrders = state.kitchenOrders.filter((order) => {
@@ -103,7 +104,7 @@ const createOrderSlice = createSlice({
       })
     },
     cancelOrder(state,action){
-      console.log(action.payload)
+      // console.log(action.payload)
       state.currentOrders = state.currentOrders.filter(order => {
        return order._id !== action.payload.id
       })

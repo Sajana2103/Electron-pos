@@ -29,7 +29,8 @@ const NavigationBar = ({width}) => {
       <div className="nav-btns" >
         <div onClick={() => dispatch(navigate('menuitems'))}  className='nav-btn'>MENU</div>
         <div onClick={() => dispatch(navigate('tables'))}  className='nav-btn'>TABLES</div>
-        <div onClick={() => dispatch(navigate('history'))} className='nav-btn'>HISTORY</div>
+        <div onClick={() => dispatch(navigate('history'))} className='nav-btn'>SALES & HISTORY</div>
+
       </div>
      {
       currentUser && currentUser.user_id?
